@@ -65,9 +65,6 @@ class ManagedImage(models.Model):
         """
         Get the URL for a specific size variant.
         Falls back gracefully: medium → thumbnail → original.
-
-        Usage in templates:  {{ image.get_url:'medium' }}
-        Usage in Python:     image.get_url('thumbnail')
         """
         size_map = {
             "thumbnail": self.thumbnail,
