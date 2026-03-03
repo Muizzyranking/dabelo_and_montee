@@ -1,0 +1,70 @@
+<nav id="brand-nav"
+ data-brand="{{ navbar.brand }}"
+     class="fixed top-0 inset-x-0 z-50 transition-all duration-500">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+    <div class="flex items-center justify-between h-18 lg:h-20">
+      <!-- Logo -->
+      <a href="{% url navbar.menu_items.0.url %}"
+         class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-full {% if navbar.brand == 'dabelo' %} bg-dabelo-gold flex items-center justify-center shadow-green-glow group-hover:scale-110 {% else %} bg-white/15 border border-white/25 flex items-center justify-center backdrop-blur-sm group-hover:bg- group-hover:border-motee-pink {% endif %} transition-all duration-300">
+          <span class="font-bold text-white text-sm leading-none">{{ navbar.brand|slice:":1"|upper }}</span>
+        </div>
+        <div class="leading-none">
+          <span class="block font-bold text-white text-xl tracking-wide">{{ navbar.brand|title }}</span>
+          <span class="block text-2xs tracking-widest uppercase {% if navbar.brand == 'dabelo' %}text-dabelo-gold{% else %}text-motee-pink{% endif %}">
+            {{ navbar.brand|title }}
+          </span>
+        </div>
+      </a>
+      <!-- Desktop menu -->
+      <div class="hidden md:flex items-center gap-8 lg:gap-10">
+        {% for item in navbar.menu_items %}
+          <a href="#"
+             class="text-sm font-medium text-white/70 hover:text-white tracking-wide transition-colors duration-200 border-b border-transparent pb-0.5 {% if navbar.brand == 'dabelo' %}hover:border-dabelo-gold{% else %}hover:border-motee-pink{% endif %}">
+            {{ item.label }}
+          </a>
+        {% endfor %}
+      </div>
+      <!-- Desktop actions -->
+      <div class="hidden md:flex items-center gap-3">
+        <a href="{% url navbar.switch_url %}"
+           class="text-xs font-medium tracking-widest uppercase text-white/70 border border-white/25 px-4 py-2 rounded-sm transition-all duration-200 flex items-center gap-2 {% if navbar.brand == 'motee' %}hover:border-white/60 hover:text-white{% endif %}">
+          {{ navbar.switch_label }}
+        </a>
+        <a href="#"
+           class="text-xs font-semibold tracking-widest uppercase px-5 py-2.5 rounded-sm transition-colors duration-300 {% if navbar.brand == 'dabelo' %} bg-dabelo-gold text-dabelo-green hover:bg-white hover:text-dabelo-green {% else %} bg-motee-pink text-white hover:bg-white hover:text-motee-purple {% endif %}">
+          {{ navbar.cta_label }}
+        </a>
+      </div>
+      <!-- Mobile hamburger -->
+      <button id="brand-menu-btn"
+              class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 rounded focus:outline-none focus:ring-2 {% if navbar.brand == 'dabelo' %}focus:ring-dabelo-gold{% else %}focus:ring-motee-pink{% endif %}"
+              aria-label="Toggle menu"
+              aria-expanded="false">
+        <span class="dab-line block w-6 h-0.5 bg-white transition-all duration-300 origin-center"></span>
+        <span class="dab-line block w-6 h-0.5 bg-white transition-all duration-300"></span>
+        <span class="dab-line block w-6 h-0.5 bg-white transition-all duration-300 origin-center"></span>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile drawer -->
+  <div id="brand-mobile-menu"
+       class="hidden md:hidden flex-col px-5 pb-6 pt-3 text-white {% if navbar.brand == 'dabelo' %}bg-dabelo-green border-t border-dabelo-gold/20{% else %}bg-motee-purple border-t border-motee-pink/20{% endif %}">
+    {% for item in navbar.menu_items %}
+      <a href="#"
+         class="block py-3.5 text-sm font-medium text-white/70 hover:text-white border-b {% if navbar.brand == 'dabelo' %}border-dabelo-gold/15{% else %}border-motee-pink/15{% endif %} transition-colors">
+        {{ item.label }}
+      </a>
+    {% endfor %}
+    <div class="pt-5 flex flex-col gap-3">
+      <a href="{% url navbar.switch_url %}"
+         class="text-xs tracking-widest uppercase text-white/70 border border-white/25 py-3 rounded-sm text-center flex items-center justify-center gap-2 hover:border-white/50 hover:text-white transition-colors">
+        {{ navbar.switch_label }}
+      </a>
+      <a href="#"
+         class="text-xs font-semibold tracking-widest uppercase py-3 rounded-sm text-center transition-colors {% if navbar.brand == 'dabelo' %} bg-dabelo-gold text-dabelo-green hover:bg-white hover:text-dabelo-green {% else %} bg-motee-pink text-white hover:bg-white hover:text-motee-purple {% endif %}">
+        {{ navbar.cta_label }}
+      </a>
+    </div>
+  </div>
+</nav>
