@@ -1,0 +1,459 @@
+{% extends "montee/base.html" %}
+{% load static %}
+{% block title %}Motee Cakes — Handcrafted Custom Cakes for Every Celebration{% endblock %}
+{% block meta_description %}Motee Cakes creates beautiful, handcrafted custom cakes for weddings, birthdays, anniversaries and special moments. Premium ingredients, bespoke designs, delivered fresh in Lagos.{% endblock %}
+
+{% block content %}
+<!-- ═══════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════ -->
+<section class="relative min-h-screen flex items-center bg-motee-purple overflow-hidden pt-20">
+
+  <!-- Dot-grid texture -->
+  <div class="absolute inset-0 dot-grid pointer-events-none opacity-60"></div>
+
+  <!-- Ambient glow blobs -->
+  <div class="absolute top-1/4 left-1/3 w-96 h-96 rounded-full bg-motee-pink/15 blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-motee-blue/10 blur-3xl pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-16 lg:py-24 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+
+      <!-- Left: Copy -->
+      <div class="text-center lg:text-left space-y-7 order-2 lg:order-1">
+
+        <!-- Eyebrow -->
+        <div class="inline-flex items-center gap-3 px-4 py-2 rounded-sm bg-white/8 border border-white/15 backdrop-blur-sm">
+          <span class="text-motee-pink">✨</span>
+          <span class="font-motee-body text-white text-2xs font-medium tracking-widest uppercase">Handcrafted with Love · Lagos</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="font-motee-display font-bold text-white leading-none tracking-tight"
+          style="font-size: clamp(3.2rem, 8vw, 6.5rem); line-height: 0.95;">
+          Every Slice<br/>
+          <span class="italic text-motee-pink">Tells a Story.</span>
+        </h1>
+
+        <p class="font-motee-body text-lg text-white/70 leading-relaxed max-w-lg mx-auto lg:mx-0">
+          From timeless wedding masterpieces to joyful birthday creations — each cake is handcrafted with premium ingredients, artistry, and care for your most cherished moments.
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="#"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-motee-pink text-white font-motee-body font-semibold text-sm tracking-widest uppercase rounded-sm shadow-purple-glow hover:bg-white hover:text-motee-purple hover:-translate-y-0.5 transition-all duration-300">
+            Shop Cakes →
+          </a>
+          <a href="#"
+            class="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-motee-body font-medium text-sm tracking-widest uppercase rounded-sm hover:bg-white/10 hover:border-white/60 transition-all duration-300">
+            Custom Order
+          </a>
+        </div>
+
+        <!-- Trust badges -->
+        <div class="flex flex-wrap justify-center lg:justify-start gap-6 pt-2">
+          <div class="flex items-center gap-2 font-motee-body text-sm text-white/55">
+            <span class="text-lg">✨</span> Custom Designs
+          </div>
+          <div class="flex items-center gap-2 font-motee-body text-sm text-white/55">
+            <span class="text-lg">🍰</span> Premium Ingredients
+          </div>
+          <div class="flex items-center gap-2 font-motee-body text-sm text-white/55">
+            <span class="text-lg">🚚</span> Delivered Fresh
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Orbital visual with floating tags -->
+      <div class="flex justify-center order-1 lg:order-2">
+        <div class="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-[420px] lg:h-[420px]">
+
+          <!-- Outer spinning ring -->
+          <div class="absolute inset-0 rounded-full border border-white/10 spin-cw">
+            <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-motee-pink shadow-purple-glow"></div>
+            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-motee-pink/40"></div>
+          </div>
+
+          <!-- Middle spinning ring -->
+          <div class="absolute inset-8 rounded-full border border-motee-pink/20 spin-ccw">
+            <div class="absolute -right-1.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-motee-pink/50"></div>
+          </div>
+
+          <!-- Center glow disc -->
+          <div class="absolute inset-16 rounded-full bg-white/6 border border-white/10 backdrop-blur-sm flex items-center justify-center">
+            <div class="text-center space-y-1">
+              <div class="text-5xl">🎂</div>
+              <p class="font-motee-display font-semibold text-white text-base leading-none">Motee</p>
+              <p class="font-motee-body text-motee-pink text-2xs tracking-widest uppercase">Cakes</p>
+            </div>
+          </div>
+
+          <!-- Floating tag: wedding cakes -->
+          <div class="float-tag-a absolute top-4 -right-2 sm:right-0 bg-white rounded-sm shadow-purple-glow px-3 py-2.5 z-10">
+            <p class="font-motee-body text-motee-purple font-semibold text-xs">💍 Wedding Cakes</p>
+            <p class="font-motee-body text-warm-gray text-2xs mt-0.5">Bespoke designs</p>
+          </div>
+
+          <!-- Floating tag: birthday cakes -->
+          <div class="float-tag-b absolute bottom-8 -left-2 sm:left-0 bg-white rounded-sm shadow-purple-glow px-3 py-2.5 z-10">
+            <p class="font-motee-body text-motee-pink font-semibold text-xs">🎉 Birthday Cakes</p>
+            <p class="font-motee-body text-warm-gray text-2xs mt-0.5">Any size, any theme</p>
+          </div>
+
+          <!-- Floating tag: custom orders -->
+          <div class="float-tag-c absolute top-1/2 -right-6 sm:-right-4 bg-motee-pink text-white rounded-sm shadow-purple-glow px-3 py-2 z-10">
+            <p class="font-motee-body font-semibold text-xs">✏️ Custom Orders</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diagonal cut to white -->
+  <div class="absolute bottom-0 inset-x-0 overflow-hidden leading-none pointer-events-none">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" class="w-full h-12 lg:h-16" style="fill:#FAF8F4;">
+      <path d="M0,60 L1440,0 L1440,60 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     MARQUEE
+     ═══════════════════════════════════════ -->
+<div class="relative bg-motee-pink overflow-hidden py-3.5">
+  <div class="marquee-track">
+    <!-- First set -->
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Wedding Cakes <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Birthday Creations <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Anniversary Cakes <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Bespoke Designs <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Premium Ingredients <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Delivered Fresh <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Custom Orders <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Handcrafted with Love <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <!-- Duplicate set for seamless loop -->
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Wedding Cakes <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Birthday Creations <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Anniversary Cakes <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Bespoke Designs <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Premium Ingredients <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Delivered Fresh <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Custom Orders <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+    <span class="inline-flex items-center gap-5 px-6 font-motee-display italic text-base text-white whitespace-nowrap">Handcrafted with Love <span class="w-1.5 h-1.5 rounded-full bg-white/40 shrink-0"></span></span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     CAKE CATEGORIES
+     ═══════════════════════════════════════ -->
+<section class="py-24 lg:py-32 bg-parchment">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14 reveal">
+      <div>
+        <div class="flex items-center gap-3 font-motee-body text-2xs tracking-widest uppercase text-motee-pink font-medium mb-3">
+          <span class="w-6 h-px bg-motee-pink"></span> What We Create
+        </div>
+        <h2 class="font-motee-display font-bold text-motee-purple" style="font-size: clamp(2rem,5vw,3.2rem); line-height:1.05;">Cakes for Every Occasion</h2>
+      </div>
+      <a href="#" class="font-motee-body text-xs tracking-widest uppercase text-warm-gray border-b border-warm-gray/40 pb-0.5 hover:text-ink hover:border-ink transition-colors self-start sm:self-auto shrink-0">View All →</a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <!-- Wedding -->
+      <article class="reveal reveal-d1 group relative overflow-hidden rounded-sm border border-warm-border bg-white hover:-translate-y-1.5 hover:shadow-purple-glow transition-all duration-400">
+        <div class="relative h-52 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1550617931-eb3a88e8450b?w=800&q=80"
+            alt="Wedding Cakes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-motee-purple/65 to-transparent"></div>
+          <div class="absolute bottom-3 left-4 font-motee-body text-2xs tracking-widest uppercase font-semibold text-white/80">💍 Wedding</div>
+        </div>
+        <div class="p-6">
+          <h3 class="font-motee-display font-semibold text-xl text-motee-purple mb-2">Wedding Cakes</h3>
+          <p class="font-motee-body text-sm text-warm-gray leading-relaxed mb-4">Elegant tiered designs, bespoke detailing — timeless centrepieces for your forever moment.</p>
+          <a href="#" class="font-motee-body text-xs tracking-widest uppercase text-motee-pink font-medium inline-flex items-center gap-1.5 hover:gap-3 transition-all duration-200">Explore →</a>
+        </div>
+      </article>
+
+      <!-- Birthday -->
+      <article class="reveal reveal-d2 group relative overflow-hidden rounded-sm bg-motee-purple border border-motee-purple hover:-translate-y-1.5 hover:shadow-purple-glow transition-all duration-400">
+        <div class="relative h-52 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1563729783415-4a9630d5e2e0?w=800&q=80"
+            alt="Birthday Cakes" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-motee-purple/70 to-transparent"></div>
+          <div class="absolute bottom-3 left-4 font-motee-body text-2xs tracking-widest uppercase font-semibold text-white/70">🎉 Birthday</div>
+        </div>
+        <div class="p-6">
+          <h3 class="font-motee-display font-semibold text-xl text-white mb-2">Birthday Cakes</h3>
+          <p class="font-motee-body text-sm text-white/60 leading-relaxed mb-4">Joyful, personalised creations — any theme, flavour, or size to celebrate another year beautifully.</p>
+          <a href="#" class="font-motee-body text-xs tracking-widest uppercase text-motee-pink font-medium inline-flex items-center gap-1.5 hover:gap-3 transition-all duration-200">Explore →</a>
+        </div>
+      </article>
+
+      <!-- Anniversary -->
+      <article class="reveal reveal-d3 group relative overflow-hidden rounded-sm border border-warm-border bg-white hover:-translate-y-1.5 hover:shadow-purple-glow transition-all duration-400">
+        <div class="relative h-52 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80"
+            alt="Anniversary Cakes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-motee-purple/65 to-transparent"></div>
+          <div class="absolute bottom-3 left-4 font-motee-body text-2xs tracking-widest uppercase font-semibold text-white/80">💕 Anniversary</div>
+        </div>
+        <div class="p-6">
+          <h3 class="font-motee-display font-semibold text-xl text-motee-purple mb-2">Anniversary & Milestone</h3>
+          <p class="font-motee-body text-sm text-warm-gray leading-relaxed mb-4">Sophisticated cakes to mark love, achievements, and cherished memories with elegance.</p>
+          <a href="#" class="font-motee-body text-xs tracking-widest uppercase text-motee-pink font-medium inline-flex items-center gap-1.5 hover:gap-3 transition-all duration-200">Explore →</a>
+        </div>
+      </article>
+
+      <!-- Custom -->
+      <article class="reveal reveal-d4 group relative overflow-hidden rounded-sm border border-motee-pink/30 bg-motee-purple-pale hover:-translate-y-1.5 hover:shadow-purple-glow transition-all duration-400">
+        <div class="relative h-52 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80"
+            alt="Custom Cakes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-motee-purple/65 to-transparent"></div>
+          <div class="absolute bottom-3 left-4 font-motee-body text-2xs tracking-widest uppercase font-semibold text-white/80">✏️ Bespoke</div>
+        </div>
+        <div class="p-6">
+          <h3 class="font-motee-display font-semibold text-xl text-motee-purple mb-2">Custom & Bespoke</h3>
+          <p class="font-motee-body text-sm text-mid-brown leading-relaxed mb-4">Your vision brought to life — unique shapes, flavours, colours, and edible art for any occasion.</p>
+          <a href="#" class="font-motee-body text-xs tracking-widest uppercase text-motee-pink font-medium inline-flex items-center gap-1.5 hover:gap-3 transition-all duration-200">Enquire →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     POPULAR CREATIONS
+     ═══════════════════════════════════════ -->
+<section class="py-24 lg:py-32 bg-white lace-top">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+
+    <div class="text-center mb-14 reveal">
+      <div class="inline-flex items-center gap-3 font-motee-body text-2xs tracking-widest uppercase text-motee-pink font-medium mb-3">
+        <span class="w-6 h-px bg-motee-pink"></span> From Our Studio <span class="w-6 h-px bg-motee-pink"></span>
+      </div>
+      <h2 class="font-motee-display font-bold text-motee-purple" style="font-size: clamp(2rem,5vw,3.2rem); line-height:1.05;">Popular Creations</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Creation 1 -->
+      <div class="reveal reveal-d1 group bg-white border border-warm-border rounded-sm overflow-hidden hover:-translate-y-1 hover:shadow-purple-glow transition-all duration-400">
+        <div class="relative h-64 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1550617931-eb3a88e8450b?w=800&q=80"
+            alt="Classic Birthday Elegance"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <span class="absolute top-4 left-4 font-motee-body text-2xs tracking-widest uppercase font-bold px-3 py-1 rounded-sm bg-motee-pink text-white">Popular</span>
+        </div>
+        <div class="p-7">
+          <h3 class="font-motee-display font-semibold text-xl text-motee-purple mb-2">Classic Birthday Elegance</h3>
+          <p class="font-motee-body text-sm text-warm-gray leading-relaxed mb-5">Moist layers, silky buttercream, delicate piping — timeless joy in every slice.</p>
+          <div class="flex items-center justify-between">
+            <span class="font-motee-display font-semibold text-motee-purple/50">From —</span>
+            <a href="#" class="font-motee-body text-xs font-semibold tracking-widest uppercase bg-motee-pink text-white px-5 py-2.5 rounded-sm hover:bg-motee-purple transition-colors duration-300">Order Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Creation 2 — hero card -->
+      <div class="reveal reveal-d2 group bg-motee-purple border border-motee-purple rounded-sm overflow-hidden hover:-translate-y-1 hover:shadow-purple-glow transition-all duration-400">
+        <div class="relative h-64 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1563729783415-4a9630d5e2e0?w=800&q=80"
+            alt="Multi-Tier Wedding Masterpiece"
+            class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
+          <span class="absolute top-4 left-4 font-motee-body text-2xs tracking-widest uppercase font-bold px-3 py-1 rounded-sm bg-white text-motee-purple">Premium</span>
+        </div>
+        <div class="p-7">
+          <h3 class="font-motee-display font-semibold text-xl text-white mb-2">Multi-Tier Wedding Masterpiece</h3>
+          <p class="font-motee-body text-sm text-white/60 leading-relaxed mb-5">Bespoke tiers, hand-piped details, fresh florals — crafted for your forever day.</p>
+          <div class="flex items-center justify-between">
+            <span class="font-motee-display font-semibold text-white/40">Custom Quote</span>
+            <a href="#" class="font-motee-body text-xs font-semibold tracking-widest uppercase border border-white/40 text-white px-5 py-2.5 rounded-sm hover:bg-white hover:text-motee-purple transition-colors duration-300">Enquire</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Creation 3 -->
+      <div class="reveal reveal-d3 group bg-white border border-warm-border rounded-sm overflow-hidden hover:-translate-y-1 hover:shadow-purple-glow transition-all duration-400">
+        <div class="relative h-64 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80"
+            alt="Anniversary Romance"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        </div>
+        <div class="p-7">
+          <h3 class="font-motee-display font-semibold text-xl text-motee-purple mb-2">Anniversary Romance</h3>
+          <p class="font-motee-body text-sm text-warm-gray leading-relaxed mb-5">Elegant two-tier, gold accents, rich flavours — celebrating love that grows sweeter each year.</p>
+          <div class="flex items-center justify-between">
+            <span class="font-motee-display font-semibold text-motee-purple/50">From —</span>
+            <a href="#" class="font-motee-body text-xs font-semibold tracking-widest uppercase bg-motee-pink text-white px-5 py-2.5 rounded-sm hover:bg-motee-purple transition-colors duration-300">Order Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-12 reveal">
+      <a href="#"
+        class="inline-flex items-center gap-2 font-motee-body text-sm font-medium tracking-widest uppercase border border-motee-purple text-motee-purple px-8 py-3.5 rounded-sm hover:bg-motee-purple hover:text-white transition-colors duration-300">
+        View All Creations →
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     CUSTOM ORDER PROCESS — dark purple
+     ═══════════════════════════════════════ -->
+<section class="relative py-24 lg:py-32 bg-motee-purple overflow-hidden">
+  <div class="absolute inset-0 dot-grid pointer-events-none opacity-40"></div>
+  <div class="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-motee-pink/10 blur-3xl pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
+    <div class="text-center mb-14 reveal">
+      <div class="inline-flex items-center gap-3 font-motee-body text-2xs tracking-widest uppercase text-motee-pink font-medium mb-3">
+        <span class="w-6 h-px bg-motee-pink"></span> Bespoke Experience <span class="w-6 h-px bg-motee-pink"></span>
+      </div>
+      <h2 class="font-motee-display font-bold text-white" style="font-size: clamp(2rem,5vw,3.2rem); line-height:1.05;">Create Your Dream Cake</h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+      <!-- Copy -->
+      <div class="reveal space-y-6">
+        <p class="font-motee-body text-lg text-white/65 leading-relaxed">
+          Can't find exactly what you're looking for? We specialise in turning your vision into edible art — any theme, flavour, colour, or size. Our bakers work closely with you to craft something truly one-of-a-kind.
+        </p>
+        <a href="#"
+          class="inline-flex items-center gap-2 bg-motee-pink text-white font-motee-body font-semibold text-sm tracking-widest uppercase px-8 py-4 rounded-sm shadow-purple-glow hover:bg-white hover:text-motee-purple hover:-translate-y-0.5 transition-all duration-300">
+          Start Custom Order →
+        </a>
+      </div>
+
+      <!-- Steps -->
+      <div class="space-y-4 reveal reveal-d1">
+
+        <div class="flex items-start gap-5 bg-white/6 border border-white/10 rounded-sm p-6 backdrop-blur-sm hover:bg-white/10 transition-colors duration-200">
+          <div class="w-10 h-10 rounded-full bg-motee-pink flex items-center justify-center font-motee-display font-bold text-white text-base shrink-0">1</div>
+          <div>
+            <h4 class="font-motee-display font-semibold text-lg text-white mb-1">Share Your Vision</h4>
+            <p class="font-motee-body text-sm text-white/55 leading-relaxed">Tell us occasion, flavours, colours, size, budget & inspiration photos.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-5 bg-white/6 border border-white/10 rounded-sm p-6 backdrop-blur-sm hover:bg-white/10 transition-colors duration-200">
+          <div class="w-10 h-10 rounded-full bg-motee-pink flex items-center justify-center font-motee-display font-bold text-white text-base shrink-0">2</div>
+          <div>
+            <h4 class="font-motee-display font-semibold text-lg text-white mb-1">Quote & Design</h4>
+            <p class="font-motee-body text-sm text-white/55 leading-relaxed">We send a detailed personalised quote and an initial design sketch.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-5 bg-white/6 border border-white/10 rounded-sm p-6 backdrop-blur-sm hover:bg-white/10 transition-colors duration-200">
+          <div class="w-10 h-10 rounded-full bg-motee-pink flex items-center justify-center font-motee-display font-bold text-white text-base shrink-0">3</div>
+          <div>
+            <h4 class="font-motee-display font-semibold text-lg text-white mb-1">Baked & Delivered</h4>
+            <p class="font-motee-body text-sm text-white/55 leading-relaxed">Handcrafted fresh, beautifully boxed, and delivered on time across Lagos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     TESTIMONIALS
+     ═══════════════════════════════════════ -->
+<section class="py-24 lg:py-32 bg-parchment relative overflow-hidden">
+  <!-- Decorative quote mark -->
+  <div class="absolute -top-8 left-6 font-motee-display font-bold text-motee-pink/6 leading-none select-none pointer-events-none"
+    style="font-size: clamp(10rem, 28vw, 22rem);">"</div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+    <div class="text-center mb-14 reveal">
+      <div class="inline-flex items-center gap-3 font-motee-body text-2xs tracking-widest uppercase text-motee-pink font-medium mb-3">
+        <span class="w-6 h-px bg-motee-pink"></span> Loved in Lagos <span class="w-6 h-px bg-motee-pink"></span>
+      </div>
+      <h2 class="font-motee-display font-bold text-motee-purple" style="font-size: clamp(2rem,5vw,3.2rem); line-height:1.05;">What Our Customers Say</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="reveal reveal-d1 group p-8 lg:p-10 bg-white border border-warm-border rounded-sm hover:shadow-purple-glow hover:-translate-y-1 transition-all duration-300">
+        <div class="text-motee-pink tracking-widest text-sm mb-5">★★★★★</div>
+        <p class="font-motee-display italic text-xl text-motee-purple leading-relaxed mb-6">
+          "Our wedding cake was beyond stunning — elegant, delicious, and exactly what we dreamed of. Thank you Motee!"
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-motee-purple-pale flex items-center justify-center font-motee-display font-bold text-motee-purple text-sm">AO</div>
+          <div>
+            <p class="font-motee-body text-sm font-semibold text-motee-purple">Adaeze O.</p>
+            <p class="font-motee-body text-2xs text-warm-gray tracking-wide">Lagos · Wedding Cake</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-d2 group p-8 lg:p-10 bg-motee-purple rounded-sm hover:shadow-purple-glow hover:-translate-y-1 transition-all duration-300">
+        <div class="text-motee-pink tracking-widest text-sm mb-5">★★★★★</div>
+        <p class="font-motee-display italic text-xl text-white leading-relaxed mb-6">
+          "The custom birthday cake was perfect — every detail spot on. Delivery was timely and flawless."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center font-motee-display font-bold text-white text-sm">TB</div>
+          <div>
+            <p class="font-motee-body text-sm font-semibold text-white">Tolu B.</p>
+            <p class="font-motee-body text-2xs text-white/40 tracking-wide">Lagos · Birthday Cake</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-d3 group p-8 lg:p-10 bg-white border border-warm-border rounded-sm hover:shadow-purple-glow hover:-translate-y-1 transition-all duration-300">
+        <div class="text-motee-pink tracking-widest text-sm mb-5">★★★★★</div>
+        <p class="font-motee-display italic text-xl text-motee-purple leading-relaxed mb-6">
+          "Absolutely magical graduation cake! Everyone asked where we got it — highly recommend Motee."
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-motee-purple-pale flex items-center justify-center font-motee-display font-bold text-motee-purple text-sm">KF</div>
+          <div>
+            <p class="font-motee-body text-sm font-semibold text-motee-purple">Kemi F.</p>
+            <p class="font-motee-body text-2xs text-warm-gray tracking-wide">Lagos · Graduation Cake</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     CROSS-BRAND CTA — Dabelo
+     ═══════════════════════════════════════ -->
+<section class="py-20 lg:py-24 bg-white">
+  <div class="max-w-5xl mx-auto px-5 sm:px-8 lg:px-12">
+    <div class="reveal relative overflow-hidden rounded-sm border border-dabelo-green/20 bg-parchment p-10 lg:p-14">
+      <!-- Green blob -->
+      <div class="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-dabelo-green-pale blur-3xl opacity-80 pointer-events-none"></div>
+      <div class="absolute -bottom-16 -left-16 w-64 h-64 rounded-full bg-dabelo-gold/10 blur-3xl opacity-80 pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col lg:flex-row items-center gap-8 text-center lg:text-left">
+        <div class="text-5xl shrink-0">🥤</div>
+        <div class="flex-1">
+          <h3 class="font-dabelo-display font-bold text-dabelo-green mb-2" style="font-size: clamp(1.6rem,4vw,2.4rem);">Pair Your Cake with Fresh Refreshments?</h3>
+          <p class="font-motee-body text-base text-mid-brown leading-relaxed max-w-xl">
+            Dabelo Café offers premium cold-pressed juices, salads & healthy bowls — the perfect balance for your celebration.
+          </p>
+        </div>
+        <a href="{% url 'dabelo_home' %}"
+          class="shrink-0 inline-flex items-center gap-2 bg-dabelo-green text-white font-motee-body font-semibold text-sm tracking-widest uppercase px-8 py-4 rounded-sm shadow-green-glow hover:bg-dabelo-gold hover:text-dabelo-green hover:-translate-y-0.5 transition-all duration-300">
+          Explore Dabelo Café →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
