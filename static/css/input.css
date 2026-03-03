@@ -1,0 +1,104 @@
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Nunito:wght@300;400;600;700;800&family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400;500;600&display=swap');
+
+/* @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Nunito:wght@300;400;600;700;800&family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400;500;600&display=swap'); */
+
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body { @apply antialiased; }
+
+  /* Remove animation for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+
+  /* ── Buttons ── */
+  .btn-dabelo-primary {
+    @apply inline-flex items-center gap-2 bg-dabelo-gold text-dabelo-green font-dabelo-body font-semibold
+           px-7 py-3 rounded-full tracking-wide transition-all duration-300
+           hover:bg-dabelo-green hover:text-dabelo-gold hover:shadow-lg
+           focus:outline-none focus:ring-2 focus:ring-dabelo-gold focus:ring-offset-2;
+  }
+
+  .btn-dabelo-outline {
+    @apply inline-flex items-center gap-2 border-2 border-dabelo-gold text-dabelo-gold font-dabelo-body font-semibold
+           px-7 py-3 rounded-full tracking-wide transition-all duration-300
+           hover:bg-dabelo-gold hover:text-dabelo-green
+           focus:outline-none focus:ring-2 focus:ring-dabelo-gold focus:ring-offset-2;
+  }
+
+  .btn-motee-primary {
+    @apply inline-flex items-center gap-2 bg-motee-pink text-white font-motee-body font-semibold
+           px-7 py-3 rounded-full tracking-wide transition-all duration-300
+           hover:bg-motee-purple hover:shadow-lg
+           focus:outline-none focus:ring-2 focus:ring-motee-pink focus:ring-offset-2;
+  }
+
+  .btn-motee-outline {
+    @apply inline-flex items-center gap-2 border-2 border-motee-pink text-motee-pink font-motee-body font-semibold
+           px-7 py-3 rounded-full tracking-wide transition-all duration-300
+           hover:bg-motee-pink hover:text-white
+           focus:outline-none focus:ring-2 focus:ring-motee-pink focus:ring-offset-2;
+  }
+
+  /* ── Section Helpers ── */
+  .section-pad {
+    @apply py-20 px-6;
+  }
+
+  .container-main {
+    @apply max-w-7xl mx-auto;
+  }
+
+  /* ── Cards ── */
+  .card-base {
+    @apply bg-white rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  /* ── Nav Link Styles ── */
+  .nav-link-dabelo {
+    @apply text-white/80 font-dabelo-body font-medium tracking-wide text-sm
+           hover:text-dabelo-gold transition-colors duration-200 relative
+           after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5
+           after:bg-dabelo-gold after:transition-all after:duration-300
+           hover:after:w-full;
+  }
+
+  .nav-link-motee {
+    @apply text-white/80 font-motee-body font-medium tracking-wide text-sm
+           hover:text-motee-pink transition-colors duration-200 relative
+           after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5
+           after:bg-motee-pink after:transition-all after:duration-300
+           hover:after:w-full;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+
+  /* Noise texture overlay */
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+}
