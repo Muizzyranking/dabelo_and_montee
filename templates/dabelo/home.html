@@ -1,0 +1,535 @@
+{% extends "dabelo/base.html" %}
+{% load static %}
+{% block title %}Dabelo Café — Fresh Juices, Salads & Healthy Living{% endblock %}
+{% block meta_description %}
+  Premium fresh juices, salads and healthy bowls from Dabelo Café. No preservatives, no added sugars. Freshness guaranteed.
+{% endblock %}
+{% block content %}
+  <!-- ═══════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════ -->
+  <section class="relative min-h-screen flex items-center bg-dabelo-green overflow-hidden pt-20">
+    <!-- Diagonal stripe texture -->
+    <div class="absolute inset-0 stripe-bg pointer-events-none"></div>
+    <!-- Radial glow blobs -->
+    <div class="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-dabelo-gold/8 blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full bg-dabelo-leaf/10 blur-3xl pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-16 lg:py-24 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+        <!-- Left: Copy -->
+        <div class="text-center lg:text-left space-y-7">
+          <!-- Eyebrow pill -->
+          <div class="inline-flex items-center gap-3 px-4 py-2 rounded-sm bg-dabelo-gold/10 border border-dabelo-gold/25">
+            <span class="w-2 h-2 rounded-full bg-dabelo-gold animate-pulse shrink-0"></span>
+            <span class="font-dabelo-body text-dabelo-gold text-2xs font-semibold tracking-widest uppercase">Fresh · Natural · Nourishing</span>
+          </div>
+          <!-- Headline -->
+          <h1 class="font-dabelo-display font-bold text-white leading-none tracking-tight"
+              style="font-size: clamp(3.4rem, 8vw, 6.5rem);
+                     line-height: 0.95">
+            Fuel Your Day
+            <br />
+            <span class="text-dabelo-gold italic">Naturally.</span>
+          </h1>
+          <p class="font-dabelo-body text-lg text-white/75 leading-relaxed max-w-lg mx-auto lg:mx-0">
+            Cold-pressed juices, vibrant salads, and nourishing bowls — made daily with 100% fresh ingredients.
+            No preservatives. No added sugars. Just pure goodness, delivered to your door.
+          </p>
+          <!-- CTAs -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <a href="#"
+               class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-dabelo-gold text-dabelo-green font-dabelo-body font-semibold text-sm tracking-widest uppercase rounded-sm shadow-green-glow hover:bg-white hover:-translate-y-0.5 transition-all duration-300">
+              Shop Now →
+            </a>
+            <a href="{% url 'dabelo_about' %}"
+               class="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/30 text-white font-dabelo-body font-medium text-sm tracking-widest uppercase rounded-sm hover:bg-white/10 hover:border-white/60 transition-all duration-300">
+              Our Story
+            </a>
+          </div>
+          <!-- Trust badges -->
+          <div class="flex flex-wrap justify-center lg:justify-start gap-6 pt-2">
+            <div class="flex items-center gap-2 font-dabelo-body text-sm text-white/60">
+              <span class="text-xl">🌿</span> No Preservatives
+            </div>
+            <div class="flex items-center gap-2 font-dabelo-body text-sm text-white/60">
+              <span class="text-xl">🍊</span> 100% Fresh
+            </div>
+            <div class="flex items-center gap-2 font-dabelo-body text-sm text-white/60">
+              <span class="text-xl">🌾</span> Local Farmers
+            </div>
+          </div>
+        </div>
+        <!-- Right: Animated orbital graphic -->
+        <div class="flex justify-center lg:justify-end">
+          <div class="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-[420px] lg:h-[420px]">
+            <!-- Outer spinning ring -->
+            <div class="absolute inset-0 rounded-full border border-dabelo-gold/20 spin-cw">
+              <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-dabelo-gold shadow-green-glow"></div>
+              <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-dabelo-gold/40"></div>
+            </div>
+            <!-- Middle spinning ring -->
+            <div class="absolute inset-8 rounded-full border border-dabelo-leaf/25 spin-ccw">
+              <div class="absolute -right-1.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-dabelo-leaf/60"></div>
+            </div>
+            <!-- Inner glow disc -->
+            <div class="absolute inset-16 rounded-full bg-gradient-to-br from-dabelo-gold/20 via-dabelo-leaf/10 to-transparent flex items-center justify-center border border-dabelo-gold/15 backdrop-blur-sm">
+              <div class="text-center space-y-1">
+                <div class="text-5xl">🍹</div>
+                <p class="font-dabelo-display font-bold text-white text-base leading-none">Pure</p>
+                <p class="font-dabelo-body text-dabelo-gold text-2xs tracking-widest uppercase">Freshness</p>
+              </div>
+            </div>
+            <!-- Floating fruit emojis -->
+            <div class="absolute top-3 right-3 text-3xl float-a">🫐</div>
+            <div class="absolute bottom-6 left-2 text-3xl float-b"
+                 style="animation-delay:2.5s">🥭</div>
+            <div class="absolute top-1/2 -right-2 text-3xl float-c"
+                 style="animation-delay:1.2s">🍊</div>
+            <div class="absolute bottom-1/4 right-1/4 text-2xl float-a"
+                 style="animation-delay:3.8s">🍓</div>
+            <div class="absolute top-1/4 -left-2 text-2xl float-b"
+                 style="animation-delay:5s">🥑</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom diagonal cut -->
+    <div class="absolute bottom-0 inset-x-0 overflow-hidden leading-none pointer-events-none">
+      <svg viewBox="0 0 1440 60"
+           preserveAspectRatio="none"
+           class="w-full h-12 lg:h-16 fill-parchment">
+        <path d="M0,60 L1440,0 L1440,60 Z" />
+      </svg>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════
+     MARQUEE
+     ═══════════════════════════════════════ -->
+  <div class="relative bg-dabelo-gold overflow-hidden py-3.5">
+    <div class="marquee-track">
+      <!-- First set -->
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Cold-Pressed Juices <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Fresh Salad Bowls <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Fruit Boxes <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Meal Prep Plans <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">No Preservatives <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Local Farmers <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">100% Natural <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Delivered Daily <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <!-- Duplicate set (keeps the infinite scroll seamless) -->
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Cold-Pressed Juices <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Fresh Salad Bowls <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Fruit Boxes <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Meal Prep Plans <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">No Preservatives <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Local Farmers <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">100% Natural <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+      <span class="inline-flex items-center gap-5 px-6 font-dabelo-display italic text-base text-dabelo-green whitespace-nowrap">Delivered Daily <span class="w-1.5 h-1.5 rounded-full bg-dabelo-green/40 shrink-0"></span></span>
+    </div>
+  </div>
+  <!-- ═══════════════════════════════════════
+     WHAT WE SERVE — categories
+     ═══════════════════════════════════════ -->
+  <section class="py-24 lg:py-32 bg-parchment">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <!-- Section header -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14 reveal">
+        <div>
+          <div class="flex items-center gap-3 font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium mb-3">
+            <span class="w-6 h-px bg-dabelo-gold"></span> What We Serve
+          </div>
+          <h2 class="font-dabelo-display font-bold text-dabelo-green"
+              style="font-size: clamp(2rem,5vw,3.2rem);
+                     line-height: 1.05">Good Food, Good Mood</h2>
+        </div>
+        <a href="#"
+           class="font-dabelo-body text-xs tracking-widest uppercase text-warm-gray border-b border-warm-gray/40 pb-0.5 hover:text-ink hover:border-ink transition-colors self-start sm:self-auto shrink-0">Full Menu →</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Card: Juices -->
+        <article class="reveal reveal-d1 group relative overflow-hidden rounded-sm border border-warm-border bg-white hover:-translate-y-1.5 hover:shadow-warm-xl transition-all duration-400">
+          <div class="relative h-56 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?w=800&q=80"
+                 alt="Fresh cold-pressed juices"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-dabelo-green/60 to-transparent"></div>
+            <div class="absolute bottom-4 left-5">
+              <span class="font-dabelo-body text-2xs tracking-widest uppercase font-semibold px-2.5 py-1 rounded-sm bg-dabelo-gold text-dabelo-green">Bestseller</span>
+            </div>
+          </div>
+          <div class="p-7">
+            <h3 class="font-dabelo-display font-semibold text-2xl text-dabelo-green mb-2">Fresh Juices</h3>
+            <p class="font-dabelo-body text-sm text-warm-gray leading-relaxed mb-5">
+              Cold-pressed daily from the finest fruits — Berry Blast, Mango Tango, and seasonal specials. Pure, zero additives.
+            </p>
+            <a href="#"
+               class="font-dabelo-body text-xs tracking-widest uppercase text-dabelo-gold font-medium inline-flex items-center gap-1.5 hover:gap-3 transition-all duration-200">Explore Juices →</a>
+          </div>
+        </article>
+        <!-- Card: Salads — hero card -->
+        <article class="reveal reveal-d2 group relative overflow-hidden rounded-sm bg-dabelo-green border border-dabelo-green hover:-translate-y-1.5 hover:shadow-warm-xl transition-all duration-400">
+          <div class="relative h-56 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80"
+                 alt="Fresh salads and bowls"
+                 class="w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-dabelo-green/70 to-transparent"></div>
+          </div>
+          <div class="p-7">
+            <h3 class="font-dabelo-display font-semibold text-2xl text-white mb-2">Fresh Salads</h3>
+            <p class="font-dabelo-body text-sm text-white/70 leading-relaxed mb-5">
+              Crisp greens, seasonal veggies, premium proteins — dressed in house-made healthy options you'll crave.
+            </p>
+            <a href="#"
+               class="font-dabelo-body text-xs tracking-widest uppercase text-dabelo-gold font-medium inline-flex items-center gap-1.5 hover:gap-3 transition-all duration-200">Explore Salads →</a>
+          </div>
+        </article>
+        <!-- Card: Fruit Boxes -->
+        <article class="reveal reveal-d3 group relative overflow-hidden rounded-sm border border-warm-border bg-white hover:-translate-y-1.5 hover:shadow-warm-xl transition-all duration-400">
+          <div class="relative h-56 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1601001435828-419e309a20e5?w=800&q=80"
+                 alt="Curated fruit boxes"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-dabelo-green/60 to-transparent"></div>
+          </div>
+          <div class="p-7">
+            <h3 class="font-dabelo-display font-semibold text-2xl text-dabelo-green mb-2">Signature Fruit Boxes</h3>
+            <p class="font-dabelo-body text-sm text-warm-gray leading-relaxed mb-5">
+              Curated seasonal mixes — perfect for families, offices, or snacking. Local and premium selections.
+            </p>
+            <a href="#"
+               class="font-dabelo-body text-xs tracking-widest uppercase text-dabelo-gold font-medium inline-flex items-center gap-1.5 hover:gap-3 transition-all duration-200">Explore Boxes →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════
+     SIGNATURE PRODUCTS
+     ═══════════════════════════════════════ -->
+  <section class="py-24 lg:py-32 bg-warm">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="text-center mb-14 reveal">
+        <div class="inline-flex items-center gap-3 font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium mb-3">
+          <span class="w-6 h-px bg-dabelo-gold"></span> Fan Favourites <span class="w-6 h-px bg-dabelo-gold"></span>
+        </div>
+        <h2 class="font-dabelo-display font-bold text-dabelo-green"
+            style="font-size: clamp(2rem,5vw,3.2rem);
+                   line-height: 1.05">Signature Selections</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Product 1 -->
+        <div class="reveal reveal-d1 group bg-white border border-warm-border rounded-sm overflow-hidden hover:-translate-y-1 hover:shadow-warm-lg transition-all duration-400">
+          <div class="relative h-60 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1601001435828-419e309a20e5?w=800&q=80"
+                 alt="Berry Blast Box"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <span class="absolute top-4 left-4 font-dabelo-body text-2xs tracking-widest uppercase font-bold px-3 py-1 rounded-sm bg-dabelo-green text-white">Bestseller</span>
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <h3 class="font-dabelo-display font-semibold text-xl text-dabelo-green">Berry Blast Box</h3>
+            </div>
+            <p class="font-dabelo-body text-sm text-warm-gray leading-relaxed mb-5">
+              Raspberries, blueberries & strawberries — ideal for snacking or smoothies. Freshness sealed.
+            </p>
+            <button class="w-full font-dabelo-body text-xs font-semibold tracking-widest uppercase bg-dabelo-gold text-dabelo-green py-3 rounded-sm hover:bg-dabelo-green hover:text-dabelo-gold transition-colors duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <!-- Product 2 -->
+        <div class="reveal reveal-d2 group bg-white border border-warm-border rounded-sm overflow-hidden hover:-translate-y-1 hover:shadow-warm-lg transition-all duration-400">
+          <div class="relative h-60 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800&q=80"
+                 alt="Mango Tango Juice"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            <span class="absolute top-4 left-4 font-dabelo-body text-2xs tracking-widest uppercase font-bold px-3 py-1 rounded-sm bg-dabelo-gold text-dabelo-green">New</span>
+          </div>
+          <div class="p-6">
+            <h3 class="font-dabelo-display font-semibold text-xl text-dabelo-green mb-2">Mango Tango</h3>
+            <p class="font-dabelo-body text-sm text-warm-gray leading-relaxed mb-5">
+              Tropical mangoes, pineapples & bananas — rich flavour, 100% pure. No water, no sugar added.
+            </p>
+            <button class="w-full font-dabelo-body text-xs font-semibold tracking-widest uppercase bg-dabelo-gold text-dabelo-green py-3 rounded-sm hover:bg-dabelo-green hover:text-dabelo-gold transition-colors duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <!-- Product 3 -->
+        <div class="reveal reveal-d3 group bg-white border border-warm-border rounded-sm overflow-hidden hover:-translate-y-1 hover:shadow-warm-lg transition-all duration-400 sm:col-span-2 lg:col-span-1">
+          <div class="relative h-60 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?w=800&q=80"
+                 alt="Pure Mango Juice"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          </div>
+          <div class="p-6">
+            <h3 class="font-dabelo-display font-semibold text-xl text-dabelo-green mb-2">Pure Mango Juice</h3>
+            <p class="font-dabelo-body text-sm text-warm-gray leading-relaxed mb-5">
+              Made from 100% pure mangoes — no water, no sugar, just mango. Cold-pressed to lock in nutrients.
+            </p>
+            <button class="w-full font-dabelo-body text-xs font-semibold tracking-widest uppercase bg-dabelo-gold text-dabelo-green py-3 rounded-sm hover:bg-dabelo-green hover:text-dabelo-gold transition-colors duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-12 reveal">
+        <a href="#"
+           class="inline-flex items-center gap-2 font-dabelo-body text-sm font-medium tracking-widest uppercase border border-dabelo-gold text-dabelo-gold px-8 py-3.5 rounded-sm hover:bg-dabelo-gold hover:text-dabelo-green transition-colors duration-300">
+          View Full Menu →
+        </a>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════
+     CORE VALUES — dark green
+     ═══════════════════════════════════════ -->
+  <section class="relative py-24 lg:py-32 bg-dabelo-green overflow-hidden">
+    <div class="absolute inset-0 stripe-bg pointer-events-none opacity-50"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="text-center mb-14 reveal">
+        <div class="inline-flex items-center gap-3 font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium mb-3">
+          <span class="w-6 h-px bg-dabelo-gold"></span> Why Choose Us <span class="w-6 h-px bg-dabelo-gold"></span>
+        </div>
+        <h2 class="font-dabelo-display font-bold text-white"
+            style="font-size: clamp(2rem,5vw,3.2rem);
+                   line-height: 1.05">Our Core Values</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-dabelo-gold/10 rounded-sm overflow-hidden border border-dabelo-gold/15">
+        <div class="reveal reveal-d1 p-10 lg:p-12 bg-dabelo-green hover:bg-dabelo-green-mid transition-colors duration-300 text-center">
+          <div class="w-14 h-14 rounded-full bg-dabelo-gold/15 border border-dabelo-gold/30 flex items-center justify-center mx-auto mb-6 text-2xl">
+            🌟
+          </div>
+          <h3 class="font-dabelo-display font-semibold text-xl text-dabelo-gold mb-3">Freshness Guarantee</h3>
+          <p class="font-dabelo-body text-sm text-white/65 leading-relaxed">
+            Daily sourced fresh fruits & veggies — verified safe and at peak quality. Nothing less.
+          </p>
+        </div>
+        <div class="reveal reveal-d2 p-10 lg:p-12 bg-dabelo-green hover:bg-dabelo-green-mid transition-colors duration-300 text-center">
+          <div class="w-14 h-14 rounded-full bg-dabelo-gold/15 border border-dabelo-gold/30 flex items-center justify-center mx-auto mb-6 text-2xl">
+            💚
+          </div>
+          <h3 class="font-dabelo-display font-semibold text-xl text-dabelo-gold mb-3">Customer Health First</h3>
+          <p class="font-dabelo-body text-sm text-white/65 leading-relaxed">
+            Nutritious options supporting healthy lifestyles for children, adults, and families.
+          </p>
+        </div>
+        <div class="reveal reveal-d3 p-10 lg:p-12 bg-dabelo-green hover:bg-dabelo-green-mid transition-colors duration-300 text-center">
+          <div class="w-14 h-14 rounded-full bg-dabelo-gold/15 border border-dabelo-gold/30 flex items-center justify-center mx-auto mb-6 text-2xl">
+            🌱
+          </div>
+          <h3 class="font-dabelo-display font-semibold text-xl text-dabelo-gold mb-3">Sustainable Practices</h3>
+          <p class="font-dabelo-body text-sm text-white/65 leading-relaxed">
+            Partnering with local Nigerian farmers for ethical, eco-friendly sourcing.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════
+     VISION & MISSION — editorial layout
+     ═══════════════════════════════════════ -->
+  <section class="py-24 lg:py-32 bg-parchment relative overflow-hidden">
+    <!-- Watermark -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+      <span class="font-dabelo-display italic font-bold text-dabelo-green/4 whitespace-nowrap"
+            style="font-size: clamp(7rem, 20vw, 16rem);
+                   line-height:1">fresh</span>
+    </div>
+    <div class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="text-center mb-16 reveal">
+        <div class="inline-flex items-center gap-3 font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium mb-3">
+          <span class="w-6 h-px bg-dabelo-gold"></span> Guided by Purpose
+        </div>
+        <h2 class="font-dabelo-display font-bold text-dabelo-green"
+            style="font-size: clamp(2rem,5vw,3.2rem);
+                   line-height: 1.05">Our Vision & Mission</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="reveal reveal-d1 p-10 lg:p-12 bg-white border border-warm-border rounded-sm hover:shadow-warm-md transition-shadow duration-300">
+          <div class="font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium mb-4 flex items-center gap-2">
+            <span class="w-4 h-px bg-dabelo-gold"></span> Vision
+          </div>
+          <h3 class="font-dabelo-display font-semibold text-2xl text-dabelo-green mb-4">Leading the Way</h3>
+          <p class="font-dabelo-body text-base text-mid-brown leading-relaxed">
+            To become the leading café in Nigeria serving fresh, natural juices, dishes, and desserts of premium quality — while inspiring and promoting a healthy lifestyle for all generations.
+          </p>
+        </div>
+        <div class="reveal reveal-d2 p-10 lg:p-12 bg-dabelo-green rounded-sm hover:shadow-warm-md transition-shadow duration-300">
+          <div class="font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium mb-4 flex items-center gap-2">
+            <span class="w-4 h-px bg-dabelo-gold"></span> Mission
+          </div>
+          <h3 class="font-dabelo-display font-semibold text-2xl text-white mb-4">Our Daily Commitment</h3>
+          <p class="font-dabelo-body text-base text-white/70 leading-relaxed">
+            To deliver uncompromising quality and freshness every day — crafting nutritious, preservative-free meals that support health, celebrate local Nigerian farmers, and protect our environment.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════
+     WEEKLY MEAL PREP — for busy moms
+     ═══════════════════════════════════════ -->
+  <section class="py-24 lg:py-32 bg-warm">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+        <!-- Visual: weekly plan -->
+        <div class="reveal order-2 lg:order-1">
+          <div class="bg-white border border-warm-border rounded-sm p-8 shadow-warm-md">
+            <div class="font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium mb-5 flex items-center gap-2">
+              <span class="w-4 h-px bg-dabelo-gold"></span> Your Week
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="bg-dabelo-green-pale border border-dabelo-green/10 rounded-sm p-4 text-center">
+                <span class="block text-2xl mb-2">🥗</span>
+                <p class="font-dabelo-body text-2xs font-semibold text-dabelo-green tracking-widest uppercase">Mon</p>
+              </div>
+              <div class="bg-dabelo-green-pale border border-dabelo-green/10 rounded-sm p-4 text-center">
+                <span class="block text-2xl mb-2">🍊</span>
+                <p class="font-dabelo-body text-2xs font-semibold text-dabelo-green tracking-widest uppercase">Tue</p>
+              </div>
+              <div class="bg-dabelo-green-pale border border-dabelo-green/10 rounded-sm p-4 text-center">
+                <span class="block text-2xl mb-2">🫐</span>
+                <p class="font-dabelo-body text-2xs font-semibold text-dabelo-green tracking-widest uppercase">Wed</p>
+              </div>
+              <div class="bg-dabelo-green-pale border border-dabelo-green/10 rounded-sm p-4 text-center">
+                <span class="block text-2xl mb-2">🥭</span>
+                <p class="font-dabelo-body text-2xs font-semibold text-dabelo-green tracking-widest uppercase">Thu</p>
+              </div>
+              <div class="bg-dabelo-green-pale border border-dabelo-green/10 rounded-sm p-4 text-center">
+                <span class="block text-2xl mb-2">🍓</span>
+                <p class="font-dabelo-body text-2xs font-semibold text-dabelo-green tracking-widest uppercase">Fri</p>
+              </div>
+              <div class="bg-dabelo-green-pale border border-dabelo-green/10 rounded-sm p-4 text-center">
+                <span class="block text-2xl mb-2">🥑</span>
+                <p class="font-dabelo-body text-2xs font-semibold text-dabelo-green tracking-widest uppercase">Sat</p>
+              </div>
+            </div>
+            <!-- Done state -->
+            <div class="mt-3 flex items-center gap-3 bg-dabelo-gold rounded-sm px-5 py-3">
+              <span class="text-xl">😊</span>
+              <div>
+                <p class="font-dabelo-display font-semibold text-dabelo-green text-base leading-none">Week Complete!</p>
+                <p class="font-dabelo-body text-2xs text-dabelo-green/70 mt-0.5">Every meal, fresh & delivered.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Copy -->
+        <div class="reveal reveal-d1 order-1 lg:order-2 space-y-6">
+          <div class="font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium flex items-center gap-2">
+            <span class="w-4 h-px bg-dabelo-gold"></span> For Busy Parents
+          </div>
+          <h2 class="font-dabelo-display font-bold text-dabelo-green"
+              style="font-size: clamp(2rem,5vw,3rem);
+                     line-height: 1.05">
+            Healthy Kids,
+            <br />
+            Happy Moms
+          </h2>
+          <p class="font-dabelo-body text-base text-mid-brown leading-relaxed">
+            A safe place for busy moms desiring healthy children. We prepare and deliver weekly breakfast and lunch to ease daily activities — bridging the gap between parents and kids for nutritious meals every single day.
+          </p>
+          <a href="#"
+             class="inline-flex items-center gap-2 bg-dabelo-green text-white font-dabelo-body font-semibold text-sm tracking-widest uppercase px-8 py-4 rounded-sm shadow-green-glow hover:bg-dabelo-green-mid hover:-translate-y-0.5 transition-all duration-300">
+            Get Weekly Delivery →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════
+     LOCAL FARMERS
+     ═══════════════════════════════════════ -->
+  <section class="relative py-24 lg:py-32 bg-dabelo-green overflow-hidden">
+    <div class="absolute inset-0 stripe-bg pointer-events-none opacity-40"></div>
+    <div class="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
+      <div class="reveal mb-10">
+        <div class="inline-flex items-center gap-3 font-dabelo-body text-2xs tracking-widest uppercase text-dabelo-gold font-medium mb-3">
+          <span class="w-6 h-px bg-dabelo-gold"></span> Our Roots
+        </div>
+        <h2 class="font-dabelo-display font-bold text-white"
+            style="font-size: clamp(2rem,5vw,3.2rem);
+                   line-height: 1.05">Supporting Local Nigerian Farmers</h2>
+        <p class="mt-5 font-dabelo-body text-lg text-white/65 max-w-2xl mx-auto leading-relaxed">
+          We partner with local farmers to source the freshest produce — promoting sustainable farming methods that protect the environment and empower communities.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-px bg-dabelo-gold/10 border border-dabelo-gold/15 rounded-sm overflow-hidden mt-12">
+        <div class="reveal reveal-d1 p-8 lg:p-10 bg-dabelo-green hover:bg-dabelo-green-mid transition-colors duration-300">
+          <span class="text-4xl block mb-4">🌾</span>
+          <h3 class="font-dabelo-display font-semibold text-lg text-dabelo-gold mb-2">Ethical Sourcing</h3>
+          <p class="font-dabelo-body text-sm text-white/60 leading-relaxed">
+            From Lagos farms and beyond — directly to your table.
+          </p>
+        </div>
+        <div class="reveal reveal-d2 p-8 lg:p-10 bg-dabelo-green hover:bg-dabelo-green-mid transition-colors duration-300">
+          <span class="text-4xl block mb-4">♻️</span>
+          <h3 class="font-dabelo-display font-semibold text-lg text-dabelo-gold mb-2">Sustainable Practices</h3>
+          <p class="font-dabelo-body text-sm text-white/60 leading-relaxed">
+            Eco-friendly methods for a healthier planet and future.
+          </p>
+        </div>
+        <div class="reveal reveal-d3 p-8 lg:p-10 bg-dabelo-green hover:bg-dabelo-green-mid transition-colors duration-300">
+          <span class="text-4xl block mb-4">🤝</span>
+          <h3 class="font-dabelo-display font-semibold text-lg text-dabelo-gold mb-2">Empowering Communities</h3>
+          <p class="font-dabelo-body text-sm text-white/60 leading-relaxed">
+            Every purchase strengthens local economies across Nigeria.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════
+     CROSS-BRAND CTA — Motee
+     ═══════════════════════════════════════ -->
+  <section class="py-20 lg:py-24 bg-parchment">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8 lg:px-12">
+      <div class="reveal relative overflow-hidden rounded-sm border border-motee-purple/20 bg-white p-10 lg:p-14">
+        <!-- Purple blob -->
+        <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-motee-purple-pale blur-3xl opacity-60 pointer-events-none">
+        </div>
+        <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-motee-pink/10 blur-3xl opacity-60 pointer-events-none">
+        </div>
+        <div class="relative z-10 flex flex-col lg:flex-row items-center gap-8 text-center lg:text-left">
+          <div class="text-6xl shrink-0">🎂</div>
+          <div class="flex-1">
+            <h3 class="font-motee-display font-bold text-motee-purple mb-2"
+                style="font-size: clamp(1.6rem,4vw,2.4rem)">Love Sweet Celebrations?</h3>
+            <p class="font-dabelo-body text-base text-mid-brown leading-relaxed max-w-xl">
+              Discover our sister brand — Motee Cakes for handcrafted custom cakes and bespoke celebration treats, delivered across Lagos.
+            </p>
+          </div>
+          <a href="{% url 'montee_home' %}"
+             class="shrink-0 inline-flex items-center gap-2 bg-motee-purple text-white font-dabelo-body font-semibold text-sm tracking-widest uppercase px-8 py-4 rounded-sm hover:bg-motee-pink hover:-translate-y-0.5 transition-all duration-300 shadow-purple-glow">
+            Explore Motee Cakes →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══════════════════════════════════════
+     FOUNDER QUOTE
+     ═══════════════════════════════════════ -->
+  <section class="py-24 lg:py-28 bg-white relative overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 font-dabelo-display font-bold text-dabelo-green/4 leading-none select-none pointer-events-none"
+         style="font-size: clamp(8rem, 20vw, 16rem)">"</div>
+    <div class="relative z-10 max-w-4xl mx-auto px-5 sm:px-8 lg:px-12 text-center">
+      <div class="reveal space-y-8">
+        <blockquote class="font-dabelo-display italic text-dabelo-green leading-relaxed"
+                    style="font-size: clamp(1.4rem, 3.5vw, 2.2rem)">
+          "Our team is passionate about what we do. From sourcing the best fruits to ensuring our customers have the best experience, we are here to serve fresh, every day."
+        </blockquote>
+        <div class="flex items-center justify-center gap-4">
+          <div class="w-14 h-14 rounded-full bg-dabelo-green flex items-center justify-center text-white font-dabelo-display font-bold text-lg shadow-green-glow">
+            OS
+          </div>
+          <div class="text-left">
+            <p class="font-dabelo-display font-semibold text-dabelo-green text-lg">Omotola Sodipo</p>
+            <p class="font-dabelo-body text-sm text-warm-gray">Founder & CEO, Dabelo Café</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
