@@ -1,17 +1,20 @@
 @import "tailwindcss";
 @config "../../tailwind.config.js";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Nunito:wght@300;400;600;700;800&family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400;500;600&display=swap');
-
-/* @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Nunito:wght@300;400;600;700;800&family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400;500;600&display=swap'); */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Nunito:wght@300;400;600;700;800&family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Karla:wght@300;400;500;600&display=swap");
 
 @layer base {
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+  }
 
-  body { @apply antialiased; }
+  body {
+    @apply antialiased;
+  }
 
-  /* Remove animation for users who prefer reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }
@@ -19,7 +22,6 @@
 }
 
 @layer components {
-
   /* ── Buttons ── */
   .btn-dabelo-primary {
     @apply inline-flex items-center gap-2 bg-dabelo-gold text-dabelo-green font-dabelo-body font-semibold
@@ -86,19 +88,208 @@
     text-wrap: balance;
   }
 
-  .animate-delay-100 { animation-delay: 100ms; }
-  .animate-delay-200 { animation-delay: 200ms; }
-  .animate-delay-300 { animation-delay: 300ms; }
-  .animate-delay-400 { animation-delay: 400ms; }
-  .animate-delay-500 { animation-delay: 500ms; }
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animate-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animate-delay-500 {
+    animation-delay: 500ms;
+  }
 
   /* Noise texture overlay */
   .noise-overlay::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
     pointer-events: none;
     z-index: 1;
+  }
+
+  /* Scroll-reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-d1.visible {
+    transition-delay: 0.08s;
+  }
+  .reveal-d2.visible {
+    transition-delay: 0.16s;
+  }
+  .reveal-d3.visible {
+    transition-delay: 0.24s;
+  }
+  .reveal-d4.visible {
+    transition-delay: 0.32s;
+  }
+
+  /* Staggered animation delays */
+  .delay-100 {
+    animation-delay: 0.1s;
+  }
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
+  .delay-500 {
+    animation-delay: 0.5s;
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 0;
+    animation: marquee 22s linear infinite;
+    width: max-content;
+  }
+
+  .stripe-bg {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 28px,
+      rgba(197, 154, 61, 0.06) 28px,
+      rgba(197, 154, 61, 0.06) 29px
+    );
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.12) 1px,
+      transparent 1px
+    );
+    background-size: 32px 32px;
+  }
+  .lace-top {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='12'%3E%3Cpath d='M0 12 Q10 0 20 12 Q30 0 40 12' fill='none' stroke='rgba(232,76,154,0.2)' stroke-width='1'/%3E%3C/svg%3E")
+      repeat-x top;
+    padding-top: 14px;
+  }
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes spin-cw {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes spin-ccw {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+  .spin-cw {
+    animation: spin-cw 22s linear infinite;
+  }
+  .spin-ccw {
+    animation: spin-ccw 16s linear infinite;
+  }
+
+  @keyframes dabelo-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes dabelo-float-b {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+  @keyframes dabelo-float-c {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  .float-a {
+    animation: dabelo-float 6s ease-in-out infinite;
+  }
+  .float-b {
+    animation: dabelo-float-b 8s ease-in-out infinite;
+  }
+  .float-c {
+    animation: dabelo-float-c 7s ease-in-out infinite;
+  }
+  @keyframes motee-float-a {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-2deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(2deg);
+    }
+  }
+  @keyframes motee-float-b {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+  @keyframes motee-float-c {
+    0%,
+    100% {
+      transform: translateY(0) rotate(1deg);
+    }
+    50% {
+      transform: translateY(-8px) rotate(-1deg);
+    }
+  }
+  .float-tag-a {
+    animation: motee-float-a 6s ease-in-out infinite;
+  }
+  .float-tag-b {
+    animation: motee-float-b 8s ease-in-out infinite;
+    animation-delay: 2.5s;
+  }
+  .float-tag-c {
+    animation: motee-float-c 7s ease-in-out infinite;
+    animation-delay: 1.5s;
   }
 }
