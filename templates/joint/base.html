@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>{% block title %}Dabelo & Motee — Crafted Fresh, Delivered with Care{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Premium cold-pressed juices, healthy bowls & handcrafted celebration cakes — made with care in Lagos.{% endblock %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <link rel="stylesheet" href="{% static 'css/joint_home.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-white font-body text-gray-900 antialiased">
+
+    {% include 'joint/navbar.html' %}
+
+    <main class="min-h-screen">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% include 'joint/footer.html' %}
+
+    <script src="{% static 'js/script.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
