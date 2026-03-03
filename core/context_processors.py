@@ -37,3 +37,39 @@ def brand_context(request):
         "dabelo": DABELO_BRAND,
         "motee": MOTEE_BRAND,
     }
+
+
+def navbar_config(request):
+    brand = getattr(request, "brand", "dabelo")
+
+    if brand == "montee":
+        return {
+            "navbar": {
+                "brand": "montee",
+                "menu_items": [
+                    {"label": "Home", "url": "montee_home"},
+                    {"label": "About", "url": "montee_about"},
+                    {"label": "Our Cakes", "url": "#"},
+                    {"label": "Shop", "url": "#"},
+                    {"label": "Custom Order", "url": "#"},
+                ],
+                "cta_label": "Order Now",
+                "switch_label": "🥤 Dabelo Drinks",
+                "switch_url": "dabelo_home",
+            }
+        }
+
+    return {
+        "navbar": {
+            "brand": "dabelo",
+            "menu_items": [
+                {"label": "Home", "url": "dabelo_home"},
+                {"label": "About", "url": "dabelo_about"},
+                {"label": "Menu", "url": "#"},
+                {"label": "Shop", "url": "#"},
+            ],
+            "cta_label": "Order Now",
+            "switch_label": "🎂 Motee Cakes",
+            "switch_url": "montee_home",
+        }
+    }
