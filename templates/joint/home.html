@@ -1,0 +1,303 @@
+{% extends "joint/base.html" %}
+{% load static %}
+{% block title %}Dabelo & Motee — Crafted Fresh, Delivered with Care{% endblock %}
+{% block content %}
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Lagos · Nigeria · Est. 2020</div>
+      <h1 class="hero-title">
+        Crafted
+        <br />
+        <em>Fresh</em>, Served
+        <br />
+        with <span class="accent">Soul.</span>
+      </h1>
+      <p class="hero-body">
+        Premium cold-pressed juices, nutrient-rich bowls, and handcrafted celebration cakes —
+        two beloved Lagos brands united by one belief: every moment deserves something extraordinary.
+      </p>
+      <div class="hero-actions">
+        <a href="{% url 'dabelo_home' %}" class="btn-primary">Explore Dabelo Café →</a>
+        <a href="{% url 'montee_home' %}" class="btn-secondary">Motee Cakes →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="collage">
+        <div class="collage-img c1"></div>
+        <div class="collage-img c2"></div>
+        <div class="collage-img c3"></div>
+        <div class="collage-tag">
+          <div class="collage-tag-label">Delivered Daily</div>
+          <div class="collage-tag-value">Across Lagos</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item">
+        Cold-Pressed Juices <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Custom Wedding Cakes <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Healthy Meal Prep <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Artisan Pastries <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        No Preservatives <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Same-Day Delivery <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Fresh Salad Bowls <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Birthday Cakes <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Cold-Pressed Juices <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Custom Wedding Cakes <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Healthy Meal Prep <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Artisan Pastries <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        No Preservatives <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Same-Day Delivery <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Fresh Salad Bowls <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        Birthday Cakes <span class="marquee-dot"></span>
+      </div>
+    </div>
+  </div>
+  <!-- BRANDS SPLIT -->
+  <section class="brands">
+    <a href="#" class="brand-panel panel-dabelo">
+      <div class="brand-panel-bg"></div>
+      <div class="brand-panel-overlay"></div>
+      <div class="brand-content">
+        <div class="brand-tag">Health & Wellness</div>
+        <div class="brand-name">Dabelo Café</div>
+        <div class="brand-desc">
+          Cold-pressed juices, antioxidant bowls & clean meal prep made from Lagos's freshest local ingredients. Zero preservatives, zero compromise.
+        </div>
+        <div class="brand-link">
+          Explore Menu <span>→</span>
+        </div>
+      </div>
+    </a>
+    <a href="#" class="brand-panel panel-motee">
+      <div class="brand-panel-bg"></div>
+      <div class="brand-panel-overlay"></div>
+      <div class="brand-content">
+        <div class="brand-tag">Celebrations & Events</div>
+        <div class="brand-name">Motee Cakes</div>
+        <div class="brand-desc">
+          Bespoke, hand-crafted cakes for weddings, birthdays & milestone moments — made with premium ingredients and designed to remember.
+        </div>
+        <div class="brand-link">
+          View Collection <span>→</span>
+        </div>
+      </div>
+    </a>
+  </section>
+  <!-- MISSION -->
+  <section class="mission">
+    <div class="mission-inner">
+      <div class="mission-sidebar reveal">
+        <div class="mission-label">Our Philosophy</div>
+        <h2 class="mission-h">
+          Where <em>Wellness</em> Meets Celebration
+        </h2>
+      </div>
+      <div class="mission-body reveal">
+        <p>
+          At Dabelo & Motee, we started with a simple conviction: Lagos deserves better. Better food. Better ingredients. Better care in every box, every bottle, every slice. Dabelo Café brings you vibrant, health-forward refreshments — cold-pressed juices packed with real nutrition, antioxidant-rich salad bowls, and clean meal prep you can feel good about.
+        </p>
+        <p>
+          Motee Cakes is where artistry meets occasion. Every cake is handcrafted to order using only premium, carefully sourced ingredients — designed with you in mind, baked with intention, and delivered as a centrepiece worthy of your most important moments.
+        </p>
+      </div>
+      <div class="mission-stats">
+        <div class="stat reveal">
+          <div class="stat-num">
+            100<span>%</span>
+          </div>
+          <div class="stat-label">Fresh & Natural Ingredients</div>
+        </div>
+        <div class="stat reveal">
+          <div class="stat-num">
+            0<span>%</span>
+          </div>
+          <div class="stat-label">Preservatives or Added Sugar</div>
+        </div>
+        <div class="stat reveal">
+          <div class="stat-num">
+            2<span>+</span>
+          </div>
+          <div class="stat-label">Beloved Lagos Brands</div>
+        </div>
+        <div class="stat reveal">
+          <div class="stat-num" style="color:var(--gold)">LOS</div>
+          <div class="stat-label">Island & Mainland Delivery</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- FEATURED -->
+  <section class="featured">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-kicker">Handpicked for You</div>
+        <h2 class="section-h">Customer Favourites</h2>
+      </div>
+      <a href="#" class="section-link">View full menu</a>
+    </div>
+    <div class="cards-grid">
+      <div class="card reveal">
+        <div class="card-img"
+             style="background-image:url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80')">
+          <div class="card-badge badge-motee">Motee Cakes</div>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Signature Red Velvet</div>
+          <div class="card-desc">
+            Moist layers of velvet sponge with silky cream cheese frosting — our most-requested celebration cake.
+          </div>
+          <a href="#" class="card-action purple">Order Now →</a>
+        </div>
+      </div>
+      <div class="card reveal">
+        <div class="card-img"
+             style="background-image:url('https://images.unsplash.com/photo-1613478223719-2ab802602423?w=800&q=80')">
+          <div class="card-badge badge-dabelo">Dabelo Café</div>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Green Detox Blend</div>
+          <div class="card-desc">
+            Cold-pressed spinach, cucumber, ginger & apple — a refreshing boost of clean energy in every sip.
+          </div>
+          <a href="#" class="card-action green">Shop Now →</a>
+        </div>
+      </div>
+      <div class="card reveal">
+        <div class="card-img"
+             style="background-image:url('https://images.unsplash.com/photo-1563729783415-4a9630d5e2e0?w=800&q=80')">
+          <div class="card-badge badge-motee">Motee Cakes</div>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Nude Wedding Tier</div>
+          <div class="card-desc">
+            Elegant semi-naked tiers dressed in fresh florals — the statement centrepiece for your forever day.
+          </div>
+          <a href="#" class="card-action purple">Order Now →</a>
+        </div>
+      </div>
+      <div class="card reveal">
+        <div class="card-img"
+             style="background-image:url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80')">
+          <div class="card-badge badge-dabelo">Dabelo Café</div>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Power Protein Bowl</div>
+          <div class="card-desc">
+            Quinoa, grilled chicken, avocado & fresh greens — your clean-eating lunch, delivered hot or fresh.
+          </div>
+          <a href="#" class="card-action green">Shop Now →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="section-kicker">Testimonials</div>
+    <h2 class="section-h"
+        style="color:#fff;
+               font-family:'Cormorant Garamond',serif;
+               font-size:2.8rem;
+               font-weight:600;
+               margin-top:12px">Loved by Lagos</h2>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">
+          "Dabelo's green juice has completely changed my mornings. The fact that there are no preservatives and it tastes this good? Game changer."
+        </div>
+        <div class="testi-author">
+          — Aisha O. · <span class="testi-brand">Dabelo Café</span>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">
+          "Motee made our wedding cake and I still get compliments on the photos. It tasted even better than it looked — which says everything."
+        </div>
+        <div class="testi-author">
+          — Tolu & Emeka B. · <span class="testi-brand">Motee Cakes</span>
+        </div>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">
+          "We ordered both — Dabelo detox shots for the guests and Motee's birthday tier for my daughter. The combination was absolutely perfect."
+        </div>
+        <div class="testi-author">
+          — Ngozi A. · <span class="testi-brand">Both Brands</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- PROCESS -->
+  <section class="process">
+    <div class="process-inner">
+      <div class="section-kicker">How It Works</div>
+      <h2 class="section-h">From Kitchen to Your Door</h2>
+      <div class="process-steps">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <div class="step-icon">🛍</div>
+          <div class="step-title">Browse & Choose</div>
+          <div class="step-desc">Explore our menus for fresh juices, healthy bowls, and custom cakes designed just for you.</div>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">02</div>
+          <div class="step-icon">✍️</div>
+          <div class="step-title">Customise Your Order</div>
+          <div class="step-desc">
+            Tell us your dietary needs, flavour preferences, or event details — we craft everything to order.
+          </div>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">03</div>
+          <div class="step-icon">👨‍🍳</div>
+          <div class="step-title">Made Fresh for You</div>
+          <div class="step-desc">
+            Our kitchen prepares your order with the freshest local ingredients — no shortcuts, no preservatives.
+          </div>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">04</div>
+          <div class="step-icon">🚀</div>
+          <div class="step-title">Delivered with Care</div>
+          <div class="step-desc">Fast, careful delivery across Lagos Island and Mainland — right on time, every time.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,29 @@
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      Dabelo <span>×</span> Motee
+    </div>
+    <div class="nav-links">
+      <a href="{% url 'dabelo_home' %}">Dabelo Café</a>
+      <a href="{% url 'montee_home' %}">Motee Cakes</a>
+      <a href="{% url 'our_story' %}">Our Story</a>
+      <a href="#" class="nav-cta">Order Now</a>
+    </div>
+
+    <button id="hamburger-btn"
+            class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 rounded focus:outline-none focus:ring-2 focus:ring-mid-brown"
+            aria-label="Toggle menu"
+            aria-expanded="false">
+      <span class="dab-line block w-6 h-0.5 bg-mid-brown transition-all duration-300 origin-center"></span>
+      <span class="dab-line block w-6 h-0.5 bg-mid-brown transition-all duration-300"></span>
+      <span class="dab-line block w-6 h-0.5 bg-mid-brown transition-all duration-300 origin-center"></span>
+    </button>
+  </div>
+  <!-- Mobile drawer -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="{% url 'dabelo_home' %}">Dabelo Café</a>
+    <a href="{% url 'dabelo_home' %}">Motee Cakes</a>
+    <a href="{% url 'our_story' %}">Our Story</a>
+    <a href="#" class="mobile-cta">Order Now</a>
+  </div>
+</nav>
