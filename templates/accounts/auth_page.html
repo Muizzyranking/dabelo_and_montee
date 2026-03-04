@@ -1,0 +1,318 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In — Dabelo & Motee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="bg-parchment font-body text-ink antialiased min-h-screen flex flex-col">
+
+  <!-- ── Top nav bar ── -->
+  <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-14 bg-parchment/90 backdrop-blur-md border-b border-warm-border">
+
+    <a href="{% url 'joint_home' %}" class="flex items-center gap-2 text-warm-gray hover:text-ink transition-colors duration-200 group">
+      <svg class="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+        <path d="M9 21V12h6v9"/>
+      </svg>
+      <span class="text-2xs font-semibold tracking-widest uppercase">Home</span>
+    </a>
+
+    <div class="flex items-center gap-2">
+      <a href="{% url 'dabelo_home' %}"
+         class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-2xs font-semibold tracking-widest uppercase
+                bg-dabelo-green-pale text-dabelo-green border border-dabelo-green/20
+                hover:bg-dabelo-green hover:text-white transition-all duration-300">
+        🌿 Dabelo
+      </a>
+      <a href="{% url 'montee_home' %}"
+         class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-2xs font-semibold tracking-widest uppercase
+                bg-motee-purple-pale text-motee-purple border border-motee-purple/20
+                hover:bg-motee-purple hover:text-white transition-all duration-300">
+        🎂 Motee
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="flex-1 flex items-center justify-center px-4 pt-14">
+    <div class="w-full max-w-md py-12 animate-fade-up">
+
+      <!-- Card -->
+      <div class="bg-white rounded-3xl border border-warm-border shadow-warm-md overflow-hidden">
+
+        <!-- Split colour stripe at top -->
+        <div class="h-1 flex">
+          <div class="flex-1 bg-gradient-dabelo"></div>
+          <div class="flex-1 bg-gradient-motee"></div>
+        </div>
+
+        <!-- Card header -->
+        <div class="pt-8 px-8 pb-0 text-center">
+
+          <!-- Dual brand pill -->
+          <div class="inline-flex items-stretch rounded-full border border-warm-border overflow-hidden mb-5 text-2xs font-semibold tracking-widest uppercase">
+            <span class="flex items-center gap-1.5 px-4 py-2 bg-dabelo-green-pale text-dabelo-green border-r border-warm-border">
+              🌿 Dabelo Café
+            </span>
+            <span class="flex items-center gap-1.5 px-4 py-2 bg-motee-purple-pale text-motee-purple">
+              🎂 Motee Cakes
+            </span>
+          </div>
+
+          <p class="text-sm text-warm-gray font-light">One account. Fresh food & beautiful cakes.</p>
+        </div>
+
+        <!-- Tab switcher -->
+        <div class="px-8 pt-6">
+          <div class="flex bg-warm rounded-xl p-1 gap-1">
+            <button id="tab-login" onclick="switchTab('login')"
+                    class="flex-1 py-2.5 rounded-lg text-2xs font-semibold tracking-widest uppercase transition-all duration-200
+                           {% if tab == 'login' %}bg-white text-ink shadow-warm-sm{% else %}text-warm-gray hover:text-ink-2{% endif %}">
+              Sign In
+            </button>
+            <button id="tab-register" onclick="switchTab('register')"
+                    class="flex-1 py-2.5 rounded-lg text-2xs font-semibold tracking-widest uppercase transition-all duration-200
+                           {% if tab == 'register' %}bg-white text-ink shadow-warm-sm{% else %}text-warm-gray hover:text-ink-2{% endif %}">
+              Create Account
+            </button>
+          </div>
+        </div>
+
+        <!-- Form area -->
+        <div class="px-8 pt-6 pb-8">
+
+          <!-- Flash messages -->
+          {% if messages %}
+            {% for msg in messages %}
+            <div class="flex items-start gap-2.5 px-4 py-3 rounded-xl text-sm mb-5
+                        {% if msg.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-dabelo-green-pale text-dabelo-green border border-dabelo-green/20{% endif %}">
+              <span class="mt-0.5 flex-shrink-0 text-xs">{% if msg.tags == 'error' %}⚠{% else %}✓{% endif %}</span>
+              <span class="font-light">{{ msg }}</span>
+            </div>
+            {% endfor %}
+          {% endif %}
+
+          <!-- ── LOGIN FORM ── -->
+          <div id="form-login" {% if tab == 'register' %}style="display:none"{% endif %}>
+            <form method="post" action="{% url 'login' %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ next }}"/>
+
+              <!-- Email -->
+              <div class="mb-4">
+                <label for="login-email"
+                       class="block text-2xs font-semibold tracking-widest uppercase text-warm-gray mb-1.5">
+                  Email Address
+                </label>
+                <input type="email" id="login-email" name="email"
+                       placeholder="you@example.com" autocomplete="email" required
+                       class="block w-full px-4 py-3 text-sm text-ink bg-parchment border border-warm-border rounded-xl
+                              placeholder-warm-gray/50 outline-none transition-all duration-200
+                              focus:border-ink/30 focus:bg-white focus:shadow-warm-sm"/>
+              </div>
+
+              <!-- Password -->
+              <div class="mb-4">
+                <label for="login-password"
+                       class="block text-2xs font-semibold tracking-widest uppercase text-warm-gray mb-1.5">
+                  Password
+                </label>
+                <div class="relative">
+                  <input type="password" id="login-password" name="password"
+                         placeholder="Your password" autocomplete="current-password" required
+                         class="block w-full px-4 py-3 pr-11 text-sm text-ink bg-parchment border border-warm-border rounded-xl
+                                placeholder-warm-gray/50 outline-none transition-all duration-200
+                                focus:border-ink/30 focus:bg-white focus:shadow-warm-sm"/>
+                  <button type="button" onclick="togglePw('login-password', this)"
+                          class="absolute right-3.5 top-1/2 -translate-y-1/2 text-warm-gray hover:text-ink transition-colors text-sm leading-none">
+                    👁
+                  </button>
+                </div>
+              </div>
+
+              <!-- Remember / forgot -->
+              <div class="flex items-center justify-between mb-6">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                  <input type="checkbox" name="remember_me"
+                         class="w-3.5 h-3.5 rounded accent-dabelo-green"/>
+                  <span class="text-xs text-warm-gray font-light">Remember me</span>
+                </label>
+                <a href="#" class="text-2xs font-semibold tracking-wider uppercase text-warm-gray hover:text-ink transition-colors">
+                  Forgot password?
+                </a>
+              </div>
+
+              <button type="submit"
+                      class="w-full py-3.5 bg-dabelo-green text-white text-2xs font-semibold tracking-widest uppercase
+                             rounded-xl transition-all duration-300 hover:bg-dabelo-green-mid hover:shadow-green-glow hover:-translate-y-0.5 active:translate-y-0">
+                Sign In →
+              </button>
+            </form>
+
+            <div class="flex items-center gap-3 my-5">
+              <div class="flex-1 h-px bg-warm-border"></div>
+              <span class="text-2xs tracking-widest uppercase text-warm-gray/60">new here?</span>
+              <div class="flex-1 h-px bg-warm-border"></div>
+            </div>
+
+            <p class="text-center text-sm text-warm-gray font-light">
+              No account yet?
+              <button onclick="switchTab('register')"
+                      class="font-semibold text-dabelo-green hover:underline bg-transparent border-none cursor-pointer p-0"
+                      style="font-family: inherit; font-size: inherit;">
+                Create one free
+              </button>
+            </p>
+          </div>
+
+          <!-- ── REGISTER FORM ── -->
+          <div id="form-register" {% if tab == 'login' %}style="display:none"{% endif %}>
+            <form method="post" action="{% url 'register' %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ next }}"/>
+
+              <!-- Name row -->
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                  <label for="reg-first"
+                         class="block text-2xs font-semibold tracking-widest uppercase text-warm-gray mb-1.5">
+                    First Name
+                  </label>
+                  <input type="text" id="reg-first" name="first_name" placeholder="First" required
+                         class="block w-full px-4 py-3 text-sm text-ink bg-parchment border border-warm-border rounded-xl
+                                placeholder-warm-gray/50 outline-none transition-all duration-200
+                                focus:border-ink/30 focus:bg-white focus:shadow-warm-sm"/>
+                </div>
+                <div>
+                  <label for="reg-last"
+                         class="block text-2xs font-semibold tracking-widest uppercase text-warm-gray mb-1.5">
+                    Last Name
+                  </label>
+                  <input type="text" id="reg-last" name="last_name" placeholder="Last"
+                         class="block w-full px-4 py-3 text-sm text-ink bg-parchment border border-warm-border rounded-xl
+                                placeholder-warm-gray/50 outline-none transition-all duration-200
+                                focus:border-ink/30 focus:bg-white focus:shadow-warm-sm"/>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="mb-4">
+                <label for="reg-email"
+                       class="block text-2xs font-semibold tracking-widest uppercase text-warm-gray mb-1.5">
+                  Email Address
+                </label>
+                <input type="email" id="reg-email" name="email"
+                       placeholder="you@example.com" autocomplete="email" required
+                       class="block w-full px-4 py-3 text-sm text-ink bg-parchment border border-warm-border rounded-xl
+                              placeholder-warm-gray/50 outline-none transition-all duration-200
+                              focus:border-ink/30 focus:bg-white focus:shadow-warm-sm"/>
+              </div>
+
+              <!-- Password -->
+              <div class="mb-4">
+                <label for="reg-password"
+                       class="block text-2xs font-semibold tracking-widest uppercase text-warm-gray mb-1.5">
+                  Password
+                </label>
+                <div class="relative">
+                  <input type="password" id="reg-password" name="password"
+                         placeholder="At least 8 characters" required
+                         class="block w-full px-4 py-3 pr-11 text-sm text-ink bg-parchment border border-warm-border rounded-xl
+                                placeholder-warm-gray/50 outline-none transition-all duration-200
+                                focus:border-ink/30 focus:bg-white focus:shadow-warm-sm"/>
+                  <button type="button" onclick="togglePw('reg-password', this)"
+                          class="absolute right-3.5 top-1/2 -translate-y-1/2 text-warm-gray hover:text-ink transition-colors text-sm leading-none">
+                    👁
+                  </button>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="reg-confirm"
+                       class="block text-2xs font-semibold tracking-widest uppercase text-warm-gray mb-1.5">
+                  Password
+                </label>
+                <div class="relative">
+                  <input type="password" id="reg-confirm" name="password_confirm"
+                         placeholder="Repeat password" required
+                         class="block w-full px-4 py-3 pr-11 text-sm text-ink bg-parchment border border-warm-border rounded-xl
+                                placeholder-warm-gray/50 outline-none transition-all duration-200
+                                focus:border-ink/30 focus:bg-white focus:shadow-warm-sm"/>
+                  <button type="button" onclick="togglePw('reg-confirm', this)"
+                          class="absolute right-3.5 top-1/2 -translate-y-1/2 text-warm-gray hover:text-ink transition-colors text-sm leading-none">
+                    👁
+                  </button>
+                </div>
+              </div>
+
+              <!-- Confirm password -->
+              <button type="submit"
+                      class="w-full py-3.5 bg-dabelo-green text-white text-2xs font-semibold tracking-widest uppercase
+                             rounded-xl transition-all duration-300 hover:bg-dabelo-green-mid hover:shadow-green-glow hover:-translate-y-0.5 active:translate-y-0">
+                Create Account →
+              </button>
+            </form>
+
+            <div class="flex items-center gap-3 my-5">
+              <div class="flex-1 h-px bg-warm-border"></div>
+              <span class="text-2xs tracking-widest uppercase text-warm-gray/60">already a member?</span>
+              <div class="flex-1 h-px bg-warm-border"></div>
+            </div>
+
+            <p class="text-center text-sm text-warm-gray font-light">
+              Have an account?
+              <button onclick="switchTab('login')"
+                      class="font-semibold text-dabelo-green hover:underline bg-transparent border-none cursor-pointer p-0"
+                      style="font-family: inherit; font-size: inherit;">
+                Sign in
+              </button>
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Below-card tagline -->
+      <p class="text-center text-2xs tracking-widest uppercase text-warm-gray/50 mt-6">
+        Fresh · Natural · Bespoke · Lagos
+      </p>
+
+    </div>
+  </main>
+
+  <script>
+    function switchTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('form-login').style.display    = isLogin ? 'block' : 'none';
+      document.getElementById('form-register').style.display = isLogin ? 'none'  : 'block';
+
+      const active   = ['bg-white', 'text-ink', 'shadow-warm-sm'];
+      const inactive = ['text-warm-gray', 'hover:text-ink-2'];
+      const tL = document.getElementById('tab-login');
+      const tR = document.getElementById('tab-register');
+
+      if (isLogin) {
+        active.forEach(c => tL.classList.add(c));
+        inactive.forEach(c => tL.classList.remove(c));
+        inactive.forEach(c => tR.classList.add(c));
+        active.forEach(c => tR.classList.remove(c));
+      } else {
+        active.forEach(c => tR.classList.add(c));
+        inactive.forEach(c => tR.classList.remove(c));
+        inactive.forEach(c => tL.classList.add(c));
+        active.forEach(c => tL.classList.remove(c));
+      }
+    }
+
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+      btn.textContent = input.type === 'password' ? '👁' : '🙈';
+    }
+  </script>
+
+</body>
+</html>
