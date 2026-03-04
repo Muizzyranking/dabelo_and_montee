@@ -1,0 +1,75 @@
+{% extends "joint/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/account.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="acc-wrap">
+  <aside class="acc-sidebar">
+    <div class="acc-sidebar-user">
+      <div class="acc-avatar">
+        {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+      </div>
+      <div class="acc-sidebar-name">{{ request.user.full_name }}</div>
+      <div class="acc-sidebar-email">{{ request.user.email }}</div>
+    </div>
+
+    <nav class="acc-nav">
+      <a href="{% url 'account_dashboard' %}"
+         class="acc-nav-item {% if request.resolver_match.url_name == 'account_dashboard' %}active{% endif %}">
+        <span class="acc-nav-icon">🏠</span> Dashboard
+      </a>
+      <a href="{% url 'account_orders' %}"
+         class="acc-nav-item {% if 'account_order' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="acc-nav-icon">📦</span> Orders
+      </a>
+      <a href="{% url 'account_quotes' %}"
+         class="acc-nav-item {% if request.resolver_match.url_name == 'account_quotes' %}active{% endif %}">
+        <span class="acc-nav-icon">✉️</span> Quote Requests
+      </a>
+      <div class="acc-nav-divider"></div>
+      <a href="{% url 'account_profile' %}"
+         class="acc-nav-item {% if request.resolver_match.url_name == 'account_profile' %}active{% endif %}">
+        <span class="acc-nav-icon">👤</span> Profile
+      </a>
+      <a href="{% url 'account_address' %}"
+         class="acc-nav-item {% if request.resolver_match.url_name == 'account_address' %}active{% endif %}">
+        <span class="acc-nav-icon">📍</span> Address
+      </a>
+      <a href="{% url 'account_password' %}"
+         class="acc-nav-item {% if request.resolver_match.url_name == 'account_password' %}active{% endif %}">
+        <span class="acc-nav-icon">🔒</span> Password
+      </a>
+      <div class="acc-nav-divider"></div>
+      <a href="{% url 'shop' %}" class="acc-nav-item">
+        <span class="acc-nav-icon">🛍️</span> Back to Shop
+      </a>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="acc-nav-logout">
+          <span class="acc-nav-icon">↩️</span> Sign Out
+        </button>
+      </form>
+    </nav>
+  </aside>
+
+  {# ── MAIN ── #}
+  <main class="acc-main">
+    {% if messages %}
+    <div class="acc-messages">
+      {% for msg in messages %}
+      <div class="acc-msg acc-msg-{{ msg.tags }}">
+        {% if msg.tags == 'success' %}✓{% else %}⚠{% endif %}
+        {{ msg }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block account_content %}{% endblock %}
+  </main>
+
+</div>
+{% endblock %}
