@@ -1,4 +1,4 @@
-<nav>
+<nav class="main-nav">
   <div class="nav-inner">
     <div class="nav-logo">
       Dabelo <span>×</span> Motee
@@ -7,7 +7,7 @@
       <a href="{% url 'dabelo_home' %}">Dabelo Café</a>
       <a href="{% url 'montee_home' %}">Motee Cakes</a>
       <a href="{% url 'our_story' %}">Our Story</a>
-      <a href="#" class="nav-cta">Order Now</a>
+      <a href="{% url 'shop' %}" class="nav-cta">Shop now</a>
     </div>
 
     <button id="hamburger-btn"
@@ -24,6 +24,6 @@
     <a href="{% url 'dabelo_home' %}">Dabelo Café</a>
     <a href="{% url 'dabelo_home' %}">Motee Cakes</a>
     <a href="{% url 'our_story' %}">Our Story</a>
-    <a href="#" class="mobile-cta">Order Now</a>
+    <a href="{% url 'shop' %}" class="mobile-cta">Shop Now</a>
   </div>
 </nav>
