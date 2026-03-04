@@ -1,0 +1,56 @@
+{% extends "accounts/base.html" %}
+{% block title %}Quote Requests{% endblock %}
+{% block account_content %}
+
+<div class="acc-page-title">Quote Requests</div>
+<p class="acc-page-sub">Track your custom order requests and their status.</p>
+
+{% if quotes %}
+<div class="acc-card" style="padding: 0; overflow: hidden">
+  <table style="width:100%; border-collapse: collapse">
+    <thead>
+      <tr style="background:#FAF8F4; border-bottom: 1px solid #E8E0D0">
+        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Product</th>
+        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Occasion</th>
+        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Date</th>
+        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for quote in quotes %}
+      <tr style="border-bottom: 1px solid #E8E0D0" class="hover:bg-warm transition-colors">
+        <td class="p-4">
+          <div class="font-semibold text-sm text-ink">
+            {{ quote.product.name|default:"General Enquiry" }}
+          </div>
+          <div class="text-xs text-warm-gray mt-0.5 max-w-xs truncate">
+            {{ quote.description|truncatechars:60 }}
+          </div>
+        </td>
+        <td class="p-4 text-sm text-warm-gray">{{ quote.occasion|default:"—" }}</td>
+        <td class="p-4 text-sm text-warm-gray">{{ quote.created_at|date:"M d, Y" }}</td>
+        <td class="p-4">
+          <span class="acc-status acc-quote-{{ quote.status }}">
+            {{ quote.get_status_display }}
+          </span>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="acc-card">
+  <div class="acc-empty">
+    <div class="acc-empty-icon">✉️</div>
+    <div class="acc-empty-title">No quote requests yet</div>
+    <div class="acc-empty-body">
+      Request a custom cake or order from Motee Cakes and track it right here.
+    </div>
+    <a href="{% url 'shop_montee' %}" class="acc-empty-cta" style="background:#563772">
+      Browse Motee Cakes
+    </a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
