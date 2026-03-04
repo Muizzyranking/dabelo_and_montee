@@ -1,0 +1,54 @@
+{% extends "accounts/base.html" %}
+{% block title %}My Orders{% endblock %}
+{% block account_content %}
+
+<div class="acc-page-title">Your Orders</div>
+<p class="acc-page-sub">{{ orders.count }} order{{ orders.count|pluralize }} total</p>
+
+{% if orders %}
+<div class="acc-card" style="padding: 0; overflow: hidden">
+  <table style="width:100%; border-collapse: collapse">
+    <thead>
+      <tr style="background:#FAF8F4; border-bottom: 1px solid #E8E0D0">
+        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Order</th>
+        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Date</th>
+        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Status</th>
+        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Total</th>
+        <th class="p-4"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr style="border-bottom: 1px solid #E8E0D0" class="hover:bg-warm transition-colors">
+        <td class="p-4 font-semibold text-sm text-ink">{{ order.order_number }}</td>
+        <td class="p-4 text-sm text-warm-gray">{{ order.created_at|date:"M d, Y" }}</td>
+        <td class="p-4">
+          <span class="acc-status acc-status-{{ order.status }}">
+            {{ order.get_status_display }}
+          </span>
+        </td>
+        <td class="p-4 font-dabelo-display font-semibold text-ink">
+          ₦{{ order.total|floatformat:"0" }}
+        </td>
+        <td class="p-4">
+          <a href="{% url 'account_order_detail' order.order_number %}"
+             class="text-xs font-semibold tracking-widest uppercase text-dabelo-green hover:text-dabelo-green-mid transition-colors">
+            View →
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="acc-card">
+  <div class="acc-empty">
+    <div class="acc-empty-icon">📦</div>
+    <div class="acc-empty-title">No orders yet</div>
+    <div class="acc-empty-body">Once you place an order it'll show up here with full tracking.</div>
+    <a href="{% url 'shop' %}" class="acc-empty-cta">Start Shopping</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
