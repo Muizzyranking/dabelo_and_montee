@@ -202,11 +202,38 @@ def shop_montee(request):
     }
     request = set_brand(request, "montee")
     return render(request, "shop/brand.html", context)
+
+
+def shop_category(request, slug):
+    category = get_object_or_404(Category, slug=slug, is_active=True)
+
+    qs = _base_queryset().filter(category=category)
+    qs, q, category_slug, sort, in_stock = _apply_filters(qs, request)
+
+    page_obj, total_count = _paginate(qs, request)
+    sibling_categories = Category.objects.filter(
+        is_active=True, brand=category.brand
+    ).order_by("order", "name")
+
+    context = {
+        "products": page_obj,
+        "page_obj": page_obj,
+        "paginator": page_obj.paginator,
+        "categories": sibling_categories,
+        "current_category": category,
+        "q": q,
+        "category_slug": category.slug,
+        "sort": sort,
+        "in_stock": in_stock,
+        "shop_mode": category.brand,
+        "page_title": category.name,
+        "page_subtitle": category.description
+        or f"Browse our {category.name} collection.",
         "result_count": total_count,
         "query_string": _query_string(request),
     }
-    request = set_brand(request, "montee")
-    return render(request, "shop/montee.html", context)
+    return render(request, "shop/category.html", context)
+
 
 def product_detail(request, slug):
     product = get_object_or_404(
