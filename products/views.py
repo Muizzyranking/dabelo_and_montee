@@ -11,6 +11,10 @@ from django.views.decorators.http import require_POST
 from core.utils import set_brand
 
 from .models import BrandChoices, Category, CustomOrderRequest, Product
+
+PRODUCTS_PER_PAGE = 3
+
+
 def _base_queryset():
     return (
         Product.objects.filter(is_active=True)
