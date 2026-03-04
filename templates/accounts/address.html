@@ -1,0 +1,41 @@
+{% extends "accounts/base.html" %}
+{% block title %}My Address{% endblock %}
+{% block account_content %}
+
+<div class="acc-page-title">Delivery Address</div>
+<p class="acc-page-sub">Your default address will pre-fill at checkout.</p>
+
+<form method="post" action="{% url 'account_address' %}">
+  {% csrf_token %}
+  <div class="acc-card">
+    <div class="acc-card-title">Saved Address</div>
+    <div class="acc-field">
+      <label class="acc-label" for="address_line_1">Address Line 1</label>
+      <input type="text" id="address_line_1" name="address_line_1"
+             class="acc-input" placeholder="Street address, flat/house number"
+             value="{{ request.user.address_line_1 }}"/>
+    </div>
+    <div class="acc-field">
+      <label class="acc-label" for="address_line_2">Address Line 2 <span class="text-warm-gray normal-case" style="font-size:0.7rem">(optional)</span></label>
+      <input type="text" id="address_line_2" name="address_line_2"
+             class="acc-input" placeholder="Estate, landmark, additional info"
+             value="{{ request.user.address_line_2 }}"/>
+    </div>
+    <div class="acc-grid-2">
+      <div class="acc-field">
+        <label class="acc-label" for="city">City / LGA</label>
+        <input type="text" id="city" name="city"
+               class="acc-input" placeholder="e.g. Ikeja"
+               value="{{ request.user.city }}"/>
+      </div>
+      <div class="acc-field">
+        <label class="acc-label" for="state">State</label>
+        <input type="text" id="state" name="state"
+               class="acc-input" placeholder="e.g. Lagos"
+               value="{{ request.user.state }}"/>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="acc-submit">Save Address</button>
+</form>
+{% endblock %}
