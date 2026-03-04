@@ -201,3 +201,71 @@ def shop_montee(request):
     }
     request = set_brand(request, "montee")
     return render(request, "shop/montee.html", context)
+
+def product_detail(request, slug):
+    product = get_object_or_404(
+        Product.objects.filter(is_active=True)
+        .prefetch_related("images", "variations", "attributes")
+        .select_related("category"),
+        slug=slug,
+    )
+
+    # Related — same category, exclude self, max 4
+    related = []
+    if product.category:
+        related = (
+            Product.objects.filter(is_active=True, category=product.category)
+            .exclude(pk=product.pk)
+            .prefetch_related("images")
+            .order_by("-is_featured", "-created_at")[:4]
+        )
+
+    # Variation data for JS
+    variations_data = [
+        {
+            "id": str(v.id),
+            "name": v.name,
+            "price": float(v.price) if v.price else None,
+            "in_stock": v.in_stock,
+            "image": v.image.url if v.image else None,
+        }
+        for v in product.variations.all()
+    ]
+
+    breadcrumbs: list[dict[str, Any]] = [{"label": "Shop", "url": "/shop/"}]
+    if product.brand == BrandChoices.DABELO:
+        breadcrumbs.append({"label": "Dabelo Café", "url": "/shop/dabelo/"})
+    else:
+        breadcrumbs.append({"label": "Motee Cakes", "url": "/shop/montee/"})
+    if product.category:
+        breadcrumbs.append(
+            {
+                "label": product.category.name,
+                "url": f"/shop/category/{product.category.slug}/",
+            }
+        )
+    breadcrumbs.append({"label": product.name, "url": None})
+
+    base_template = (
+        "dabelo/base.html"
+        if product.brand == BrandChoices.DABELO
+        else "montee/base.html"
+    )
+
+    context = {
+        "product": product,
+        "images": product.images.all().order_by("order", "-is_primary"),
+        "variations": product.variations.all(),
+        "variations_data": variations_data,
+        "attributes": product.attributes.all(),
+        "related": related,
+        "breadcrumbs": breadcrumbs,
+        "base_template": base_template,
+        "brand": product.brand,
+    }
+    if product.brand == BrandChoices.DABELO:
+        request = set_brand(request, "dabelo")
+    else:
+        request = set_brand(request, "montee")
+    return render(request, "shop/product_detail.html", context)
+
