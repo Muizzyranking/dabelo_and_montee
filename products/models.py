@@ -221,3 +221,91 @@ class CustomOrderRequest(models.Model):
             f"Quote request from {self.name} ({self.email}) — {self.created_at.date()}"
         )
 
+
+class Order(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        CONFIRMED = "confirmed", "Confirmed"
+        PROCESSING = "processing", "Processing"
+        DELIVERED = "delivered", "Delivered"
+        CANCELLED = "cancelled", "Cancelled"
+
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="orders"
+    )
+    order_number = models.CharField(max_length=20, unique=True, editable=False)
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.PENDING
+    )
+
+    # Delivery address snapshot
+    delivery_name = models.CharField(max_length=200)
+    delivery_phone = models.CharField(max_length=20)
+    delivery_address = models.TextField()
+    delivery_city = models.CharField(max_length=100)
+    delivery_state = models.CharField(max_length=100)
+
+    # Payment
+    paystack_ref = models.CharField(max_length=100, blank=True)
+    is_paid = models.BooleanField(default=False)
+    paid_at = models.DateTimeField(null=True, blank=True)
+
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2)
+    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total = models.DecimalField(max_digits=12, decimal_places=2)
+
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.order_number
+
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            self.order_number = self._generate_order_number()
+        super().save(*args, **kwargs)
+
+    def _generate_order_number(self):
+        """
+        Determine prefix from the brands in the cart items.
+        Falls back to ORD if mixed or unknown.
+        """
+        import random
+        import string
+
+        suffix = "".join(random.choices(string.digits, k=5))
+        return f"ORD-{suffix}"
+
+    @property
+    def status_color(self):
+        return {
+            "pending": "yellow",
+            "confirmed": "blue",
+            "processing": "purple",
+            "delivered": "green",
+            "cancelled": "red",
+        }.get(self.status, "gray")
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True)
+    variation = models.ForeignKey(
+        "ProductVariation", on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    # Snapshots — accurate history even if product changes later
+    product_name = models.CharField(max_length=200)
+    variation_name = models.CharField(max_length=100, blank=True)
+    product_brand = models.CharField(max_length=20, blank=True)  # dabelo | montee
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField(default=1)
+    line_total = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.order.order_number} — {self.product_name}"
