@@ -1,0 +1,180 @@
+{% extends "joint/base.html" %}
+{% load static %}
+{% block title %}
+  {{ page_title }} —
+  {% if shop_mode == 'dabelo' %}
+    Dabelo Café
+  {% else %}
+    Motee Cakes
+  {% endif %}
+{% endblock %}
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/shop.css' %}">
+{% endblock %}
+{% block content %}
+  <div class="shop-{{ shop_mode }}">
+    <!-- ═══════ HERO ═══════ -->
+    <section class="shop-hero">
+      <div class="shop-hero-wm">{{ page_title }}</div>
+      <div class="shop-hero-glow-a"></div>
+      <div class="shop-hero-inner">
+        <!-- Breadcrumb -->
+        <div style="display:flex;
+                    align-items:center;
+                    gap:8px;
+                    font-size:0.72rem;
+                    color:rgba(255,255,255,0.35);
+                    letter-spacing:0.08em;
+                    margin-bottom:20px">
+          <a href="{% url 'shop' %}"
+             style="color:rgba(255,255,255,0.35);
+                    text-decoration:none;
+                    transition:color 0.2s"
+             onmouseover="this.style.color='rgba(255,255,255,0.7)'"
+             onmouseout="this.style.color='rgba(255,255,255,0.35)'">Shop</a>
+          <span>›</span>
+          {% if shop_mode == 'dabelo' %}
+            <a href="{% url 'shop_dabelo' %}"
+               style="color:rgba(255,255,255,0.35);
+                      text-decoration:none;
+                      transition:color 0.2s"
+               onmouseover="this.style.color='rgba(255,255,255,0.7)'"
+               onmouseout="this.style.color='rgba(255,255,255,0.35)'">Dabelo Café</a>
+          {% else %}
+            <a href="{% url 'shop_montee' %}"
+               style="color:rgba(255,255,255,0.35);
+                      text-decoration:none;
+                      transition:color 0.2s"
+               onmouseover="this.style.color='rgba(255,255,255,0.7)'"
+               onmouseout="this.style.color='rgba(255,255,255,0.35)'">Motee Cakes</a>
+          {% endif %}
+          <span>›</span>
+          <span style="color:rgba(255,255,255,0.7)">{{ page_title }}</span>
+        </div>
+        <div class="shop-hero-eyebrow">
+          {% if shop_mode == 'dabelo' %}
+            Dabelo Café
+          {% else %}
+            Motee Cakes
+          {% endif %}
+        </div>
+        <h1 class="shop-hero-title">
+          <em>{{ page_title }}</em>
+        </h1>
+        <p class="shop-hero-sub">{{ page_subtitle }}</p>
+      </div>
+      <div class="shop-wave">
+        <svg viewBox="0 0 1440 48"
+             preserveAspectRatio="none"
+             style="fill:#FAF8F4;
+                    height:40px">
+          <path d="M0,48 L1440,0 L1440,48 Z" />
+        </svg>
+      </div>
+    </section>
+    <!-- ═══════ BODY ═══════ -->
+    <div class="shop-body">
+      <form method="get"
+            action="{% url 'shop_category' current_category.slug %}"
+            id="shop-form">
+        <div class="shop-layout">
+          <aside class="shop-sidebar">
+            <button type="button" class="shop-sidebar-mobile-toggle" id="sidebar-toggle">
+              <span>Filters & Search</span><span class="toggle-arrow">▼</span>
+            </button>
+            <div class="shop-sidebar-card shop-sidebar-collapsible" id="sidebar-body">
+              <div class="shop-sidebar-section">
+                <div class="shop-sidebar-heading">Search</div>
+                <div class="shop-search-wrap">
+                  <span class="shop-search-icon">🔍</span>
+                  <input type="text"
+                         name="q"
+                         value="{{ q }}"
+                         placeholder="Search…"
+                         class="shop-search-input" />
+                </div>
+              </div>
+              {% if categories %}
+                <div class="shop-sidebar-section">
+                  <div class="shop-sidebar-heading">Other Categories</div>
+                  <ul class="shop-cat-list">
+                    {% for cat in categories %}
+                      <li class="shop-cat-item {% if cat.slug == current_category.slug %}active{% endif %}">
+                        <a href="{% url 'shop_category' cat.slug %}">
+                          {{ cat.name }}<span class="shop-cat-count">{{ cat.products.count }}</span>
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+              <div class="shop-sidebar-section">
+                <div class="shop-sidebar-heading">Sort By</div>
+                <select name="sort" class="shop-sort-select" onchange="this.form.submit()">
+                  <option value="newest"     {% if sort == 'newest' %}selected{% endif %}>Newest First</option>
+                  <option value="featured"   {% if sort == 'featured' %}selected{% endif %}>Featured</option>
+                  <option value="price_asc"  {% if sort == 'price_asc' %}selected{% endif %}>Price: Low → High</option>
+                  <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High → Low</option>
+                </select>
+              </div>
+              <div class="shop-sidebar-section">
+                <div class="shop-sidebar-heading">Availability</div>
+                <label class="shop-stock-toggle">
+                  <div class="shop-stock-switch {% if in_stock == '1' %}on{% endif %}"
+                       id="stock-switch"></div>
+                  <span>In Stock Only</span>
+                  <input type="hidden"
+                         name="in_stock"
+                         value="{{ in_stock }}"
+                         id="in-stock-val" />
+                </label>
+              </div>
+              {% if q or in_stock %}
+                <div class="shop-sidebar-section">
+                  <a href="{% url 'shop_category' current_category.slug %}"
+                     class="shop-clear-filters">✕ Clear filters</a>
+                </div>
+              {% endif %}
+            </div>
+          </aside>
+          <main class="shop-main">
+            <div class="shop-toolbar">
+              <div class="shop-result-info">
+                <strong>{{ result_count }}</strong> product{{ result_count|pluralize }}
+                {% if q %}for "<strong>{{ q }}</strong>"{% endif %}
+                in <strong>{{ page_title }}</strong>
+              </div>
+            </div>
+            {% if q or in_stock == '1' %}
+              <div class="shop-active-chips">
+                {% if q %}
+                  <span class="shop-chip">Search: {{ q }} <a href="{% url 'shop_category' current_category.slug %}?sort={{ sort }}"
+    class="shop-chip-remove">✕</a></span>
+                {% endif %}
+                {% if in_stock == '1' %}
+                  <span class="shop-chip">In Stock <a href="{% url 'shop_category' current_category.slug %}?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}"
+    class="shop-chip-remove">✕</a></span>
+                {% endif %}
+              </div>
+            {% endif %}
+            <div class="shop-grid">
+              {% for product in products %}
+                {% include "shop/_product_card.html" %}
+              {% empty %}
+                <div class="shop-empty">
+                  <div class="shop-empty-icon">📦</div>
+                  <div class="shop-empty-title">Nothing in this category yet</div>
+                  <div class="shop-empty-body">Check back soon — we're always adding new products.</div>
+                  <a href="{% url 'shop' %}" class="shop-empty-reset">Browse All Products</a>
+                </div>
+              {% endfor %}
+            </div>
+          </main>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_js %}
+  <script src="{% static 'js/shop.js' %}"></script>
+{% endblock %}
