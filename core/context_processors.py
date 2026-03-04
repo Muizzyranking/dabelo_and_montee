@@ -49,9 +49,7 @@ def navbar_config(request):
                 "menu_items": [
                     {"label": "Home", "url": "montee_home"},
                     {"label": "About", "url": "montee_about"},
-                    {"label": "Our Cakes", "url": "#"},
-                    {"label": "Shop", "url": "#"},
-                    {"label": "Custom Order", "url": "#"},
+                    {"label": "Shop", "url": "shop_montee"},
                 ],
                 "cta_label": "Order Now",
                 "switch_label": "🥤 Dabelo Drinks",
@@ -65,8 +63,7 @@ def navbar_config(request):
             "menu_items": [
                 {"label": "Home", "url": "dabelo_home"},
                 {"label": "About", "url": "dabelo_about"},
-                {"label": "Menu", "url": "#"},
-                {"label": "Shop", "url": "#"},
+                {"label": "Shop", "url": "shop_dabelo"},
             ],
             "cta_label": "Order Now",
             "switch_label": "🎂 Motee Cakes",
