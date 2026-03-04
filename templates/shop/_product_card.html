@@ -1,0 +1,77 @@
+{# templates/shop/_product_card.html — included from all shop pages #}
+{% load static %}
+{% with img=product.primary_image %}
+<a href="/shop/product/{{product.slug}}/"
+   class="shop-card reveal"
+   data-brand="{{ product.brand }}">
+
+  <div class="shop-card-img-wrap">
+    {% if img %}
+      <img src="{{ img.image.url }}"
+           alt="{{ img.alt_text|default:product.name }}"
+           class="shop-card-img" loading="lazy"/>
+    {% else %}
+      <img src="https://images.unsplash.com/photo-1615485020307-f8e1bdb06e3b?w=600&q=80"
+           alt="{{ product.name }}"
+           class="shop-card-img" loading="lazy"/>
+    {% endif %}
+    <div class="shop-card-img-overlay"></div>
+
+    <div class="shop-card-badges">
+      {% if product.is_featured %}
+        <span class="shop-badge shop-badge-featured">Featured</span>
+      {% endif %}
+      {% if shop_mode == "joint" %}
+        {% if product.brand == "dabelo" %}
+          <span class="shop-badge shop-badge-dabelo">Dabelo Café</span>
+        {% else %}
+          <span class="shop-badge shop-badge-montee">Motee Cakes</span>
+        {% endif %}
+      {% endif %}
+      {% if product.is_quote_only %}
+        <span class="shop-badge shop-badge-quote">Get a Quote</span>
+      {% endif %}
+      {% if not product.in_stock %}
+        <span class="shop-badge shop-badge-out">Out of Stock</span>
+      {% endif %}
+    </div>
+
+    {% if not product.in_stock %}
+      <div class="shop-card-oos-overlay"></div>
+    {% endif %}
+  </div>
+
+  <div class="shop-card-body">
+    {% if product.category %}
+      <div class="shop-card-category">{{ product.category.name }}</div>
+    {% endif %}
+    <div class="shop-card-name">{{ product.name }}</div>
+    {% if product.short_description %}
+      <div class="shop-card-desc">{{ product.short_description }}</div>
+    {% endif %}
+
+    <div class="shop-card-footer">
+      <div class="shop-card-price">
+        {% if product.is_quote_only %}
+          <span class="price-tbd">Price on request</span>
+        {% elif product.display_price %}
+          {% if product.product_type == "variable" %}
+            <span class="price-from">From</span>
+          {% endif %}
+          ₦{{ product.display_price|floatformat:"0" }}
+        {% else %}
+          <span class="price-tbd">—</span>
+        {% endif %}
+      </div>
+      {% if not product.in_stock %}
+        <span class="shop-card-cta shop-card-cta-oos">Out of Stock</span>
+      {% elif product.is_quote_only %}
+        <span class="shop-card-cta shop-card-cta-quote">Get a Quote</span>
+      {% else %}
+        <span class="shop-card-cta shop-card-cta-buy">View →</span>
+      {% endif %}
+    </div>
+  </div>
+
+</a>
+{% endwith %}

@@ -1,0 +1,163 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}Shop — {{ page_title }}{% endblock %}
+
+{% block meta_description %}
+  Shop from {{ page_title }}, Lagos.
+{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/shop.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="{{ brand_class }}">
+
+  <!-- ═══════ HERO ═══════ -->
+  <section class="shop-hero">
+    {% if brand_class == "shop-dabelo" %}
+      <div class="absolute inset-0 stripe-bg opacity-70 pointer-events-none"></div>
+    {% endif %}
+    <div class="shop-hero-wm">{{ watermark }}</div>
+    <div class="shop-hero-glow-a"></div>
+    <div class="shop-hero-inner">
+      <div class="shop-hero-eyebrow">{{ hero_eyebrow }}</div>
+      <h1 class="shop-hero-title">{{ hero_title|safe }}</h1>
+      <p class="shop-hero-sub">{{ page_subtitle }}</p>
+      <div class="shop-brand-nav">
+        <a href="{{ back_url }}" class="shop-brand-pill shop-brand-pill-ghost">{{ back_label }}</a>
+        <a href="{% url 'shop' %}" class="shop-brand-pill shop-brand-pill-ghost">All Brands</a>
+        <a href="{{ cross_brand_url }}" class="shop-brand-pill shop-brand-pill-ghost">{{ cross_brand_label }}</a>
+      </div>
+    </div>
+    <div class="shop-wave">
+      <svg viewBox="0 0 1440 48" preserveAspectRatio="none" style="fill:#FAF8F4;height:40px">
+        <path d="M0,48 L1440,0 L1440,48 Z" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- ═══════ BODY ═══════ -->
+  <div class="shop-body">
+    <form method="get" action="{{ action_url }}" id="shop-form">
+      <div class="shop-layout">
+
+        <aside class="shop-sidebar">
+          <button type="button" class="shop-sidebar-mobile-toggle" id="sidebar-toggle">
+            <span>Filters & Search</span><span class="toggle-arrow">▼</span>
+          </button>
+          <div class="shop-sidebar-card shop-sidebar-collapsible" id="sidebar-body">
+
+            <div class="shop-sidebar-section">
+              <div class="shop-sidebar-heading">Search</div>
+              <div class="shop-search-wrap">
+                <span class="shop-search-icon">🔍</span>
+                <input type="text" name="q" value="{{ q }}"
+                       placeholder="{{ search_placeholder }}"
+                       class="shop-search-input" />
+              </div>
+            </div>
+
+            {% if categories %}
+              <div class="shop-sidebar-section">
+                <div class="shop-sidebar-heading">Categories</div>
+                <ul class="shop-cat-list">
+                  <li class="shop-cat-item {% if not category_slug %}active{% endif %}">
+                    <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}">All Categories</a>
+                  </li>
+                  {% for cat in categories %}
+                    <li class="shop-cat-item {% if category_slug == cat.slug %}active{% endif %}">
+                      <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}&category={{ cat.slug }}">
+                        {{ cat.name }}<span class="shop-cat-count">{{ cat.products.count }}</span>
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            <div class="shop-sidebar-section">
+              <div class="shop-sidebar-heading">Sort By</div>
+              <select name="sort" class="shop-sort-select" onchange="this.form.submit()">
+                <option value="newest"     {% if sort == 'newest' %}selected{% endif %}>Newest First</option>
+                <option value="featured"   {% if sort == 'featured' %}selected{% endif %}>Featured</option>
+                <option value="price_asc"  {% if sort == 'price_asc' %}selected{% endif %}>Price: Low → High</option>
+                <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High → Low</option>
+              </select>
+            </div>
+
+            <div class="shop-sidebar-section">
+              <div class="shop-sidebar-heading">Availability</div>
+              <label class="shop-stock-toggle">
+                <div class="shop-stock-switch {% if in_stock == '1' %}on{% endif %}" id="stock-switch"></div>
+                <span>{{ stock_label }}</span>
+                <input type="hidden" name="in_stock" value="{{ in_stock }}" id="in-stock-val" />
+              </label>
+            </div>
+
+            {% if q or category_slug or in_stock %}
+              <div class="shop-sidebar-section">
+                <a href="{{ clear_url }}" class="shop-clear-filters">✕ Clear filters</a>
+              </div>
+            {% endif %}
+
+          </div>
+        </aside>
+
+        <main class="shop-main">
+          <div class="shop-toolbar">
+            <div class="shop-result-info">
+              <strong>{{ result_count }}</strong> {{ result_label }}{{ result_count|pluralize }}
+              {% if q %}matching "<strong>{{ q }}</strong>"{% endif %}
+            </div>
+          </div>
+
+          {% if q or category_slug or in_stock == '1' %}
+            <div class="shop-active-chips">
+              {% if q %}
+                <span class="shop-chip">Search: {{ q }}
+                  <a href="?sort={{ sort }}{% if category_slug %}&category={{ category_slug }}{% endif %}" class="shop-chip-remove">✕</a>
+                </span>
+              {% endif %}
+              {% if category_slug %}
+                <span class="shop-chip">{{ category_slug }}
+                  <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}" class="shop-chip-remove">✕</a>
+                </span>
+              {% endif %}
+              {% if in_stock == '1' %}
+                <span class="shop-chip">{{ available_chip_label }}
+                  <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}{% if category_slug %}&category={{ category_slug }}{% endif %}" class="shop-chip-remove">✕</a>
+                </span>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <div class="shop-grid">
+            {% for product in products %}
+              {% include "shop/_product_card.html" %}
+            {% empty %}
+              <div class="shop-empty">
+                <div class="shop-empty-icon">{{ empty_icon }}</div>
+                <div class="shop-empty-title">{{ empty_title }}</div>
+                <div class="shop-empty-body">{{ empty_body }}</div>
+                <a href="{{ clear_url }}" class="shop-empty-reset">Clear Filters</a>
+              </div>
+            {% endfor %}
+          </div>
+        </main>
+
+      </div>
+    </form>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+      <div class="shop-paginator-wrapper">{% include "shop/_paginator.html" %}</div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/shop.js' %}"> </script>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends "joint/base.html" %}
+{% load static %}
+{% block title %}The Shop — Dabelo & Motee{% endblock %}
+{% block meta_description %}
+  Browse all products from Dabelo Café and Motee Cakes — juices, salads, cakes, and more.
+{% endblock %}
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/shop.css' %}">
+{% endblock %}
+{% block content %}
+  <div class="shop-joint">
+    <!-- ═══════ HERO ═══════ -->
+    <section class="shop-hero">
+      <div class="shop-hero-wm">Shop</div>
+      <div class="shop-hero-glow-a"></div>
+      <div class="shop-hero-inner">
+        <div class="shop-hero-eyebrow">Dabelo & Motee</div>
+        <h1 class="shop-hero-title">
+          The <em>Shop</em>
+        </h1>
+        <p class="shop-hero-sub">{{ page_subtitle }}</p>
+        <div class="shop-brand-nav">
+          <a href="{% url 'shop' %}"
+             class="shop-brand-pill {% if not brand_filter %}shop-brand-pill-active{% else %}shop-brand-pill-ghost{% endif %}">All Products</a>
+          <a href="{% url 'shop' %}?brand=dabelo{% if q %}&q={{ q }}{% endif %}"
+             class="shop-brand-pill {% if brand_filter == 'dabelo' %}shop-brand-pill-active{% else %}shop-brand-pill-ghost{% endif %}">🌿 Dabelo Café</a>
+          <a href="{% url 'shop' %}?brand=montee{% if q %}&q={{ q }}{% endif %}"
+             class="shop-brand-pill {% if brand_filter == 'montee' %}shop-brand-pill-active{% else %}shop-brand-pill-ghost{% endif %}">🎂 Motee Cakes</a>
+        </div>
+      </div>
+      <div class="shop-wave">
+        <svg viewBox="0 0 1440 48"
+             preserveAspectRatio="none"
+             style="fill:#FAF8F4;
+                    height:40px">
+          <path d="M0,48 L1440,0 L1440,48 Z" />
+        </svg>
+      </div>
+    </section>
+    <!-- ═══════ BODY ═══════ -->
+    <div class="shop-body">
+      <form method="get" action="{% url 'shop' %}" id="shop-form">
+        {% if brand_filter %}<input type="hidden" name="brand" value="{{ brand_filter }}">{% endif %}
+        <div class="shop-layout">
+          <!-- SIDEBAR -->
+          <aside class="shop-sidebar">
+            <!-- Mobile toggle -->
+            <button type="button" class="shop-sidebar-mobile-toggle" id="sidebar-toggle">
+              <span>Filters & Search</span>
+              <span class="toggle-arrow">▼</span>
+            </button>
+            <div class="shop-sidebar-card shop-sidebar-collapsible" id="sidebar-body">
+              <!-- Search -->
+              <div class="shop-sidebar-section">
+                <div class="shop-sidebar-heading">Search</div>
+                <div class="shop-search-wrap">
+                  <span class="shop-search-icon">🔍</span>
+                  <input type="text"
+                         name="q"
+                         value="{{ q }}"
+                         placeholder="Search products…"
+                         class="shop-search-input"
+                         autocomplete="off" />
+                </div>
+              </div>
+              <!-- Brand Filter -->
+              <div class="shop-sidebar-section">
+                <div class="shop-sidebar-heading">Brand</div>
+                <div class="shop-brand-list">
+                  <label class="shop-brand-radio {% if not brand_filter %}selected{% endif %}">
+                    <input type="radio"
+                           name="brand"
+                           value=""
+                           {% if not brand_filter %}checked{% endif %}
+                           onchange="this.form.submit()" />
+                    <span class="shop-brand-dot"></span>
+                    All Brands
+                    <span class="shop-brand-badge shop-brand-badge-all">Both</span>
+                  </label>
+                  <label class="shop-brand-radio {% if brand_filter == 'dabelo' %}selected{% endif %}">
+                    <input type="radio"
+                           name="brand"
+                           value="dabelo"
+                           {% if brand_filter == 'dabelo' %}checked{% endif %}
+                           onchange="this.form.submit()" />
+                    <span class="shop-brand-dot"></span>
+                    Dabelo Café
+                    <span class="shop-brand-badge shop-brand-badge-d">Café</span>
+                  </label>
+                  <label class="shop-brand-radio {% if brand_filter == 'montee' %}selected{% endif %}">
+                    <input type="radio"
+                           name="brand"
+                           value="montee"
+                           {% if brand_filter == 'montee' %}checked{% endif %}
+                           onchange="this.form.submit()" />
+                    <span class="shop-brand-dot"></span>
+                    Motee Cakes
+                    <span class="shop-brand-badge shop-brand-badge-m">Cakes</span>
+                  </label>
+                </div>
+              </div>
+              <!-- Categories -->
+              {% if categories %}
+                <div class="shop-sidebar-section">
+                  <div class="shop-sidebar-heading">Categories</div>
+                  <ul class="shop-cat-list">
+                    <li class="shop-cat-item {% if not category_slug %}active{% endif %}">
+                      <a href="?{% if brand_filter %}brand={{ brand_filter }}&{% endif %}{% if q %}q={{ q }}&{% endif %}sort={{ sort }}">All Categories</a>
+                    </li>
+                    {% for cat in categories %}
+                      <li class="shop-cat-item {% if category_slug == cat.slug %}active{% endif %}">
+                        <a href="?{% if brand_filter %}brand={{ brand_filter }}&{% endif %}{% if q %}q={{ q }}&{% endif %}sort={{ sort }}&category={{ cat.slug }}">
+                          {{ cat.name }}
+                          <span class="shop-cat-count">{{ cat.products.count }}</span>
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+              <!-- Sort -->
+              <div class="shop-sidebar-section">
+                <div class="shop-sidebar-heading">Sort By</div>
+                <select name="sort" class="shop-sort-select" onchange="this.form.submit()">
+                  <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest First</option>
+                  <option value="featured" {% if sort == 'featured' %}selected{% endif %}>Featured</option>
+                  <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: Low → High</option>
+                  <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High → Low</option>
+                </select>
+              </div>
+              <!-- In stock -->
+              <div class="shop-sidebar-section">
+                <div class="shop-sidebar-heading">Availability</div>
+                <label class="shop-stock-toggle">
+                  <div class="shop-stock-switch {% if in_stock == '1' %}on{% endif %}"
+                       id="stock-switch"></div>
+                  <span>In Stock Only</span>
+                  <input type="hidden"
+                         name="in_stock"
+                         value="{{ in_stock }}"
+                         id="in-stock-val" />
+                </label>
+              </div>
+              {% if q or category_slug or brand_filter or in_stock %}
+                <div class="shop-sidebar-section">
+                  <a href="{% url 'shop' %}" class="shop-clear-filters">✕ Clear all filters</a>
+                </div>
+              {% endif %}
+            </div>
+          </aside>
+          <!-- MAIN -->
+          <main class="shop-main">
+            <!-- Toolbar -->
+            <div class="shop-toolbar">
+              <div class="shop-result-info">
+                <strong>{{ result_count }}</strong> product{{ result_count|pluralize }} found
+                {% if q %}for "<strong>{{ q }}</strong>"{% endif %}
+              </div>
+            </div>
+            <!-- Active filter chips -->
+            {% if q or category_slug or brand_filter or in_stock == '1' %}
+              <div class="shop-active-chips">
+                {% if q %}
+                  <span class="shop-chip">Search: {{ q }} <a href="?{% if brand_filter %}brand={{ brand_filter }}&{% endif %}sort={{ sort }}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if in_stock %}&in_stock={{ in_stock }}{% endif %}"
+    class="shop-chip-remove">✕</a></span>
+                {% endif %}
+                {% if category_slug %}
+                  <span class="shop-chip">{{ category_slug }} <a href="?{% if brand_filter %}brand={{ brand_filter }}&{% endif %}{% if q %}q={{ q }}&{% endif %}sort={{ sort }}{% if in_stock %}&in_stock={{ in_stock }}{% endif %}"
+    class="shop-chip-remove">✕</a></span>
+                {% endif %}
+                {% if brand_filter %}
+                  <span class="shop-chip">{{ brand_filter|capfirst }} <a href="?{% if q %}q={{ q }}&{% endif %}sort={{ sort }}{% if category_slug %}&category={{ category_slug }}{% endif %}{% if in_stock %}&in_stock={{ in_stock }}{% endif %}"
+    class="shop-chip-remove">✕</a></span>
+                {% endif %}
+                {% if in_stock == '1' %}
+                  <span class="shop-chip">In Stock <a href="?{% if brand_filter %}brand={{ brand_filter }}&{% endif %}{% if q %}q={{ q }}&{% endif %}sort={{ sort }}{% if category_slug %}&category={{ category_slug }}{% endif %}"
+    class="shop-chip-remove">✕</a></span>
+                {% endif %}
+              </div>
+            {% endif %}
+            <!-- Product Grid -->
+            <div class="shop-grid">
+              {% for product in products %}
+                {% include "shop/_product_card.html" %}
+              {% empty %}
+                <div class="shop-empty">
+                  <div class="shop-empty-icon">🔍</div>
+                  <div class="shop-empty-title">Nothing found</div>
+                  <div class="shop-empty-body">
+                    Try adjusting your filters or search terms.
+                    <br />
+                    We're always adding new products.
+                  </div>
+                  <a href="{% url 'shop' %}" class="shop-empty-reset">Clear Filters</a>
+                </div>
+              {% endfor %}
+            </div>
+          </main>
+        </div>
+      </form>
+      {% if page_obj.paginator.num_pages > 1 %}
+        <div class="shop-paginator-wrapper">{% include "shop/_paginator.html" %}</div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/shop.js' %}"> </script>
+{% endblock %}

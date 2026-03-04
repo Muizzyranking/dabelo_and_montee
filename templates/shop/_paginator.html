@@ -1,0 +1,46 @@
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="pag-wrap">
+  <div class="pag-info">
+    Showing <strong>{{ page_obj.start_index }}–{{ page_obj.end_index }}</strong>
+    of <strong>{{ result_count }}</strong> product{{ result_count|pluralize }}
+  </div>
+
+  <div class="pag-controls">
+    {% if page_obj.has_previous %}
+      <a href="{{ query_string }}page={{ page_obj.previous_page_number }}" class="pag-btn">← Prev</a>
+    {% else %}
+      <span class="pag-btn pag-btn--off">← Prev</span>
+    {% endif %}
+
+    <div class="pag-nums">
+      {% with cur=page_obj.number total=page_obj.paginator.num_pages %}
+        {% if cur > 3 %}
+          <a href="{{ query_string }}page=1" class="pag-num">1</a>
+          {% if cur > 4 %}<span class="pag-dot">…</span>{% endif %}
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+          {% if i >= cur|add:"-2" and i <= cur|add:"2" %}
+            {% if i == cur %}
+              <span class="pag-num pag-num--cur">{{ i }}</span>
+            {% else %}
+              <a href="{{ query_string }}page={{ i }}" class="pag-num">{{ i }}</a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% if cur < total|add:"-2" %}
+          {% if cur < total|add:"-3" %}<span class="pag-dot">…</span>{% endif %}
+          <a href="{{ query_string }}page={{ total }}" class="pag-num">{{ total }}</a>
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    {% if page_obj.has_next %}
+      <a href="{{ query_string }}page={{ page_obj.next_page_number }}" class="pag-btn">Next →</a>
+    {% else %}
+      <span class="pag-btn pag-btn--off">Next →</span>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
