@@ -111,12 +111,10 @@ def shop_joint(request):
 def shop_dabelo(request):
     qs = _base_queryset().filter(brand=BrandChoices.DABELO)
     qs, q, category_slug, sort, in_stock = _apply_filters(qs, request)
-
     page_obj, total_count = _paginate(qs, request)
     categories = Category.objects.filter(
         is_active=True, brand=BrandChoices.DABELO
     ).order_by("order", "name")
-
     context = {
         "products": page_obj,
         "page_obj": page_obj,
@@ -126,26 +124,42 @@ def shop_dabelo(request):
         "category_slug": category_slug,
         "sort": sort,
         "in_stock": in_stock,
-        "shop_mode": "dabelo",
-        "page_title": "Dabelo Café",
-        "page_subtitle": "Cold-pressed juices, fresh bowls & healthy meal prep.",
         "result_count": total_count,
         "query_string": _query_string(request),
+        # — template wiring —
+        "base_template": "dabelo/base.html",
+        "brand_class": "shop-dabelo",
+        "action_url": reverse("shop_dabelo"),
+        "clear_url": reverse("shop_dabelo"),
+        "back_url": reverse("dabelo_home"),
+        "cross_brand_url": reverse("shop_montee"),
+        # — copy —
+        "page_title": "Dabelo Café",
+        "page_subtitle": "Cold-pressed juices, fresh bowls & healthy meal prep.",
         "watermark": "Dabelo",
+        "hero_eyebrow": "Dabelo Café · Lagos",
+        "hero_title": "Fresh. <em>Natural.</em> Delivered.",
+        "back_label": "← Back to Dabelo",
+        "cross_brand_label": "🎂 Montee Cakes",
+        "search_placeholder": "Search Dabelo products…",
+        "result_label": "product",
+        "stock_label": "In Stock Only",
+        "available_chip_label": "In Stock",
+        "empty_icon": "🌿",
+        "empty_title": "Nothing fresh here yet",
+        "empty_body": "Try different filters or check back soon — new products are added daily.",
     }
     request = set_brand(request, "dabelo")
-    return render(request, "shop/dabelo.html", context)
+    return render(request, "shop/brand.html", context)
 
 
 def shop_montee(request):
     qs = _base_queryset().filter(brand=BrandChoices.MONTEE)
     qs, q, category_slug, sort, in_stock = _apply_filters(qs, request)
-
     page_obj, total_count = _paginate(qs, request)
     categories = Category.objects.filter(
         is_active=True, brand=BrandChoices.MONTEE
     ).order_by("order", "name")
-
     context = {
         "products": page_obj,
         "page_obj": page_obj,
@@ -155,9 +169,33 @@ def shop_montee(request):
         "category_slug": category_slug,
         "sort": sort,
         "in_stock": in_stock,
-        "shop_mode": "montee",
+        "result_count": total_count,
+        "query_string": _query_string(request),
+        # — template wiring —
+        "base_template": "montee/base.html",
+        "brand_class": "shop-montee",
+        "action_url": reverse("shop_montee"),
+        "clear_url": reverse("shop_montee"),
+        "back_url": reverse("montee_home"),
+        "cross_brand_url": reverse("shop_dabelo"),
+        # — copy —
         "page_title": "Motee Cakes",
         "page_subtitle": "Bespoke handcrafted cakes for every celebration.",
+        "watermark": "Motee",
+        "hero_eyebrow": "Motee Cakes · Lagos",
+        "hero_title": "Cakes Made <em>Unforgettable.</em>",
+        "back_label": "← Back to Motee",
+        "cross_brand_label": "🌿 Dabelo Café",
+        "search_placeholder": "Search cakes…",
+        "result_label": "cake",
+        "stock_label": "Available Only",
+        "available_chip_label": "Available",
+        "empty_icon": "🎂",
+        "empty_title": "No cakes found",
+        "empty_body": "Try adjusting your filters. We're always adding new creations.",
+    }
+    request = set_brand(request, "montee")
+    return render(request, "shop/brand.html", context)
         "result_count": total_count,
         "query_string": _query_string(request),
     }
