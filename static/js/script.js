@@ -40,28 +40,36 @@ function initNavbarScroll() {
   if (!nav) return;
   const brand = nav.dataset.brand;
 
+  const forceSolid = document.body.dataset.navbarSolid === "true";
+
+  function setSolid() {
+    if (brand === "dabelo") {
+      nav.classList.add("bg-dabelo-green", "shadow-warm-md");
+      nav.classList.remove("bg-transparent");
+    } else {
+      nav.classList.add("bg-motee-purple", "shadow-purple-glow");
+      nav.classList.remove("bg-transparent");
+    }
+  }
+
   function onScroll() {
     if (window.scrollY > 60) {
-      if (brand === "dabelo") {
-        nav.classList.add("bg-dabelo-green", "shadow-warm-md");
-        nav.classList.remove("bg-transparent");
-      } else {
-        nav.classList.add("bg-motee-purple", "shadow-purple-glow");
-        nav.classList.remove("bg-transparent");
-      }
+      setSolid();
     } else {
       nav.classList.remove(
-        "bg-dabelo-green",
-        "shadow-warm-md",
-        "bg-motee-purple",
-        "shadow-purple-glow",
+        "bg-dabelo-green", "shadow-warm-md",
+        "bg-motee-purple", "shadow-purple-glow"
       );
       nav.classList.add("bg-transparent");
     }
   }
 
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
+  if (forceSolid) {
+    setSolid();
+  } else {
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
 }
 
 function animateHamburger(btn, isOpen) {
