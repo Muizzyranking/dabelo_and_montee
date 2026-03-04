@@ -21,7 +21,9 @@
       {% block content %}{% endblock %}
     </main>
     {% block footer %}{% endblock %}
+    <script>document.body.dataset.navbarSolid = "{% block solid_nav %}{% endblock %}";</script>
     <script src="{% static 'js/script.js' %}"></script>
     {% block extra_js %}{% endblock %}
+
   </body>
 </html>
