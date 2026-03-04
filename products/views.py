@@ -1,14 +1,16 @@
 from typing import Any
-from django.shortcuts import get_object_or_404, render
+
+from django.contrib import messages
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 from core.utils import set_brand
-from .models import Product, Category, BrandChoices
-from django.shortcuts import redirect
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.contrib import messages
+
+from .models import BrandChoices, Category, CustomOrderRequest, Product
 def _base_queryset():
     return (
         Product.objects.filter(is_active=True)
