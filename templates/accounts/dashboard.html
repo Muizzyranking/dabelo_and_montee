@@ -1,0 +1,101 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}My Account — Dashboard{% endblock %}
+
+{% block account_content %}
+<div class="mb-8">
+  <div class="acc-page-title">
+    Good {{ greeting }}, {{ request.user.first_name|default:"there" }} 👋
+  </div>
+  <p class="acc-page-sub">Here's what's happening with your account.</p>
+</div>
+
+{# ── Stat cards ── #}
+<div class="grid grid-cols-2 gap-4 mb-8">
+  <div class="acc-card" style="margin-bottom:0">
+    <div class="font-dabelo-display text-3xl font-semibold text-dabelo-green mb-1">
+      {{ order_count }}
+    </div>
+    <div class="text-xs tracking-widest uppercase text-warm-gray font-medium">
+      Total Orders
+    </div>
+  </div>
+  <div class="acc-card" style="margin-bottom:0">
+    <div class="font-dabelo-display text-3xl font-semibold text-motee-purple mb-1">
+      {{ quote_count }}
+    </div>
+    <div class="text-xs tracking-widest uppercase text-warm-gray font-medium">
+      Quote Requests
+    </div>
+  </div>
+</div>
+
+{# ── Recent orders ── #}
+<div class="acc-card">
+  <div class="acc-card-title">Recent Orders</div>
+  {% if recent_orders %}
+    <div class="space-y-3">
+      {% for order in recent_orders %}
+      <a href="{% url 'account_order_detail' order.order_number %}"
+         class="flex items-center justify-between gap-4 p-3 rounded-sm bg-warm hover:bg-warm-border transition-colors duration-200 no-underline">
+        <div>
+          <div class="font-semibold text-sm text-ink">{{ order.order_number }}</div>
+          <div class="text-xs text-warm-gray mt-0.5">{{ order.created_at|date:"M d, Y" }}</div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="acc-status acc-status-{{ order.status }}">{{ order.get_status_display }}</span>
+          <span class="font-dabelo-display font-semibold text-ink">
+            ₦{{ order.total|floatformat:"0" }}
+          </span>
+          <span class="text-warm-gray text-sm">→</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <a href="{% url 'account_orders' %}"
+       class="inline-flex items-center gap-2 mt-4 text-xs font-semibold tracking-widest uppercase text-dabelo-green hover:text-dabelo-green-mid transition-colors">
+      View all orders →
+    </a>
+  {% else %}
+    <div class="acc-empty" style="padding: 32px 16px">
+      <div class="acc-empty-icon">📦</div>
+      <div class="acc-empty-title" style="font-size:1.2rem">No orders yet</div>
+      <div class="acc-empty-body">Your orders will appear here once you make a purchase.</div>
+      <a href="{% url 'shop' %}" class="acc-empty-cta">Start Shopping</a>
+    </div>
+  {% endif %}
+</div>
+
+{# ── Recent quotes ── #}
+<div class="acc-card">
+  <div class="acc-card-title">Recent Quote Requests</div>
+  {% if recent_quotes %}
+    <div class="space-y-3">
+      {% for quote in recent_quotes %}
+      <div class="flex items-center justify-between gap-4 p-3 rounded-sm bg-warm">
+        <div>
+          <div class="font-semibold text-sm text-ink">
+            {{ quote.product.name|default:"General Enquiry" }}
+          </div>
+          <div class="text-xs text-warm-gray mt-0.5">{{ quote.created_at|date:"M d, Y" }}</div>
+        </div>
+        <span class="acc-status acc-quote-{{ quote.status }}">{{ quote.get_status_display }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="{% url 'account_quotes' %}"
+       class="inline-flex items-center gap-2 mt-4 text-xs font-semibold tracking-widest uppercase text-motee-purple hover:text-motee-purple-mid transition-colors">
+      View all requests →
+    </a>
+  {% else %}
+    <div class="acc-empty" style="padding: 32px 16px">
+      <div class="acc-empty-icon">✉️</div>
+      <div class="acc-empty-title" style="font-size:1.2rem">No quote requests</div>
+      <div class="acc-empty-body">Custom orders and quote requests will appear here.</div>
+      <a href="{% url 'shop_montee' %}" class="acc-empty-cta" style="background:#563772">
+        Browse Motee Cakes
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
