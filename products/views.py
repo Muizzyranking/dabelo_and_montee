@@ -275,3 +275,47 @@ def product_detail(request, slug):
         request = set_brand(request, "montee")
     return render(request, "shop/product_detail.html", context)
 
+
+@require_POST
+def submit_quote(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+
+    name = request.POST.get("name", "").strip()
+    email = request.POST.get("email", "").strip()
+    phone = request.POST.get("phone", "").strip()
+    desc = request.POST.get("description", "").strip()
+
+    errors = {}
+    if not name:
+        errors["name"] = "Name is required."
+    if not email:
+        errors["email"] = "Email is required."
+    if not phone:
+        errors["phone"] = "Phone number is required."
+    if not desc:
+        errors["description"] = "Please describe what you need."
+
+    is_fetch = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+
+    if errors:
+        if is_fetch:
+            return JsonResponse({"ok": False, "errors": errors}, status=400)
+        messages.error(request, "Please fill all required fields.")
+        return redirect("product_detail", slug=slug)
+
+    CustomOrderRequest.objects.create(
+        product=product,
+        name=name,
+        email=email,
+        phone=phone,
+        occasion=request.POST.get("occasion", "").strip(),
+        description=desc,
+        budget=request.POST.get("budget", "").strip(),
+        delivery_date=request.POST.get("delivery_date") or None,
+    )
+
+    if is_fetch:
+        return JsonResponse({"ok": True})
+
+    messages.success(request, "Quote sent! We'll be in touch shortly.")
+    return redirect("product_detail", slug=slug)
