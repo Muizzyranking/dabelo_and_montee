@@ -174,4 +174,50 @@ class ProductAttribute(models.Model):
     def __str__(self):
         return f"{self.product.name} — {self.name}: {self.value}"
 
-# Create your models here.
+
+class CustomOrderRequest(models.Model):
+    class Status(models.TextChoices):
+        NEW = "new", "New"
+        IN_REVIEW = "in_review", "In Review"
+        QUOTED = "quoted", "Quoted"
+        ACCEPTED = "accepted", "Accepted"
+        DECLINED = "declined", "Declined"
+
+    # Customer info
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+
+    # Request details
+    occasion = models.CharField(max_length=200, blank=True)
+    description = models.TextField()
+    budget = models.CharField(
+        max_length=100, blank=True, help_text="Customer's stated budget range"
+    )
+    delivery_date = models.DateField(null=True, blank=True)
+
+    # Which product page they came from (optional)
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="quote_requests",
+    )
+
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
+    admin_notes = models.TextField(
+        blank=True, help_text="Internal notes — not shown to customer"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return (
+            f"Quote request from {self.name} ({self.email}) — {self.created_at.date()}"
+        )
+
