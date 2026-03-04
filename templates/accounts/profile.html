@@ -1,0 +1,54 @@
+{% extends "accounts/base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block account_content %}
+
+<div class="acc-page-title">Your Profile</div>
+<p class="acc-page-sub">Manage your personal information.</p>
+
+<form method="post" action="{% url 'account_profile' %}">
+  {% csrf_token %}
+  <div class="acc-card">
+    <div class="acc-card-title">Personal Details</div>
+    <div class="acc-grid-2">
+      <div class="acc-field">
+        <label class="acc-label" for="first_name">First Name</label>
+        <input type="text" id="first_name" name="first_name"
+               class="acc-input" value="{{ request.user.first_name }}"/>
+      </div>
+      <div class="acc-field">
+        <label class="acc-label" for="last_name">Last Name</label>
+        <input type="text" id="last_name" name="last_name"
+               class="acc-input" value="{{ request.user.last_name }}"/>
+      </div>
+    </div>
+    <div class="acc-field">
+      <label class="acc-label" for="email">Email Address</label>
+      <input type="email" id="email" name="email"
+             class="acc-input" value="{{ request.user.email }}"/>
+    </div>
+    <div class="acc-field">
+      <label class="acc-label" for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone"
+             class="acc-input" placeholder="+234 000 0000"
+             value="{{ request.user.phone }}"/>
+    </div>
+  </div>
+
+  <div class="acc-card">
+    <div class="acc-card-title">Preferences</div>
+    <label class="flex items-center gap-3 cursor-pointer">
+      <input type="checkbox" name="marketing_emails"
+             {% if request.user.marketing_emails %}checked{% endif %}
+             class="w-4 h-4 accent-dabelo-green"/>
+      <div>
+        <div class="text-sm font-medium text-ink">Marketing emails</div>
+        <div class="text-xs text-warm-gray mt-0.5">
+          Receive updates about new products, offers and promotions.
+        </div>
+      </div>
+    </label>
+  </div>
+
+  <button type="submit" class="acc-submit">Save Changes</button>
+</form>
+{% endblock %}
