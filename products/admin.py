@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from products.models import (
     Category,
+    CustomOrderRequest,
     Product,
     ProductAttribute,
     ProductImage,
@@ -13,3 +14,4 @@ admin.site.register(Category)
 admin.site.register(ProductImage)
 admin.site.register(ProductVariation)
 admin.site.register(ProductAttribute)
+admin.site.register(CustomOrderRequest)
