@@ -1,8 +1,6 @@
 from typing import Any
 
 from django.contrib import messages
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -10,89 +8,21 @@ from django.views.decorators.http import require_POST
 
 from core.utils import set_brand
 
-from .models import BrandChoices, Category, CustomOrderRequest, Product
-
-PRODUCTS_PER_PAGE = 3
-
-
-def _base_queryset():
-    return (
-        Product.objects.filter(is_active=True)
-        .prefetch_related("images", "variations", "attributes")
-        .select_related("category")
-        .order_by("-created_at")
-    )
-
-
-def _apply_filters(qs, request):
-    q = request.GET.get("q", "").strip()
-    category_slug = request.GET.get("category", "").strip()
-    sort = request.GET.get("sort", "newest")
-    in_stock = request.GET.get("in_stock", "")
-
-    if q:
-        qs = qs.filter(
-            Q(name__icontains=q)
-            | Q(short_description__icontains=q)
-            | Q(description__icontains=q)
-        )
-
-    if category_slug:
-        qs = qs.filter(category__slug=category_slug)
-
-    if in_stock == "1":
-        qs = qs.filter(in_stock=True)
-
-    if sort == "price_asc":
-        qs = qs.order_by("price")
-    elif sort == "price_desc":
-        qs = qs.order_by("-price")
-    elif sort == "featured":
-        qs = qs.order_by("-is_featured", "-created_at")
-    else:
-        qs = qs.order_by("-created_at")
-
-    return qs, q, category_slug, sort, in_stock
-
-
-def _paginate(qs, request):
-    """
-    Paginate a queryset.
-    """
-    paginator = Paginator(qs, PRODUCTS_PER_PAGE)
-    page_num = request.GET.get("page", 1)
-
-    try:
-        page_obj = paginator.page(page_num)
-    except PageNotAnInteger:
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        page_obj = paginator.page(paginator.num_pages)
-
-    return page_obj, paginator.count
-
-
-def _query_string(request, exclude=("page",)):
-    """
-    Rebuild the current query string, dropping keys in `exclude`.
-    Used so pagination links preserve all active filters.
-    """
-    params = request.GET.copy()
-    for key in exclude:
-        params.pop(key, None)
-    qs = params.urlencode()
-    return f"?{qs}&" if qs else "?"
+from .models import BrandChoices, Category, Product
+from .service import ProductQueryService, QuoteService
 
 
 def shop_joint(request):
-    qs = _base_queryset()
-    qs, q, category_slug, sort, in_stock = _apply_filters(qs, request)
+    qs = ProductQueryService.base_queryset()
+    qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(
+        qs, request
+    )
 
     brand_filter = request.GET.get("brand", "").strip()
     if brand_filter in ("dabelo", "montee"):
         qs = qs.filter(brand=brand_filter)
 
-    page_obj, total_count = _paginate(qs, request)
+    page_obj, total_count = ProductQueryService.paginate(qs, request)
     categories = Category.objects.filter(is_active=True).order_by("order", "name")
 
     context = {
@@ -109,18 +39,21 @@ def shop_joint(request):
         "page_title": "The Shop",
         "page_subtitle": "Dabelo Café & Motee Cakes — everything in one place.",
         "result_count": total_count,
-        "query_string": _query_string(request),
+        "query_string": ProductQueryService.query_string(request),
     }
     return render(request, "shop/joint.html", context)
 
 
 def shop_dabelo(request):
-    qs = _base_queryset().filter(brand=BrandChoices.DABELO)
-    qs, q, category_slug, sort, in_stock = _apply_filters(qs, request)
-    page_obj, total_count = _paginate(qs, request)
+    qs = ProductQueryService.base_queryset().filter(brand=BrandChoices.DABELO)
+    qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(
+        qs, request
+    )
+    page_obj, total_count = ProductQueryService.paginate(qs, request)
     categories = Category.objects.filter(
         is_active=True, brand=BrandChoices.DABELO
     ).order_by("order", "name")
+
     context = {
         "products": page_obj,
         "page_obj": page_obj,
@@ -131,15 +64,15 @@ def shop_dabelo(request):
         "sort": sort,
         "in_stock": in_stock,
         "result_count": total_count,
-        "query_string": _query_string(request),
-        # — template wiring —
+        "query_string": ProductQueryService.query_string(request),
+        # template wiring
         "base_template": "dabelo/base.html",
         "brand_class": "shop-dabelo",
         "action_url": reverse("shop_dabelo"),
         "clear_url": reverse("shop_dabelo"),
         "back_url": reverse("dabelo_home"),
         "cross_brand_url": reverse("shop_montee"),
-        # — copy —
+        # copy
         "page_title": "Dabelo Café",
         "page_subtitle": "Cold-pressed juices, fresh bowls & healthy meal prep.",
         "watermark": "Dabelo",
@@ -160,12 +93,15 @@ def shop_dabelo(request):
 
 
 def shop_montee(request):
-    qs = _base_queryset().filter(brand=BrandChoices.MONTEE)
-    qs, q, category_slug, sort, in_stock = _apply_filters(qs, request)
-    page_obj, total_count = _paginate(qs, request)
+    qs = ProductQueryService.base_queryset().filter(brand=BrandChoices.MONTEE)
+    qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(
+        qs, request
+    )
+    page_obj, total_count = ProductQueryService.paginate(qs, request)
     categories = Category.objects.filter(
         is_active=True, brand=BrandChoices.MONTEE
     ).order_by("order", "name")
+
     context = {
         "products": page_obj,
         "page_obj": page_obj,
@@ -176,15 +112,15 @@ def shop_montee(request):
         "sort": sort,
         "in_stock": in_stock,
         "result_count": total_count,
-        "query_string": _query_string(request),
-        # — template wiring —
+        "query_string": ProductQueryService.query_string(request),
+        # template wiring
         "base_template": "montee/base.html",
         "brand_class": "shop-montee",
         "action_url": reverse("shop_montee"),
         "clear_url": reverse("shop_montee"),
         "back_url": reverse("montee_home"),
         "cross_brand_url": reverse("shop_dabelo"),
-        # — copy —
+        # copy
         "page_title": "Motee Cakes",
         "page_subtitle": "Bespoke handcrafted cakes for every celebration.",
         "watermark": "Motee",
@@ -207,10 +143,12 @@ def shop_montee(request):
 def shop_category(request, slug):
     category = get_object_or_404(Category, slug=slug, is_active=True)
 
-    qs = _base_queryset().filter(category=category)
-    qs, q, category_slug, sort, in_stock = _apply_filters(qs, request)
+    qs = ProductQueryService.base_queryset().filter(category=category)
+    qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(
+        qs, request
+    )
+    page_obj, total_count = ProductQueryService.paginate(qs, request)
 
-    page_obj, total_count = _paginate(qs, request)
     sibling_categories = Category.objects.filter(
         is_active=True, brand=category.brand
     ).order_by("order", "name")
@@ -230,7 +168,7 @@ def shop_category(request, slug):
         "page_subtitle": category.description
         or f"Browse our {category.name} collection.",
         "result_count": total_count,
-        "query_string": _query_string(request),
+        "query_string": ProductQueryService.query_string(request),
     }
     return render(request, "shop/category.html", context)
 
@@ -243,42 +181,6 @@ def product_detail(request, slug):
         slug=slug,
     )
 
-    # Related — same category, exclude self, max 4
-    related = []
-    if product.category:
-        related = (
-            Product.objects.filter(is_active=True, category=product.category)
-            .exclude(pk=product.pk)
-            .prefetch_related("images")
-            .order_by("-is_featured", "-created_at")[:4]
-        )
-
-    # Variation data for JS
-    variations_data = [
-        {
-            "id": str(v.id),
-            "name": v.name,
-            "price": float(v.price) if v.price else None,
-            "in_stock": v.in_stock,
-            "image": v.image.url if v.image else None,
-        }
-        for v in product.variations.all()
-    ]
-
-    breadcrumbs: list[dict[str, Any]] = [{"label": "Shop", "url": "/shop/"}]
-    if product.brand == BrandChoices.DABELO:
-        breadcrumbs.append({"label": "Dabelo Café", "url": "/shop/dabelo/"})
-    else:
-        breadcrumbs.append({"label": "Motee Cakes", "url": "/shop/montee/"})
-    if product.category:
-        breadcrumbs.append(
-            {
-                "label": product.category.name,
-                "url": f"/shop/category/{product.category.slug}/",
-            }
-        )
-    breadcrumbs.append({"label": product.name, "url": None})
-
     base_template = (
         "dabelo/base.html"
         if product.brand == BrandChoices.DABELO
@@ -289,59 +191,36 @@ def product_detail(request, slug):
         "product": product,
         "images": product.images.all().order_by("order", "-is_primary"),
         "variations": product.variations.all(),
-        "variations_data": variations_data,
+        "variations_data": ProductQueryService.variations_as_json(product),
         "attributes": product.attributes.all(),
-        "related": related,
-        "breadcrumbs": breadcrumbs,
+        "related": ProductQueryService.get_related(product),
+        "breadcrumbs": ProductQueryService.build_breadcrumbs(product),
         "base_template": base_template,
         "brand": product.brand,
+        "quote_url": reverse("submit_quote", kwargs={"slug": product.slug}),
     }
-    if product.brand == BrandChoices.DABELO:
-        request = set_brand(request, "dabelo")
-    else:
-        request = set_brand(request, "montee")
+
+    brand_slug = "dabelo" if product.brand == BrandChoices.DABELO else "montee"
+    request = set_brand(request, brand_slug)
     return render(request, "shop/product_detail.html", context)
 
 
 @require_POST
 def submit_quote(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
-
-    name = request.POST.get("name", "").strip()
-    email = request.POST.get("email", "").strip()
-    phone = request.POST.get("phone", "").strip()
-    desc = request.POST.get("description", "").strip()
-
-    errors = {}
-    if not name:
-        errors["name"] = "Name is required."
-    if not email:
-        errors["email"] = "Email is required."
-    if not phone:
-        errors["phone"] = "Phone number is required."
-    if not desc:
-        errors["description"] = "Please describe what you need."
-
-    is_fetch = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    fields = QuoteService.extract_fields(request.POST)
+    errors = QuoteService.validate(fields)
+    is_ajax = QuoteService.is_ajax(request)
 
     if errors:
-        if is_fetch:
+        if is_ajax:
             return JsonResponse({"ok": False, "errors": errors}, status=400)
         messages.error(request, "Please fill all required fields.")
         return redirect("product_detail", slug=slug)
 
-    CustomOrderRequest.objects.create(
-        product=product,
-        name=name,
-        email=email,
-        phone=phone,
-        occasion=request.POST.get("occasion", "").strip(),
-        description=desc,
-        budget=request.POST.get("budget", "").strip(),
-        delivery_date=request.POST.get("delivery_date") or None,
-    )
+    QuoteService.create_request(fields, product=product)
 
-    if is_fetch:
+    if is_ajax:
         return JsonResponse({"ok": True})
 
     messages.success(request, "Quote sent! We'll be in touch shortly.")
