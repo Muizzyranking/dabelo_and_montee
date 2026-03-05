@@ -1,0 +1,164 @@
+{% load static %}
+{% with modal_id=modal_id|default:"pd-modal" %}
+<div class="pd-modal-backdrop" id="{{ modal_id }}" role="dialog"
+     aria-modal="true" aria-labelledby="{{ modal_id }}-title"
+     onclick="if(event.target===this)closeModal('{{ modal_id }}')">
+  <div class="pd-modal">
+
+    <div id="{{ modal_id }}-form-wrap">
+      <div class="pd-modal-header">
+        <div>
+          <div class="pd-modal-title" id="{{ modal_id }}-title">
+            Request a Quote
+          </div>
+          <div class="pd-modal-sub">
+            {% if product %}
+              For <strong>{{ product.name }}</strong> —
+            {% else %}
+              General custom order enquiry —
+            {% endif %}
+            we'll get back to you within 24 hours.
+          </div>
+        </div>
+        <button type="button" class="pd-modal-close"
+                onclick="closeModal('{{ modal_id }}')"
+                aria-label="Close">✕</button>
+      </div>
+
+      <div class="pd-modal-body">
+        <form id="{{ modal_id }}-form"
+              method="post"
+              action="{{ submit_url }}">
+          {% csrf_token %}
+
+          <div class="pd-form-row">
+            <div>
+              <label class="pd-field-label" for="{{ modal_id }}-name">
+                Name <span class="pd-field-required">*</span>
+              </label>
+              <input type="text" id="{{ modal_id }}-name" name="name"
+                     class="pd-field-input"
+                     placeholder="Your full name"
+                     {% if request.user.is_authenticated %}
+                       value="{{ request.user.full_name }}"
+                     {% endif %}
+                     autocomplete="name"/>
+              <div class="pd-field-error" id="{{ modal_id }}-name-err">
+                Name is required.
+              </div>
+            </div>
+            <div>
+              <label class="pd-field-label" for="{{ modal_id }}-phone">
+                Phone <span class="pd-field-required">*</span>
+              </label>
+              <input type="tel" id="{{ modal_id }}-phone" name="phone"
+                     class="pd-field-input"
+                     placeholder="+234 000 0000"
+                     {% if request.user.is_authenticated %}
+                       value="{{ request.user.phone }}"
+                     {% endif %}
+                     autocomplete="tel"/>
+              <div class="pd-field-error" id="{{ modal_id }}-phone-err">
+                Phone is required.
+              </div>
+            </div>
+          </div>
+
+          <div class="pd-form-row-full">
+            <label class="pd-field-label" for="{{ modal_id }}-email">
+              Email <span class="pd-field-required">*</span>
+            </label>
+            <input type="email" id="{{ modal_id }}-email" name="email"
+                   class="pd-field-input"
+                   placeholder="you@example.com"
+                   {% if request.user.is_authenticated %}
+                     value="{{ request.user.email }}"
+                   {% endif %}
+                   autocomplete="email"/>
+            <div class="pd-field-error" id="{{ modal_id }}-email-err">
+              Email is required.
+            </div>
+          </div>
+
+          <div class="pd-form-row">
+            <div>
+              <label class="pd-field-label" for="{{ modal_id }}-occasion">
+                Occasion
+              </label>
+              <input type="text" id="{{ modal_id }}-occasion" name="occasion"
+                     class="pd-field-input"
+                     placeholder="Birthday, Wedding, Corporate…"/>
+            </div>
+            <div>
+              <label class="pd-field-label" for="{{ modal_id }}-budget">
+                Budget Range
+              </label>
+              <input type="text" id="{{ modal_id }}-budget" name="budget"
+                     class="pd-field-input"
+                     placeholder="e.g. ₦50,000 – ₦80,000"/>
+            </div>
+          </div>
+
+          <div class="pd-form-row-full">
+            <label class="pd-field-label" for="{{ modal_id }}-date">
+              Delivery / Event Date
+            </label>
+            <input type="date" id="{{ modal_id }}-date"
+                   name="delivery_date" class="pd-field-input"/>
+          </div>
+
+          {# Brand selector — only shown on general enquiry page #}
+          {% if not product %}
+          <div class="pd-form-row-full">
+            <label class="pd-field-label" for="{{ modal_id }}-brand">
+              Which brand is this for?
+            </label>
+            <select id="{{ modal_id }}-brand" name="brand"
+                    class="pd-field-input" style="appearance:auto">
+              <option value="">Both / Not sure</option>
+              <option value="dabelo">🌿 Dabelo Café</option>
+              <option value="montee">🎂 Motee Cakes</option>
+            </select>
+          </div>
+          {% endif %}
+
+          <div class="pd-form-row-full">
+            <label class="pd-field-label" for="{{ modal_id }}-desc">
+              Description <span class="pd-field-required">*</span>
+            </label>
+            <textarea id="{{ modal_id }}-desc" name="description"
+                      class="pd-field-textarea"
+                      placeholder="Tell us exactly what you need — flavours, size, design, quantities…"></textarea>
+            <div class="pd-field-error" id="{{ modal_id }}-desc-err">
+              Please describe what you need.
+            </div>
+          </div>
+
+          <button type="submit" class="pd-modal-submit"
+                  id="{{ modal_id }}-submit">
+            <span class="{{ modal_id }}-submit-label">Send Quote Request</span>
+            <span class="{{ modal_id }}-submit-spinner"
+                  style="display:none">Sending…</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {# Success state #}
+    <div class="pd-modal-success" id="{{ modal_id }}-success">
+      <div class="pd-modal-success-icon">✅</div>
+      <div class="pd-modal-success-title">Request Sent!</div>
+      <div class="pd-modal-success-body">
+        {% if product %}
+          Thanks! We've received your quote request for
+          <strong>{{ product.name }}</strong>.<br/>
+        {% else %}
+          Thanks! We've received your custom order enquiry.<br/>
+        {% endif %}
+        We'll reach out within 24 hours.
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endwith %}
