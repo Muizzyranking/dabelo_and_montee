@@ -1,29 +1,106 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" class="{% block html_class %}{% endblock %}">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description"
-          content="{% block meta_description %}Dabelo Café & Motee Cakes — Fresh juices and handcrafted cakes delivered to you.{% endblock %}" />
     <title>
-      {% block title %}Dabelo Café & Motee Cakes{% endblock %}
+      {% block title %}Dabelo & Motee — Crafted Fresh, Delivered with Care{% endblock %}
     </title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+    <meta name="description"
+          content="{% block meta_description %}Premium cold-pressed juices, healthy bowls & handcrafted celebration cakes — made with care in Lagos.{% endblock %}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <link rel="stylesheet" href="{% static 'css/quote_modal.css' %}">
     <link rel="icon"
           href="{% block favicon %}{% static 'images/favicon.ico' %}{% endblock %}"
           type="image/x-icon" />
     {% block extra_head %}{% endblock %}
   </head>
-  <body class="{% block body_class %}{% endblock %}">
-    {% block navbar %} {% include "base/navbar.html" %} {% endblock %}
-    <main>
+  <body {% block body_attrs %}{% endblock %}
+        class="bg-white font-body text-gray-900 antialiased">
+    {% block navbar %}{% endblock %}
+    <main class="min-h-screen">
       {% block content %}{% endblock %}
     </main>
     {% block footer %}{% endblock %}
+    <div id="toast-container"
+         class="fixed bottom-6 right-6 z-[999] flex flex-col gap-3 pointer-events-none"
+         style="max-width: 340px"></div>
+    <button id="cart-float-btn"
+            onclick="cartDrawerOpen()"
+            data-brand="{{ request.resolver_match.app_name|default:'' }}"
+            class="fixed bottom-6 left-6 z-[998] w-14 h-14 rounded-full shadow-warm-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-2xl focus:outline-none"
+            aria-label="Open cart">
+      <span class="text-xl">🛒</span>
+      <span id="cart-count-badge"
+            class="absolute -top-1 -right-1 min-w-[20px] h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold px-1 leading-none transition-all duration-200">
+        0
+      </span>
+    </button>
+    {# Backdrop #}
+    <div id="cart-drawer-backdrop"
+         onclick="cartDrawerClose()"
+         class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[200] opacity-0 pointer-events-none transition-opacity duration-300">
+    </div>
+    {# Drawer panel #}
+    <div id="cart-drawer"
+         class="fixed top-0 right-0 h-full z-[201] w-full max-w-md bg-parchment shadow-warm-xl translate-x-full transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col">
+      {# Drawer header #}
+      <div class="flex items-center justify-between px-6 py-5 border-b border-warm-border bg-white shrink-0">
+        <div>
+          <h2 class="font-dabelo-display font-semibold text-xl text-ink">Your Cart</h2>
+          <p class="text-xs text-warm-gray mt-0.5">
+            <span id="drawer-item-count">0</span> item<span id="drawer-item-plural">s</span>
+          </p>
+        </div>
+        <button onclick="cartDrawerClose()"
+                class="w-9 h-9 rounded-full bg-warm flex items-center justify-center text-warm-gray hover:text-ink hover:bg-warm-border transition-colors duration-200 text-sm">
+          ✕
+        </button>
+      </div>
+      {# Drawer body — dynamic content loaded via AJAX #}
+      <div id="cart-drawer-body" class="flex-1 overflow-y-auto">
+        {# Filled by cartDrawerOpen() #}
+        <div id="cart-drawer-loading"
+             class="flex items-center justify-center h-40 text-warm-gray text-sm">Loading…</div>
+      </div>
+      {# Drawer footer — always visible #}
+      <div id="cart-drawer-footer"
+           class="shrink-0 border-t border-warm-border bg-white p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold tracking-widest uppercase text-warm-gray">Subtotal</span>
+          <span id="drawer-subtotal"
+                class="font-dabelo-display font-semibold text-xl text-ink">₦0</span>
+        </div>
+        <a href="#"
+           class="block w-full py-4 text-center bg-dabelo-green text-white text-xs font-bold tracking-widest uppercase rounded-sm hover:bg-dabelo-green-mid transition-all duration-200 hover:-translate-y-0.5 shadow-green-glow">
+          Go to Checkout →
+        </a>
+        <button onclick="cartDrawerClose()"
+                class="block w-full py-3 text-center text-xs font-semibold tracking-widest uppercase text-warm-gray hover:text-ink transition-colors duration-200">
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+    {# Render Django messages into JS on page load #}
+    {% if messages %}
+      <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      {% for msg in messages %}
+        showToast(
+          "{{ msg|escapejs }}",
+          "{{ msg.tags|default:'info' }}"
+        );
+      {% endfor %}
+    });
+    {% endif %}
+    </script>
     <script>document.body.dataset.navbarSolid = "{% block solid_nav %}{% endblock %}";</script>
     <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/toast.js' %}"></script>
     {% block extra_js %}{% endblock %}
-
   </body>
 </html>
