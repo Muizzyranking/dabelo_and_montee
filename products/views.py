@@ -1,5 +1,3 @@
-from typing import Any
-
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -225,3 +223,45 @@ def submit_quote(request, slug):
 
     messages.success(request, "Quote sent! We'll be in touch shortly.")
     return redirect("product_detail", slug=slug)
+
+
+@require_POST
+def submit_general_quote(request):
+    fields = QuoteService.extract_fields(request.POST)
+    errors = QuoteService.validate(fields)
+    is_ajax = QuoteService.is_ajax(request)
+
+    if errors:
+        if is_ajax:
+            return JsonResponse({"ok": False, "errors": errors}, status=400)
+        messages.error(request, "Please fill in all required fields.")
+        return redirect("custom_order")
+
+    QuoteService.create_request(fields, product=None)
+
+    if is_ajax:
+        return JsonResponse({"ok": True})
+
+    messages.success(request, "Quote sent! We'll be in touch within 24 hours.")
+    return redirect("custom_order")
+
+
+def custom_order_page(request):
+    steps = [
+        {
+            "icon": "✉️",
+            "title": "Send Your Request",
+            "body": "Fill out the form with what you need — as much detail as possible helps us respond faster.",
+        },
+        {
+            "icon": "💬",
+            "title": "We Get Back to You",
+            "body": "Our team reviews your request and reaches out within 24 hours with options and pricing.",
+        },
+        {
+            "icon": "🎉",
+            "title": "We Make It Happen",
+            "body": "Once agreed, we get to work. Your order is prepared fresh and delivered on time.",
+        },
+    ]
+    return render(request, "shop/custom_order.html", {"steps": steps})
