@@ -1,0 +1,150 @@
+{% extends "joint/base.html" %}
+{% load static %}
+{% block title %}Custom Order — Dabelo & Motee{% endblock %}
+{% block body_attrs %}data-navbar-solid="true"{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-parchment">
+
+  {# ── Hero ── #}
+  <div class="relative overflow-hidden pt-32 pb-20 px-5"
+       style="background: linear-gradient(135deg, #0F4D2F 0%, #563772 100%)">
+    <div class="absolute inset-0 stripe-bg opacity-30 pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none"
+         style="background: radial-gradient(circle, rgba(232,76,154,0.15) 0%, transparent 65%); transform: translate(30%, -30%)"></div>
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none"
+         style="background: radial-gradient(circle, rgba(197,154,61,0.12) 0%, transparent 65%); transform: translate(-30%, 30%)"></div>
+
+    <div class="relative z-10 max-w-3xl mx-auto text-center">
+      <div class="inline-flex items-center gap-3 px-4 py-2 rounded-sm mb-6
+                  border border-white/20 bg-white/5">
+        <span class="text-lg">🌿</span>
+        <span class="text-xs font-semibold tracking-widest uppercase text-white/60">×</span>
+        <span class="text-lg">🎂</span>
+        <span class="text-xs font-semibold tracking-widest uppercase text-white/60 ml-1">
+          Dabelo & Motee
+        </span>
+      </div>
+      <h1 class="font-dabelo-display font-semibold text-white mb-4"
+          style="font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 0.95">
+        Something
+        <em class="italic text-dabelo-gold">Special</em>
+        <br/>in mind?
+      </h1>
+      <p class="text-white/55 leading-relaxed max-w-xl mx-auto"
+         style="font-size: 1.05rem">
+        Tell us what you're looking for — fresh healthy meals from Dabelo,
+        a bespoke celebration cake from Motee, or both.
+        We'll make it happen.
+      </p>
+    </div>
+  </div>
+
+  {# ── Two brand cards + CTA ── #}
+  <div class="max-w-4xl mx-auto px-5 sm:px-8 -mt-8 mb-16 relative z-10">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+
+      {# Dabelo card #}
+      <div class="bg-white border border-warm-border rounded-sm p-6
+                  flex gap-4 items-start hover:shadow-warm-md transition-shadow duration-200">
+        <div class="w-12 h-12 rounded-full bg-dabelo-green-pale
+                    flex items-center justify-center text-2xl shrink-0">
+          🌿
+        </div>
+        <div>
+          <div class="font-dabelo-display font-semibold text-lg text-dabelo-green mb-1">
+            Dabelo Café
+          </div>
+          <p class="text-sm text-warm-gray leading-relaxed">
+            Cold-pressed juices, fresh salads, fruit boxes, weekly meal prep plans.
+          </p>
+          <a href="{% url 'shop_dabelo' %}"
+             class="inline-flex items-center gap-1 mt-3 text-xs font-semibold
+                    tracking-widest uppercase text-dabelo-green hover:text-dabelo-green-mid
+                    transition-colors">
+            Browse Dabelo →
+          </a>
+        </div>
+      </div>
+
+      {# Motee card #}
+      <div class="bg-white border border-warm-border rounded-sm p-6
+                  flex gap-4 items-start hover:shadow-warm-md transition-shadow duration-200">
+        <div class="w-12 h-12 rounded-full bg-motee-purple-pale
+                    flex items-center justify-center text-2xl shrink-0">
+          🎂
+        </div>
+        <div>
+          <div class="font-motee-display font-semibold text-lg text-motee-purple mb-1">
+            Motee Cakes
+          </div>
+          <p class="text-sm text-warm-gray leading-relaxed">
+            Bespoke celebration cakes, custom flavours, wedding and birthday designs.
+          </p>
+          <a href="{% url 'shop_montee' %}"
+             class="inline-flex items-center gap-1 mt-3 text-xs font-semibold
+                    tracking-widest uppercase text-motee-purple hover:text-motee-purple-mid
+                    transition-colors">
+            Browse Motee →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {# Open quote form trigger #}
+    <div class="text-center">
+      <button onclick="openModal('custom-order-modal')"
+              class="inline-flex items-center gap-3 px-10 py-5
+                     bg-dabelo-green text-white rounded-sm
+                     text-sm font-bold tracking-widest uppercase
+                     shadow-green-glow hover:bg-dabelo-green-mid
+                     hover:-translate-y-0.5 transition-all duration-200">
+        ✉️ Send a Custom Order Request
+      </button>
+      <p class="text-xs text-warm-gray mt-4">
+        We respond within 24 hours · No commitment required
+      </p>
+    </div>
+  </div>
+
+  {# ── How it works ── #}
+  <div class="max-w-4xl mx-auto px-5 sm:px-8 pb-24">
+    <div class="text-center mb-10">
+      <div class="text-xs font-bold tracking-widest uppercase text-dabelo-gold
+                  flex items-center justify-center gap-3 mb-3">
+        <span class="w-6 h-px bg-dabelo-gold"></span>
+        How It Works
+        <span class="w-6 h-px bg-dabelo-gold"></span>
+      </div>
+      <h2 class="font-dabelo-display font-semibold text-ink"
+          style="font-size: clamp(1.6rem, 3vw, 2.2rem)">
+        Simple, fast, personal.
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      {% for step in steps %}
+      <div class="text-center p-6 bg-white border border-warm-border rounded-sm">
+        <div class="text-3xl mb-4">{{ step.icon }}</div>
+        <div class="font-dabelo-display font-semibold text-lg text-ink mb-2">
+          {{ step.title }}
+        </div>
+        <p class="text-sm text-warm-gray leading-relaxed">{{ step.body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+{% include "shop/_quote_modal.html" with product=None submit_url="/custom-order/submit/" modal_id="custom-order-modal" %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/product_detail.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  initQuoteForm({}, 'custom-order-modal');
+});
+</script>
+{% endblock %}
