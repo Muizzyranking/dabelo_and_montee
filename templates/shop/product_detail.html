@@ -1,653 +1,324 @@
 {% extends base_template %}
 {% load static %}
-
-{% block title %}{{ product.name }} — {% if brand == 'dabelo' %}Dabelo Café{% else %}Motee Cakes{% endif %}{% endblock %}
-{% block meta_description %}{{ product.short_description|default:product.name }}{% endblock %}
-
-{% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+{% block title %}
+  {{ product.name }} —
+  {% if brand == 'dabelo' %}
+    Dabelo Café
+  {% else %}
+    Motee Cakes
+  {% endif %}
 {% endblock %}
-
+{% block meta_description %}{{ product.short_description|default:product.name }}{% endblock %}
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+{% endblock %}
 {% block content %}
-{% with is_dabelo=brand|slugify %}
-<div class="pd-{% if brand == 'dabelo' %}dabelo{% else %}montee{% endif %}">
-
-  <nav class="pd-breadcrumb" aria-label="Breadcrumb">
-    <div class="pd-breadcrumb-inner">
-      {% for crumb in breadcrumbs %}
-        {% if crumb.url %}
-          <a href="{{ crumb.url }}">{{ crumb.label }}</a>
-          <span class="pd-breadcrumb-sep">›</span>
-        {% else %}
-          <span class="pd-breadcrumb-current">{{ crumb.label }}</span>
-        {% endif %}
-      {% endfor %}
-    </div>
-  </nav>
-
-  {# ── MAIN BODY ── #}
-  <div class="pd-body">
-    <div class="pd-inner">
-
-      {# ════ GALLERY ════ #}
-      <div class="pd-gallery">
-        <div class="pd-main-img-wrap" id="pd-main-wrap">
-          {% if images %}
-            <img src="{{ images.0.image.url }}"
-                 alt="{{ images.0.alt_text|default:product.name }}"
-                 class="pd-main-img" id="pd-main-img"/>
-          {% else %}
-            <img src="https://images.unsplash.com/photo-1615485020307-f8e1bdb06e3b?w=800&q=80"
-                 alt="{{ product.name }}"
-                 class="pd-main-img" id="pd-main-img"/>
-          {% endif %}
-
-          {# Badges #}
-          <div class="pd-img-badges">
-            {% if not product.in_stock %}
-              <span class="pd-img-badge pd-badge-unavailable">Unavailable</span>
+  {% with is_dabelo=brand|slugify %}
+    <div class="pd-{% if brand == 'dabelo' %}dabelo{% else %}montee{% endif %}">
+      <nav class="pd-breadcrumb" aria-label="Breadcrumb">
+        <div class="pd-breadcrumb-inner">
+          {% for crumb in breadcrumbs %}
+            {% if crumb.url %}
+              <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+              <span class="pd-breadcrumb-sep">›</span>
+            {% else %}
+              <span class="pd-breadcrumb-current">{{ crumb.label }}</span>
             {% endif %}
-            {% if product.is_featured %}
-              <span class="pd-img-badge pd-badge-featured">Featured</span>
-            {% endif %}
-            {% if product.is_quote_only %}
-              <span class="pd-img-badge pd-badge-quote">Get a Quote</span>
-            {% endif %}
-          </div>
-        </div>
-
-        {# Thumbnails #}
-        {% if images.count > 1 %}
-        <div class="pd-thumbs" id="pd-thumbs">
-          {% for img in images %}
-          <div class="pd-thumb {% if forloop.first %}active{% endif %}"
-               data-src="{{ img.image.url }}"
-               data-alt="{{ img.alt_text|default:product.name }}"
-               onclick="pdSwitchImage(this)">
-            <img src="{{ img.image.url }}" alt="{{ img.alt_text|default:'' }}" loading="lazy"/>
-          </div>
           {% endfor %}
         </div>
-        {% endif %}
-      </div>
-
-      {# ════ INFO ════ #}
-      <div class="pd-info">
-
-        {# Brand pill #}
-        <div class="pd-info-brand pd-brand-{{ brand }}">
-          {% if brand == 'dabelo' %}🌿 Dabelo Café{% else %}🎂 Motee Cakes{% endif %}
-        </div>
-
-        {# Category #}
-        {% if product.category %}
-          <div class="pd-info-category">{{ product.category.name }}</div>
-        {% endif %}
-
-        {# Name #}
-        <h1 class="pd-info-name">{{ product.name }}</h1>
-
-        {# Availability #}
-        <div class="pd-availability {% if product.in_stock %}pd-available{% else %}pd-unavailable{% endif %}">
-          <span class="pd-avail-dot"></span>
-          {% if product.in_stock %}Available{% else %}Unavailable{% endif %}
-        </div>
-
-        {# Short description #}
-        {% if product.short_description %}
-          <p class="pd-info-desc">{{ product.short_description }}</p>
-        {% endif %}
-
-        {# ── Price ── #}
-        <div class="pd-price-wrap">
-          <div class="pd-price-label">Price</div>
-          <div class="pd-price" id="pd-price">
-            {% if product.is_quote_only %}
-              <span class="pd-price-tbd">Price on request</span>
-            {% elif product.display_price %}
-              {% if product.product_type == 'variable' %}
-                <span class="pd-price-from">From</span>
+      </nav>
+      {# ── MAIN BODY ── #}
+      <div class="pd-body">
+        <div class="pd-inner">
+          {# ════ GALLERY ════ #}
+          <div class="pd-gallery">
+            <div class="pd-main-img-wrap" id="pd-main-wrap">
+              {% if images %}
+                <img src="{{ images.0.image.url }}"
+                     alt="{{ images.0.alt_text|default:product.name }}"
+                     class="pd-main-img"
+                     id="pd-main-img" />
+              {% else %}
+                <img src="https://images.unsplash.com/photo-1615485020307-f8e1bdb06e3b?w=800&q=80"
+                     alt="{{ product.name }}"
+                     class="pd-main-img"
+                     id="pd-main-img" />
               {% endif %}
-              ₦{{ product.display_price|floatformat:"0" }}
-            {% else %}
-              <span class="pd-price-tbd">—</span>
+              {# Badges #}
+              <div class="pd-img-badges">
+                {% if not product.in_stock %}<span class="pd-img-badge pd-badge-unavailable">Unavailable</span>{% endif %}
+                {% if product.is_featured %}<span class="pd-img-badge pd-badge-featured">Featured</span>{% endif %}
+                {% if product.is_quote_only %}<span class="pd-img-badge pd-badge-quote">Get a Quote</span>{% endif %}
+              </div>
+            </div>
+            {# Thumbnails #}
+            {% if images.count > 1 %}
+              <div class="pd-thumbs" id="pd-thumbs">
+                {% for img in images %}
+                  <div class="pd-thumb {% if forloop.first %}active{% endif %}"
+                       data-src="{{ img.image.url }}"
+                       data-alt="{{ img.alt_text|default:product.name }}"
+                       onclick="pdSwitchImage(this)">
+                    <img src="{{ img.image.url }}"
+                         alt="{{ img.alt_text|default:'' }}"
+                         loading="lazy" />
+                  </div>
+                {% endfor %}
+              </div>
             {% endif %}
           </div>
-        </div>
-
-        {# ── Variations ── #}
-        {% if variations %}
-        <div class="pd-variations">
-          <div class="pd-var-label">
-            Choose Option
-            <span class="pd-var-selected" id="pd-var-name">—</span>
+          {# ════ INFO ════ #}
+          <div class="pd-info">
+            {# Brand pill #}
+            <div class="pd-info-brand pd-brand-{{ brand }}">
+              {% if brand == 'dabelo' %}
+                🌿 Dabelo Café
+              {% else %}
+                🎂 Motee Cakes
+              {% endif %}
+            </div>
+            {# Category #}
+            {% if product.category %}<div class="pd-info-category">{{ product.category.name }}</div>{% endif %}
+            {# Name #}
+            <h1 class="pd-info-name">{{ product.name }}</h1>
+            {# Availability #}
+            <div class="pd-availability {% if product.in_stock %}pd-available{% else %}pd-unavailable{% endif %}">
+              <span class="pd-avail-dot"></span>
+              {% if product.in_stock %}
+                Available
+              {% else %}
+                Unavailable
+              {% endif %}
+            </div>
+            {# Short description #}
+            {% if product.short_description %}<p class="pd-info-desc">{{ product.short_description }}</p>{% endif %}
+            {# ── Price ── #}
+            <div class="pd-price-wrap">
+              <div class="pd-price-label">Price</div>
+              <div class="pd-price" id="pd-price">
+                {% if product.is_quote_only %}
+                  <span class="pd-price-tbd">Price on request</span>
+                {% elif product.display_price %}
+                  {% if product.product_type == 'variable' %}<span class="pd-price-from">From</span>{% endif %}
+                  ₦{{ product.display_price|floatformat:"0" }}
+                {% else %}
+                  <span class="pd-price-tbd">—</span>
+                {% endif %}
+              </div>
+            </div>
+            {# ── Variations ── #}
+            {% if variations %}
+              <div class="pd-variations">
+                <div class="pd-var-label">
+                  Choose Option
+                  <span class="pd-var-selected" id="pd-var-name">—</span>
+                </div>
+                <div class="pd-var-list">
+                  {% for v in variations %}
+                    <button type="button"
+                            class="pd-var-btn {% if not v.in_stock %}pd-var-unavail{% endif %}"
+                            data-var-id="{{ v.id }}"
+                            data-var-name="{{ v.name }}"
+                            data-var-price="{{ v.price }}"
+                            data-var-stock="{{ v.in_stock|lower }}"
+                            {% if v.image %}data-var-image="{{ v.image.url }}"{% endif %}
+                            {% if not v.in_stock %}disabled{% endif %}
+                            onclick="pdSelectVariation(this)">{{ v.name }}</button>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+            {# ── Quantity ── #}
+            {% if not product.is_quote_only %}
+              <div class="pd-qty-wrap">
+                <div class="pd-qty-label">Quantity</div>
+                <div class="pd-qty-stepper">
+                  <button type="button"
+                          class="pd-qty-btn"
+                          id="pd-qty-minus"
+                          onclick="pdQty(-1)">−</button>
+                  <input type="number"
+                         class="pd-qty-input"
+                         id="pd-qty"
+                         value="1"
+                         min="1"
+                         max="99"
+                         readonly />
+                  <button type="button" class="pd-qty-btn" id="pd-qty-plus" onclick="pdQty(+1)">+</button>
+                </div>
+              </div>
+            {% endif %}
+            {# ── CTA Buttons ── #}
+            <div class="pd-cta-row">
+              {% if product.is_quote_only %}
+                <button type="button" class="pd-btn-primary" onclick="pdOpenModal()">✉️ Get a Quote</button>
+              {% elif product.in_stock %}
+                <button type="button"
+                        class="pd-btn-primary"
+                        id="pd-add-to-cart"
+                        onclick="pdAddToCart()">Add to Cart</button>
+                {% if brand == 'montee' %}
+                  <button type="button" class="pd-btn-secondary" onclick="pdOpenModal()">Custom Order</button>
+                {% endif %}
+              {% else %}
+                <button type="button" class="pd-btn-primary disabled" disabled>Unavailable</button>
+              {% endif %}
+            </div>
+            {# ── Back + Share ── #}
+            <div class="pd-action-row">
+              <a href="javascript:history.back()" class="pd-back-link">← Back</a>
+              <button type="button" class="pd-share-btn" onclick="pdShare()">Share ↗</button>
+              <span class="pd-share-toast" id="pd-share-toast">Link copied!</span>
+            </div>
           </div>
-          <div class="pd-var-list">
-            {% for v in variations %}
-            <button type="button"
-                    class="pd-var-btn {% if not v.in_stock %}pd-var-unavail{% endif %}"
-                    data-var-id="{{ v.id }}"
-                    data-var-name="{{ v.name }}"
-                    data-var-price="{{ v.price }}"
-                    data-var-stock="{{ v.in_stock|lower }}"
-                    {% if v.image %}data-var-image="{{ v.image.url }}"{% endif %}
-                    {% if not v.in_stock %}disabled{% endif %}
-                    onclick="pdSelectVariation(this)">
-              {{ v.name }}
-            </button>
+          {# /pd-info #}
+        </div>
+        {# /pd-inner #}
+      </div>
+      {# /pd-body #}
+      {# ════ TABS ════ #}
+      <div class="pd-tabs-section">
+        <div class="pd-tabs-nav" role="tablist">
+          {% if product.description %}
+            <button class="pd-tab-btn active"
+                    role="tab"
+                    aria-selected="true"
+                    onclick="pdTab(this,'pd-tab-desc')">Description</button>
+          {% endif %}
+          <button class="pd-tab-btn {% if not product.description %}active{% endif %}"
+                  role="tab"
+                  aria-selected="false"
+                  onclick="pdTab(this,'pd-tab-attrs')">Details & Attributes</button>
+        </div>
+        {# Description tab #}
+        {% if product.description %}
+          <div class="pd-tab-panel active" id="pd-tab-desc" role="tabpanel">
+            <div class="pd-desc-full">{{ product.description|linebreaks }}</div>
+          </div>
+        {% endif %}
+        {# Attributes tab #}
+        <div class="pd-tab-panel {% if not product.description %}active{% endif %}"
+             id="pd-tab-attrs"
+             role="tabpanel">
+          {% if attributes %}
+            <table class="pd-attr-table">
+              {% for attr in attributes %}
+                <tr>
+                  <td class="pd-attr-name">{{ attr.name }}</td>
+                  <td class="pd-attr-value">{{ attr.value }}</td>
+                </tr>
+              {% endfor %}
+            </table>
+          {% else %}
+            <p class="pd-no-attrs">No additional details listed for this product.</p>
+          {% endif %}
+        </div>
+      </div>
+      {# ════ RELATED PRODUCTS ════ #}
+      {% if related %}
+        <div class="pd-related">
+          <div class="pd-related-header">
+            <div>
+              <div class="pd-related-kicker">You may also like</div>
+              <div class="pd-related-title">Related Products</div>
+            </div>
+            {% if product.category %}<a href="#" class="pd-related-link">View all in {{ product.category.name }} →</a>{% endif %}
+          </div>
+          <div class="pd-related-grid">
+            {% for rel in related %}
+              {% with rel_img=rel.primary_image %}
+                <a href="{{ rel.get_absolute_url }}" class="pd-mini-card">
+                  <div class="pd-mini-img-wrap">
+                    {% if rel_img %}
+                      <img src="{{ rel_img.image.url }}"
+                           alt="{{ rel_img.alt_text|default:rel.name }}"
+                           class="pd-mini-img"
+                           loading="lazy" />
+                    {% else %}
+                      <img src="https://images.unsplash.com/photo-1615485020307-f8e1bdb06e3b?w=400&q=80"
+                           alt="{{ rel.name }}"
+                           class="pd-mini-img"
+                           loading="lazy" />
+                    {% endif %}
+                  </div>
+                  <div class="pd-mini-body">
+                    <div class="pd-mini-name">{{ rel.name }}</div>
+                    <div class="pd-mini-price">
+                      {% if rel.is_quote_only %}
+                        <span class="pd-mini-price-na">Price on request</span>
+                      {% elif rel.display_price %}
+                        ₦{{ rel.display_price|floatformat:"0" }}
+                      {% else %}
+                        <span class="pd-mini-price-na">—</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </a>
+              {% endwith %}
             {% endfor %}
           </div>
         </div>
-        {% endif %}
-
-        {# ── Quantity ── #}
-        {% if not product.is_quote_only %}
-        <div class="pd-qty-wrap">
-          <div class="pd-qty-label">Quantity</div>
-          <div class="pd-qty-stepper">
-            <button type="button" class="pd-qty-btn" id="pd-qty-minus" onclick="pdQty(-1)">−</button>
-            <input type="number" class="pd-qty-input" id="pd-qty" value="1" min="1" max="99" readonly/>
-            <button type="button" class="pd-qty-btn" id="pd-qty-plus"  onclick="pdQty(+1)">+</button>
+      {% endif %}
+      {# ════ STICKY BAR ════ #}
+      <div class="pd-sticky-bar" id="pd-sticky-bar">
+        <div class="pd-sticky-bar-inner">
+          <div class="pd-sticky-name">{{ product.name }}</div>
+          <div class="pd-sticky-price" id="pd-sticky-price">
+            {% if product.is_quote_only %}
+              Price on request
+            {% elif product.display_price %}
+              ₦{{ product.display_price|floatformat:"0" }}
+            {% endif %}
           </div>
-        </div>
-        {% endif %}
-
-        {# ── CTA Buttons ── #}
-        <div class="pd-cta-row">
           {% if product.is_quote_only %}
-            <button type="button" class="pd-btn-primary" onclick="pdOpenModal()">
-              ✉️ Get a Quote
-            </button>
+            <button type="button" class="pd-sticky-cta" onclick="pdOpenModal()">Get a Quote</button>
           {% elif product.in_stock %}
-            <button type="button" class="pd-btn-primary" id="pd-add-to-cart">
-              Add to Cart
-            </button>
-            {% if brand == 'montee' %}
-            <button type="button" class="pd-btn-secondary" onclick="pdOpenModal()">
-              Custom Order
-            </button>
-            {% endif %}
+            <button type="button"
+                    class="pd-sticky-cta"
+                    id="pd-sticky-cta"
+                    onclick="pdAddToCart()">Add to Cart</button>
           {% else %}
-            <button type="button" class="pd-btn-primary disabled" disabled>
-              Unavailable
-            </button>
+            <button type="button" class="pd-sticky-cta" disabled>Unavailable</button>
           {% endif %}
         </div>
-
-        {# ── Back + Share ── #}
-        <div class="pd-action-row">
-          <a href="javascript:history.back()" class="pd-back-link">← Back</a>
-          <button type="button" class="pd-share-btn" onclick="pdShare()">
-            Share ↗
-          </button>
-          <span class="pd-share-toast" id="pd-share-toast">Link copied!</span>
-        </div>
-
-      </div>{# /pd-info #}
-    </div>{# /pd-inner #}
-  </div>{# /pd-body #}
-
-  {# ════ TABS ════ #}
-  <div class="pd-tabs-section">
-    <div class="pd-tabs-nav" role="tablist">
-      {% if product.description %}
-      <button class="pd-tab-btn active" role="tab"
-              aria-selected="true" onclick="pdTab(this,'pd-tab-desc')">
-        Description
-      </button>
-      {% endif %}
-      <button class="pd-tab-btn {% if not product.description %}active{% endif %}"
-              role="tab" aria-selected="false"
-              onclick="pdTab(this,'pd-tab-attrs')">
-        Details & Attributes
-      </button>
-    </div>
-
-    {# Description tab #}
-    {% if product.description %}
-    <div class="pd-tab-panel active" id="pd-tab-desc" role="tabpanel">
-      <div class="pd-desc-full">{{ product.description|linebreaks }}</div>
-    </div>
-    {% endif %}
-
-    {# Attributes tab #}
-    <div class="pd-tab-panel {% if not product.description %}active{% endif %}"
-         id="pd-tab-attrs" role="tabpanel">
-      {% if attributes %}
-        <table class="pd-attr-table">
-          {% for attr in attributes %}
-          <tr>
-            <td class="pd-attr-name">{{ attr.name }}</td>
-            <td class="pd-attr-value">{{ attr.value }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-      {% else %}
-        <p class="pd-no-attrs">No additional details listed for this product.</p>
+      </div>
+      {# ════ QUOTE MODAL ════ #}
+      {% if product.is_quote_only or brand == 'montee' %}
+        {% include "shop/_quote_modal.html" with product=product submit_url=quote_url modal_id="pd-modal" %}
       {% endif %}
     </div>
-  </div>
-
-  {# ════ RELATED PRODUCTS ════ #}
-  {% if related %}
-  <div class="pd-related">
-    <div class="pd-related-header">
-      <div>
-        <div class="pd-related-kicker">You may also like</div>
-        <div class="pd-related-title">Related Products</div>
-      </div>
-      {% if product.category %}
-      <a href="#" class="pd-related-link">
-        View all in {{ product.category.name }} →
-      </a>
-      {% endif %}
-    </div>
-    <div class="pd-related-grid">
-      {% for rel in related %}
-      {% with rel_img=rel.primary_image %}
-      <a href="{{ rel.get_absolute_url }}" class="pd-mini-card">
-        <div class="pd-mini-img-wrap">
-          {% if rel_img %}
-            <img src="{{ rel_img.image.url }}"
-                 alt="{{ rel_img.alt_text|default:rel.name }}"
-                 class="pd-mini-img" loading="lazy"/>
-          {% else %}
-            <img src="https://images.unsplash.com/photo-1615485020307-f8e1bdb06e3b?w=400&q=80"
-                 alt="{{ rel.name }}" class="pd-mini-img" loading="lazy"/>
-          {% endif %}
-        </div>
-        <div class="pd-mini-body">
-          <div class="pd-mini-name">{{ rel.name }}</div>
-          <div class="pd-mini-price">
-            {% if rel.is_quote_only %}
-              <span class="pd-mini-price-na">Price on request</span>
-            {% elif rel.display_price %}
-              ₦{{ rel.display_price|floatformat:"0" }}
-            {% else %}
-              <span class="pd-mini-price-na">—</span>
-            {% endif %}
-          </div>
-        </div>
-      </a>
-      {% endwith %}
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
-
-  {# ════ STICKY BAR ════ #}
-  <div class="pd-sticky-bar" id="pd-sticky-bar">
-    <div class="pd-sticky-bar-inner">
-      <div class="pd-sticky-name">{{ product.name }}</div>
-      <div class="pd-sticky-price" id="pd-sticky-price">
-        {% if product.is_quote_only %}
-          Price on request
-        {% elif product.display_price %}
-          ₦{{ product.display_price|floatformat:"0" }}
-        {% endif %}
-      </div>
-      {% if product.is_quote_only %}
-        <button type="button" class="pd-sticky-cta" onclick="pdOpenModal()">Get a Quote</button>
-      {% elif product.in_stock %}
-        <button type="button" class="pd-sticky-cta" id="pd-sticky-cta">Add to Cart</button>
-      {% else %}
-        <button type="button" class="pd-sticky-cta" disabled>Unavailable</button>
-      {% endif %}
-    </div>
-  </div>
-
-  {# ════ QUOTE MODAL ════ #}
-  {% if product.is_quote_only or brand == 'montee' %}
-  <div class="pd-modal-backdrop" id="pd-modal" role="dialog"
-       aria-modal="true" aria-labelledby="pd-modal-title"
-       onclick="pdCloseModalOutside(event)">
-    <div class="pd-modal">
-
-      {# Form state #}
-      <div id="pd-modal-form-wrap">
-        <div class="pd-modal-header">
-          <div>
-            <div class="pd-modal-title" id="pd-modal-title">Request a Quote</div>
-            <div class="pd-modal-sub">
-              For <strong>{{ product.name }}</strong> — we'll get back to you within 24 hours.
-            </div>
-          </div>
-          <button type="button" class="pd-modal-close" onclick="pdCloseModal()" aria-label="Close">✕</button>
-        </div>
-
-        <div class="pd-modal-body">
-          <form id="pd-quote-form"
-                method="post"
-                action="{% url 'submit_quote' product.slug %}">
-            {% csrf_token %}
-
-            <div class="pd-form-row">
-              <div>
-                <label class="pd-field-label" for="q-name">
-                  Name <span class="pd-field-required">*</span>
-                </label>
-                <input type="text" id="q-name" name="name"
-                       class="pd-field-input" placeholder="Your full name" autocomplete="name"/>
-                <div class="pd-field-error" id="q-name-err">Name is required.</div>
-              </div>
-              <div>
-                <label class="pd-field-label" for="q-phone">
-                  Phone <span class="pd-field-required">*</span>
-                </label>
-                <input type="tel" id="q-phone" name="phone"
-                       class="pd-field-input" placeholder="+234 000 0000" autocomplete="tel"/>
-                <div class="pd-field-error" id="q-phone-err">Phone is required.</div>
-              </div>
-            </div>
-
-            <div class="pd-form-row-full">
-              <label class="pd-field-label" for="q-email">
-                Email <span class="pd-field-required">*</span>
-              </label>
-              <input type="email" id="q-email" name="email"
-                     class="pd-field-input" placeholder="you@example.com" autocomplete="email"/>
-              <div class="pd-field-error" id="q-email-err">Email is required.</div>
-            </div>
-
-            <div class="pd-form-row">
-              <div>
-                <label class="pd-field-label" for="q-occasion">Occasion</label>
-                <input type="text" id="q-occasion" name="occasion"
-                       class="pd-field-input" placeholder="Birthday, Wedding…"/>
-              </div>
-              <div>
-                <label class="pd-field-label" for="q-budget">Budget Range</label>
-                <input type="text" id="q-budget" name="budget"
-                       class="pd-field-input" placeholder="e.g. ₦50,000 – ₦80,000"/>
-              </div>
-            </div>
-
-            <div class="pd-form-row-full">
-              <label class="pd-field-label" for="q-date">Delivery / Event Date</label>
-              <input type="date" id="q-date" name="delivery_date" class="pd-field-input"/>
-            </div>
-
-            <div class="pd-form-row-full">
-              <label class="pd-field-label" for="q-desc">
-                Description <span class="pd-field-required">*</span>
-              </label>
-              <textarea id="q-desc" name="description"
-                        class="pd-field-textarea"
-                        placeholder="Tell us exactly what you need…"></textarea>
-              <div class="pd-field-error" id="q-desc-err">Please describe what you need.</div>
-            </div>
-
-            <button type="submit" class="pd-modal-submit" id="pd-quote-submit">
-              <span id="pd-submit-label">Send Quote Request</span>
-              <span id="pd-submit-spinner" style="display:none">Sending…</span>
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {# Success state #}
-      <div class="pd-modal-success" id="pd-modal-success">
-        <div class="pd-modal-success-icon">✅</div>
-        <div class="pd-modal-success-title">Request Sent!</div>
-        <div class="pd-modal-success-body">
-          Thanks, we've received your quote request for <strong>{{ product.name }}</strong>.<br/>
-          We'll reach out within 24 hours.
-        </div>
-      </div>
-
-    </div>{# /pd-modal #}
-  </div>
-  {% endif %}
-
-</div>{# /pd-dabelo or pd-montee #}
-{% endwith %}
+    {# /pd-dabelo or pd-montee #}
+  {% endwith %}
 {% endblock %}
-
 {% block solid_nav %}true{% endblock %}
-
 {% block extra_js %}
-<script>
-const PD = {
-  variations: {{ variations_data|safe }},
-  productName: "{{ product.name|escapejs }}",
-  basePrice: {% if product.display_price %}"₦{{ product.display_price|floatformat:'0' }}"{% else %}null{% endif %},
-  isQuoteOnly: {{ product.is_quote_only|lower }},
-  inStock: {{ product.in_stock|lower }},
-  quoteUrl: "{% url 'submit_quote' product.slug %}",
-  csrfToken: "{{ csrf_token }}",
-};
-</script>
-<script>
-(function () {
-  "use strict";
+  <script></script>
+  <script src="{% static 'js/product_detail.js' %}"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-  /* ── Gallery image switcher ── */
-  window.pdSwitchImage = function (thumb) {
-    const mainImg = document.getElementById("pd-main-img");
-    const src = thumb.dataset.src;
-    const alt = thumb.dataset.alt;
-
-    // Fade out
-    mainImg.classList.add("swapping");
-    setTimeout(function () {
-      mainImg.src = src;
-      mainImg.alt = alt;
-      mainImg.classList.remove("swapping");
-    }, 280);
-
-    // Update active thumb
-    document.querySelectorAll(".pd-thumb").forEach(function (t) {
-      t.classList.remove("active");
-    });
-    thumb.classList.add("active");
+  window.pdAddToCart = function () {
+    const qtyInput = document.getElementById('pd-qty');
+    const qty      = qtyInput ? parseInt(qtyInput.value) : 1;
+    const selected = document.querySelector('.pd-var-btn.selected');
+    const varId    = selected ? selected.dataset.varId : null;
+    cartAdd('{{ product.pk }}', varId, qty);
   };
 
-  /* ── Variation picker ── */
-  window.pdSelectVariation = function (btn) {
-    if (btn.disabled) return;
-
-    // Deselect all
-    document.querySelectorAll(".pd-var-btn").forEach(function (b) {
-      b.classList.remove("selected");
-    });
-    btn.classList.add("selected");
-
-    const name   = btn.dataset.varName;
-    const price  = btn.dataset.varPrice;
-    const image  = btn.dataset.varImage;
-    const stock  = btn.dataset.varStock === "true";
-
-    // Update selected label
-    const nameEl = document.getElementById("pd-var-name");
-    if (nameEl) nameEl.textContent = name;
-
-    // Animate price change
-    const priceEl       = document.getElementById("pd-price");
-    const stickyPriceEl = document.getElementById("pd-sticky-price");
-    if (priceEl) {
-      priceEl.classList.add("changing");
-      setTimeout(function () {
-        priceEl.textContent = price ? "₦" + parseInt(price).toLocaleString() : "—";
-        priceEl.classList.remove("changing");
-      }, 280);
-    }
-    if (stickyPriceEl && price) {
-      stickyPriceEl.textContent = "₦" + parseInt(price).toLocaleString();
-    }
-
-    // Swap image if variation has one
-    if (image) {
-      const fakeThumb = { dataset: { src: image, alt: name } };
-      pdSwitchImage(fakeThumb);
-      // Also deselect thumbs since we're showing a variation image
-      document.querySelectorAll(".pd-thumb").forEach(function (t) {
-        t.classList.remove("active");
-      });
-    }
-
-    // Update CTA availability
-    const ctaBtn       = document.getElementById("pd-add-to-cart");
-    const stickyCta    = document.getElementById("pd-sticky-cta");
-    if (ctaBtn) {
-      if (stock) {
-        ctaBtn.disabled = false;
-        ctaBtn.classList.remove("disabled");
-        ctaBtn.textContent = "Add to Cart";
-      } else {
-        ctaBtn.disabled = true;
-        ctaBtn.classList.add("disabled");
-        ctaBtn.textContent = "Unavailable";
-      }
-    }
-    if (stickyCta) {
-      stickyCta.disabled = !stock;
-      stickyCta.textContent = stock ? "Add to Cart" : "Unavailable";
-    }
-  };
-
-  /* ── Quantity stepper ── */
-  window.pdQty = function (delta) {
-    const input = document.getElementById("pd-qty");
-    if (!input) return;
-    const next = Math.min(99, Math.max(1, parseInt(input.value) + delta));
-    input.value = next;
-  };
-
-  /* ── Sticky bar visibility ── */
-  (function () {
-    const ctaRow  = document.querySelector(".pd-cta-row");
-    const stickyBar = document.getElementById("pd-sticky-bar");
-    if (!ctaRow || !stickyBar) return;
-
-    const obs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) {
-          stickyBar.classList.add("visible");
-        } else {
-          stickyBar.classList.remove("visible");
-        }
-      });
-    }, { threshold: 0 });
-    obs.observe(ctaRow);
-  })();
-
-  /* ── Tabs ── */
-  window.pdTab = function (btn, panelId) {
-    document.querySelectorAll(".pd-tab-btn").forEach(function (b) {
-      b.classList.remove("active");
-      b.setAttribute("aria-selected", "false");
-    });
-    document.querySelectorAll(".pd-tab-panel").forEach(function (p) {
-      p.classList.remove("active");
-    });
-    btn.classList.add("active");
-    btn.setAttribute("aria-selected", "true");
-    const panel = document.getElementById(panelId);
-    if (panel) panel.classList.add("active");
-  };
-
-  /* ── Share ── */
-  window.pdShare = function () {
-    const toast = document.getElementById("pd-share-toast");
-    if (navigator.share) {
-      navigator.share({
-        title: PD.productName,
-        url: window.location.href,
-      }).catch(function () {});
-    } else {
-      navigator.clipboard.writeText(window.location.href).then(function () {
-        if (toast) {
-          toast.classList.add("visible");
-          setTimeout(function () { toast.classList.remove("visible"); }, 2400);
-        }
-      });
-    }
-  };
-
-  /* ── Quote Modal ── */
-  window.pdOpenModal = function () {
-    const modal = document.getElementById("pd-modal");
-    if (modal) {
-      modal.classList.add("open");
-      document.body.style.overflow = "hidden";
-    }
-  };
-  window.pdCloseModal = function () {
-    const modal = document.getElementById("pd-modal");
-    if (modal) {
-      modal.classList.remove("open");
-      document.body.style.overflow = "";
-    }
-  };
-  window.pdCloseModalOutside = function (e) {
-    if (e.target === document.getElementById("pd-modal")) pdCloseModal();
-  };
-
-  // Escape key
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") pdCloseModal();
-  });
-
-  // Quote form — AJAX submit
-  const form = document.getElementById("pd-quote-form");
-  if (form) {
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      // Clear previous errors
-      document.querySelectorAll(".pd-field-error").forEach(function (el) {
-        el.classList.remove("visible");
-      });
-      document.querySelectorAll(".pd-field-input, .pd-field-textarea").forEach(function (el) {
-        el.classList.remove("error");
-      });
-
-      const submitBtn   = document.getElementById("pd-quote-submit");
-      const label       = document.getElementById("pd-submit-label");
-      const spinner     = document.getElementById("pd-submit-spinner");
-
-      submitBtn.disabled = true;
-      label.style.display  = "none";
-      spinner.style.display = "inline";
-
-      const data = new FormData(form);
-
-      fetch(PD.quoteUrl, {
-        method: "POST",
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-        body: data,
-      })
-        .then(function (res) { return res.json(); })
-        .then(function (json) {
-          if (json.ok) {
-            // Show success
-            document.getElementById("pd-modal-form-wrap").style.display = "none";
-            document.getElementById("pd-modal-success").classList.add("visible");
-          } else {
-            // Show field errors
-            const errors = json.errors || {};
-            Object.keys(errors).forEach(function (field) {
-              const input = form.querySelector("[name='" + field + "']");
-              const errEl = document.getElementById("q-" + field + "-err");
-              if (input) input.classList.add("error");
-              if (errEl) {
-                errEl.textContent = errors[field];
-                errEl.classList.add("visible");
-              }
-            });
-            submitBtn.disabled  = false;
-            label.style.display  = "inline";
-            spinner.style.display = "none";
-          }
-        })
-        .catch(function () {
-          submitBtn.disabled  = false;
-          label.style.display  = "inline";
-          spinner.style.display = "none";
-        });
-    });
+  const stickyCta = document.getElementById('pd-sticky-cta');
+  if (stickyCta) {
+    stickyCta.addEventListener('click', window.pdAddToCart);
   }
 
-})();
-</script>
+main({
+    variations: {{ variations_data|safe }},
+    productName: "{{ product.name|escapejs }}",
+    basePrice: {% if product.display_price %}"₦{{ product.display_price|floatformat:'0' }}"{% else %}null{% endif %},
+    isQuoteOnly: {{ product.is_quote_only|yesno:"true,false" }},
+    inStock: {{ product.in_stock|yesno:"true,false" }},
+    quoteUrl: "{% url 'submit_quote' product.slug %}",
+    csrfToken: "{{ csrf_token }}",
+  });
+});
+  </script>
 {% endblock %}
