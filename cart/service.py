@@ -60,15 +60,14 @@ def clear_cart(request):
     return cart
 
 
-def merge_carts_on_login(request, user):
-    """
-    Merge session cart into user cart after login.
-    Called from the login signal.
-    """
-    if not request.session.session_key:
+def merge_carts(session_key, user):
+    if not session_key:
         return
 
-    session_cart = Cart.objects.filter(session_key=request.session.session_key).first()
+    if not isinstance(user, User):
+        return
+
+    session_cart = Cart.objects.filter(session_key=session_key).first()
 
     if not session_cart:
         return
@@ -77,3 +76,14 @@ def merge_carts_on_login(request, user):
 
     if session_cart.pk != user_cart.pk:
         user_cart.merge_with(session_cart)
+
+
+def merge_carts_on_login(request, user):
+    """
+    Merge session cart into user cart after login.
+    Called from the login signal.
+    """
+    if not request.session.session_key:
+        return
+
+    merge_carts(request.session.session_key, user)
