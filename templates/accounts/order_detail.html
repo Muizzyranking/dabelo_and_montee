@@ -1,54 +1,90 @@
 {% extends "accounts/base.html" %}
-{% block title %}My Orders{% endblock %}
+{% block title %}Order {{ order.order_number }}{% endblock %}
 {% block account_content %}
-
-<div class="acc-page-title">Your Orders</div>
-<p class="acc-page-sub">{{ orders.count }} order{{ orders.count|pluralize }} total</p>
-
-{% if orders %}
-<div class="acc-card" style="padding: 0; overflow: hidden">
-  <table style="width:100%; border-collapse: collapse">
-    <thead>
-      <tr style="background:#FAF8F4; border-bottom: 1px solid #E8E0D0">
-        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Order</th>
-        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Date</th>
-        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Status</th>
-        <th class="text-left p-4 text-xs font-semibold tracking-widest uppercase text-warm-gray">Total</th>
-        <th class="p-4"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for order in orders %}
-      <tr style="border-bottom: 1px solid #E8E0D0" class="hover:bg-warm transition-colors">
-        <td class="p-4 font-semibold text-sm text-ink">{{ order.order_number }}</td>
-        <td class="p-4 text-sm text-warm-gray">{{ order.created_at|date:"M d, Y" }}</td>
-        <td class="p-4">
-          <span class="acc-status acc-status-{{ order.status }}">
-            {{ order.get_status_display }}
-          </span>
-        </td>
-        <td class="p-4 font-dabelo-display font-semibold text-ink">
-          ₦{{ order.total|floatformat:"0" }}
-        </td>
-        <td class="p-4">
-          <a href="{% url 'account_order_detail' order.order_number %}"
-             class="text-xs font-semibold tracking-widest uppercase text-dabelo-green hover:text-dabelo-green-mid transition-colors">
-            View →
-          </a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-{% else %}
-<div class="acc-card">
-  <div class="acc-empty">
-    <div class="acc-empty-icon">📦</div>
-    <div class="acc-empty-title">No orders yet</div>
-    <div class="acc-empty-body">Once you place an order it'll show up here with full tracking.</div>
-    <a href="{% url 'shop' %}" class="acc-empty-cta">Start Shopping</a>
+  <div class="flex items-center gap-4 mb-6">
+    <a href="{% url 'account_orders' %}"
+       class="text-xs font-semibold tracking-widest uppercase text-warm-gray hover:text-ink transition-colors">
+      ← Orders
+    </a>
   </div>
-</div>
-{% endif %}
+  <div class="flex items-start justify-between gap-4 mb-6 flex-wrap">
+    <div>
+      <div class="acc-page-title">{{ order.order_number }}</div>
+      <p class="acc-page-sub" style="margin-bottom:0">Placed {{ order.created_at|date:"F d, Y · g:i A" }}</p>
+    </div>
+    <span class="acc-status acc-status-{{ order.status }}"
+          style="font-size:0.75rem;
+                 padding:6px 14px">{{ order.get_status_display }}</span>
+  </div>
+  {# Items #}
+  <div class="acc-card">
+    <div class="acc-card-title">Items Ordered</div>
+    <div class="divide-y" style="border-top: 1px solid #E8E0D0">
+      {% for item in order.items.all %}
+        <div class="flex items-center justify-between gap-4 py-4">
+          <div class="flex-1">
+            <div class="font-semibold text-sm text-ink">{{ item.product_name }}</div>
+            {% if item.variation_name %}<div class="text-xs text-warm-gray mt-1">{{ item.variation_name }}</div>{% endif %}
+            <div class="text-xs text-warm-gray mt-1">Qty: {{ item.quantity }}</div>
+          </div>
+          <div class="font-dabelo-display font-semibold text-ink">₦{{ item.line_total|floatformat:"0" }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {# Summary + Address — 2 col #}
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="acc-card" style="margin-bottom:0">
+      <div class="acc-card-title">Order Summary</div>
+      <div class="space-y-3 text-sm">
+        <div class="flex justify-between">
+          <span class="text-warm-gray">Subtotal</span>
+          <span>₦{{ order.subtotal|floatformat:"0" }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-warm-gray">Delivery</span>
+          <span>
+            {% if order.delivery_fee %}
+              ₦{{ order.delivery_fee|floatformat:"0" }}
+            {% else %}
+              Free
+            {% endif %}
+          </span>
+        </div>
+        {% if order.discount %}
+          <div class="flex justify-between text-dabelo-green">
+            <span>Discount</span>
+            <span>−₦{{ order.discount|floatformat:"0" }}</span>
+          </div>
+        {% endif %}
+        <div class="flex justify-between font-bold text-base pt-2"
+             style="border-top: 1px solid #E8E0D0">
+          <span>Total</span>
+          <span class="font-dabelo-display text-xl">₦{{ order.total|floatformat:"0" }}</span>
+        </div>
+      </div>
+      <div class="mt-4 pt-4" style="border-top: 1px solid #E8E0D0">
+        <div class="text-xs text-warm-gray mb-1 uppercase tracking-widest font-semibold">Payment</div>
+        <span class="acc-status {% if order.is_paid %}acc-status-delivered{% else %}acc-status-pending{% endif %}">
+          {% if order.is_paid %}
+            Paid
+          {% else %}
+            Pending
+          {% endif %}
+        </span>
+      </div>
+    </div>
+    <div class="acc-card" style="margin-bottom:0">
+      <div class="acc-card-title">Delivery Address</div>
+      <div class="text-sm text-ink leading-relaxed">
+        <div class="font-semibold mb-1">{{ order.delivery_name }}</div>
+        <div class="text-warm-gray">{{ order.delivery_phone }}</div>
+        <div class="mt-2 text-warm-gray">
+          {{ order.delivery_address }}
+          <br />
+          {{ order.delivery_city }}, {{ order.delivery_state }}
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
