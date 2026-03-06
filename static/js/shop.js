@@ -43,7 +43,7 @@ function toggleSidebar() {
 }
 
 function main() {
-    toggleSidebar();
+  toggleSidebar();
 }
 
 main();

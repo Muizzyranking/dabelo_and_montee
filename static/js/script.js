@@ -57,8 +57,10 @@ function initNavbarScroll() {
       setSolid();
     } else {
       nav.classList.remove(
-        "bg-dabelo-green", "shadow-warm-md",
-        "bg-motee-purple", "shadow-purple-glow"
+        "bg-dabelo-green",
+        "shadow-warm-md",
+        "bg-motee-purple",
+        "shadow-purple-glow",
       );
       nav.classList.add("bg-transparent");
     }

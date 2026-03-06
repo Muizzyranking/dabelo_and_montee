@@ -119,28 +119,29 @@ function cartDrawerRefresh() {
     });
 }
 
-/* ─── DRAWER ACTION BINDING ─── */
 function bindDrawerActions() {
   document.querySelectorAll("[data-drawer-decrease]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       const itemId = btn.dataset.drawerDecrease;
-      const input = document.querySelector(`[data-drawer-qty="${itemId}"]`);
-      const current = parseInt(input ? input.value : 1);
-      cartUpdateItem(itemId, current - 1);
+      const qtyEl = document.querySelector(
+        '[data-drawer-qty="' + itemId + '"]',
+      );
+      const current = qtyEl ? parseInt(qtyEl.textContent) : 1;
+      cartUpdateItem(itemId, isNaN(current) ? 0 : current - 1);
     });
   });
 
-  // Quantity increase
   document.querySelectorAll("[data-drawer-increase]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       const itemId = btn.dataset.drawerIncrease;
-      const input = document.querySelector(`[data-drawer-qty="${itemId}"]`);
-      const current = parseInt(input ? input.value : 1);
-      cartUpdateItem(itemId, current + 1);
+      const qtyEl = document.querySelector(
+        '[data-drawer-qty="' + itemId + '"]',
+      );
+      const current = qtyEl ? parseInt(qtyEl.textContent) : 1;
+      cartUpdateItem(itemId, isNaN(current) ? 2 : current + 1);
     });
   });
 
-  // Remove
   document.querySelectorAll("[data-drawer-remove]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       cartRemoveItem(btn.dataset.drawerRemove);
@@ -178,6 +179,8 @@ function cartAdd(productId, variationId, quantity) {
 
 /* ─── UPDATE QUANTITY ─── */
 function cartUpdateItem(itemId, quantity) {
+  quantity = parseInt(quantity);
+  if (isNaN(quantity)) quantity = 0;
   const formData = new FormData();
   formData.append("item_id", itemId);
   formData.append("quantity", quantity);
