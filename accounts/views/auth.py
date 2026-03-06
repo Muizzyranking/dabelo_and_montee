@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 
+from cart.service import merge_carts
+
 User = get_user_model()
 
 
@@ -74,6 +76,8 @@ def register_view(request):
             url += f"&next={next_url}"
         return redirect(url)
 
+    old_session_key = request.session.session_key
+
     user = User.objects.create_user(
         email=email,
         password=password,
@@ -81,6 +85,9 @@ def register_view(request):
         last_name=last_name,
     )
     login(request, user)
+
+    if old_session_key:
+        merge_carts(old_session_key, user)
     messages.success(request, f"Welcome, {user.first_name}! Your account is ready.")
     return redirect(next_url if next_url else "/")
 
