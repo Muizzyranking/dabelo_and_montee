@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Admin Panel{% endblock %} — Dabelo & Motee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin_panel/base.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+{# ── SIDEBAR ── #}
+<aside class="ap-sidebar">
+  <div class="ap-sidebar-brand">
+    <div class="ap-sidebar-brand-title">Dabelo × Motee</div>
+    <div class="ap-sidebar-brand-sub">Admin Panel</div>
+  </div>
+
+  <div class="ap-sidebar-user">
+    <div class="ap-sidebar-avatar">
+      {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+    </div>
+    <div>
+      <div class="ap-sidebar-uname">{{ request.user.full_name }}</div>
+      <div class="ap-sidebar-role">
+        {% if request.user.admin_profile.is_superadmin %}Superadmin{% else %}Admin{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <nav class="ap-nav">
+    <a href="{% url 'ap_dashboard' %}"
+       class="ap-nav-item {% if request.resolver_match.url_name == 'ap_dashboard' %}active{% endif %}">
+      <span class="ap-nav-icon">📊</span> Dashboard
+    </a>
+
+    {% with profile=request.user.admin_profile %}
+
+    {% if profile.is_superadmin or profile.has_any_product_access %}
+    <div class="ap-nav-section">Products</div>
+    <a href="{% url 'ap_product_list' %}"
+       class="ap-nav-item {% if 'ap_product' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="ap-nav-icon">📦</span> All Products
+    </a>
+    <a href="{% url 'ap_category_list' %}"
+       class="ap-nav-item {% if 'ap_category' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="ap-nav-icon">🗂️</span> Categories
+    </a>
+    {% if profile.is_superadmin or profile.can_edit_dabelo_products or profile.can_edit_montee_products %}
+    <a href="{% url 'ap_product_add' %}"
+       class="ap-nav-item {% if request.resolver_match.url_name == 'ap_product_add' %}active{% endif %}">
+      <span class="ap-nav-icon">＋</span> Add Product
+    </a>
+    {% endif %}
+    {% endif %}
+
+    {% if profile.is_superadmin or profile.can_view_orders %}
+    <div class="ap-nav-section">Orders</div>
+    <a href="{% url 'ap_order_list' %}"
+       class="ap-nav-item {% if 'ap_order' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="ap-nav-icon">🛍️</span> Orders
+    </a>
+    {% endif %}
+
+    {% if profile.is_superadmin or profile.can_view_quotes %}
+    <div class="ap-nav-section">Custom Orders</div>
+    <a href="{% url 'ap_quote_list' %}"
+       class="ap-nav-item {% if 'ap_quote' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="ap-nav-icon">✉️</span> Quote Requests
+    </a>
+    {% endif %}
+
+    {% if profile.is_superadmin %}
+    <div class="ap-nav-section">Administration</div>
+    <a href="{% url 'ap_admin_list' %}"
+       class="ap-nav-item {% if 'ap_admin' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="ap-nav-icon">👥</span> Admin Users
+    </a>
+    {% endif %}
+
+    {% endwith %}
+  </nav>
+
+  <div class="ap-sidebar-footer">
+    <a href="{% url 'shop' %}" target="_blank"
+       class="ap-nav-item" style="padding: 8px 0; border: none">
+      <span class="ap-nav-icon">🌐</span>
+      <span style="font-size:0.78rem">View Site</span>
+    </a>
+    <form method="post" action="{% url 'ap_logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="ap-logout-btn">
+        <span>↩</span> Sign Out
+      </button>
+    </form>
+  </div>
+</aside>
+
+{# ── MAIN ── #}
+<div class="ap-main">
+  <div class="ap-topbar">
+    <div class="ap-topbar-breadcrumb">
+      {% block breadcrumb %}<span>Admin Panel</span>{% endblock %}
+    </div>
+    <div style="font-size:0.75rem; color: var(--ap-muted)">
+      {{ request.user.email }}
+    </div>
+  </div>
+
+  <div class="ap-content">
+    {% if messages %}
+    <div class="ap-messages">
+      {% for msg in messages %}
+      <div class="ap-msg ap-msg-{{ msg.tags }}">
+        {% if msg.tags == 'success' %}✓{% else %}⚠{% endif %}
+        {{ msg }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<script src="{% static 'js/admin_panel/base.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
