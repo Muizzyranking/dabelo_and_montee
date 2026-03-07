@@ -1,0 +1,145 @@
+{% extends "joint/base.html" %}
+{% load static %}
+{% block title %}Order Confirmed — {{ order.order_number }}{% endblock %}
+{% block body_attrs %}data-navbar-solid="true"{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-parchment">
+
+  {# ── Success hero ── #}
+  <div class="relative overflow-hidden pt-32 pb-16 px-5 text-center"
+       style="background: linear-gradient(135deg, #0F4D2F 0%, #1E7248 100%)">
+    <div class="absolute inset-0 stripe-bg opacity-30 pointer-events-none"></div>
+    <div class="relative z-10 max-w-xl mx-auto">
+      {# Animated checkmark #}
+      <div class="w-20 h-20 rounded-full bg-white/10 border-2 border-white/30
+                  flex items-center justify-center mx-auto mb-6 text-4xl
+                  animate-[fadeIn_0.5s_ease_forwards]">
+        ✅
+      </div>
+      <div class="text-xs font-semibold tracking-widest uppercase
+                  text-dabelo-gold mb-3 flex items-center justify-center gap-3">
+        <span class="w-6 h-px bg-dabelo-gold"></span>
+        Order Confirmed
+        <span class="w-6 h-px bg-dabelo-gold"></span>
+      </div>
+      <h1 class="font-dabelo-display font-semibold text-white mb-3"
+          style="font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1">
+        Thank you,
+        {{ order.user.first_name|default:"friend" }}!
+      </h1>
+      <p class="text-white/60 leading-relaxed">
+        Your order <strong class="text-white">{{ order.order_number }}</strong>
+        has been confirmed and is being prepared.
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-3xl mx-auto px-5 sm:px-8 py-12">
+
+    {# ── Order items ── #}
+    <div class="bg-white border border-warm-border rounded-sm p-6 sm:p-8 mb-6">
+      <div class="text-xs font-bold tracking-widest uppercase
+                  text-warm-gray mb-6 flex items-center gap-3">
+        Items Ordered
+        <span class="flex-1 h-px bg-warm-border"></span>
+      </div>
+      <div class="divide-y divide-warm-border">
+        {% for item in items %}
+        <div class="flex items-center justify-between gap-4 py-4">
+          <div class="flex-1">
+            <p class="font-semibold text-sm text-ink">{{ item.product_name }}</p>
+            {% if item.variation_name %}
+              <p class="text-xs text-warm-gray mt-0.5">{{ item.variation_name }}</p>
+            {% endif %}
+            <p class="text-xs text-warm-gray mt-0.5">Qty: {{ item.quantity }}</p>
+          </div>
+          <p class="font-dabelo-display font-semibold text-ink">
+            ₦{{ item.line_total|floatformat:"0" }}
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="border-t border-warm-border pt-4 flex justify-between
+                  items-center mt-2">
+        <span class="font-semibold text-ink">Total Paid</span>
+        <span class="font-dabelo-display font-bold text-2xl text-ink">
+          ₦{{ order.total|floatformat:"0" }}
+        </span>
+      </div>
+    </div>
+
+    {# ── Delivery + payment info — 2 col ── #}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+      <div class="bg-white border border-warm-border rounded-sm p-6">
+        <div class="text-xs font-bold tracking-widest uppercase
+                    text-warm-gray mb-4">Delivery To</div>
+        <div class="text-sm text-ink leading-relaxed">
+          <p class="font-semibold">{{ order.delivery_name }}</p>
+          <p class="text-warm-gray">{{ order.delivery_phone }}</p>
+          <p class="text-warm-gray mt-2">
+            {{ order.delivery_address }}<br/>
+            {{ order.delivery_city }}, {{ order.delivery_state }}
+          </p>
+        </div>
+      </div>
+      <div class="bg-white border border-warm-border rounded-sm p-6">
+        <div class="text-xs font-bold tracking-widest uppercase
+                    text-warm-gray mb-4">Payment</div>
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <span class="text-warm-gray">Status</span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5
+                         rounded-full text-xs font-bold tracking-wider
+                         bg-dabelo-green-pale text-dabelo-green">
+              ✓ Paid
+            </span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-warm-gray">Reference</span>
+            <span class="font-mono text-xs text-ink">
+              {{ order.paystack_ref|truncatechars:20 }}
+            </span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-warm-gray">Order Date</span>
+            <span>{{ order.created_at|date:"M d, Y" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# ── Next steps ── #}
+    <div class="bg-white border border-warm-border rounded-sm p-6 mb-8">
+      <div class="text-xs font-bold tracking-widest uppercase
+                  text-warm-gray mb-4">What Happens Next</div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {% for step in next_steps %}
+        <div class="text-center p-4">
+          <div class="text-2xl mb-2">{{ step.icon }}</div>
+          <div class="text-sm font-semibold text-ink mb-1">{{ step.title }}</div>
+          <div class="text-xs text-warm-gray leading-relaxed">{{ step.body }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# ── CTAs ── #}
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="{% url 'account_order_detail' order.order_number %}"
+         class="px-8 py-4 bg-dabelo-green text-white text-xs font-bold
+                tracking-widest uppercase rounded-sm hover:bg-dabelo-green-mid
+                transition-all hover:-translate-y-0.5 shadow-green-glow text-center">
+        View Order Details
+      </a>
+      <a href="{% url 'shop' %}"
+         class="px-8 py-4 border border-warm-border text-warm-gray text-xs
+                font-bold tracking-widest uppercase rounded-sm
+                hover:border-ink hover:text-ink transition-colors text-center">
+        Continue Shopping
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
