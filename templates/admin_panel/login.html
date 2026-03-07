@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login — Dabelo & Motee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600&family=DM+Sans:wght@400;500;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_panel/login.css' %}">
+  </head>
+  <body>
+    <div class="login-card">
+      <div class="login-brand">Dabelo × Motee</div>
+      <div class="login-sub">Admin Panel</div>
+      {% if error %}<div class="login-error">⚠ {{ error }}</div>{% endif %}
+      <form method="post" action="{% url 'ap_login' %}">
+        {% csrf_token %}
+        <label class="login-label" for="email">Email Address</label>
+        <input type="email"
+               id="email"
+               name="email"
+               class="login-input"
+               placeholder="admin@example.com"
+               autocomplete="email"
+               required />
+        <label class="login-label" for="password">Password</label>
+        <input type="password"
+               id="password"
+               name="password"
+               class="login-input"
+               placeholder="Your password"
+               autocomplete="current-password"
+               required />
+        <button type="submit" class="login-btn">Sign In →</button>
+      </form>
+    </div>
+  </body>
+</html>
