@@ -34,7 +34,9 @@ INSTALLED_APPS = [
     "accounts",
     "products",
     "images",
+    "checkout",
     "cart.apps.CartConfig",
+    "admin_panel",
 ]
 
 MIDDLEWARE = [
