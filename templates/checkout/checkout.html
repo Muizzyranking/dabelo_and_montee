@@ -1,0 +1,283 @@
+{% extends "joint/base.html" %}
+{% load static %}
+{% block title %}Checkout — Dabelo & Motee{% endblock %}
+{% block body_attrs %}data-navbar-solid="true"{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-parchment">
+
+  <div class="bg-ink pt-28 pb-10 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-5 pointer-events-none"
+         style="background-image: repeating-linear-gradient(
+           45deg, transparent, transparent 28px, white 28px, white 29px)">
+    </div>
+    <div class="max-w-5xl mx-auto px-5 sm:px-8 relative z-10">
+      <div class="text-xs font-semibold tracking-widest uppercase
+                  text-dabelo-gold mb-3 flex items-center gap-3">
+        <span class="w-6 h-px bg-dabelo-gold"></span> Almost There
+      </div>
+      <h1 class="font-dabelo-display font-semibold text-white"
+          style="font-size: clamp(2rem, 4vw, 3rem); line-height: 1">
+        Checkout
+      </h1>
+    </div>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-5 sm:px-8 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+      {# ════ LEFT — Address form ════ #}
+      <div class="lg:col-span-2">
+        <div class="bg-white border border-warm-border rounded-sm p-6 sm:p-8">
+
+          {# Section title #}
+          <div class="text-xs font-bold tracking-widest uppercase
+                      text-warm-gray mb-6 flex items-center gap-3">
+            Delivery Details
+            <span class="flex-1 h-px bg-warm-border"></span>
+          </div>
+
+          <div id="checkout-errors"
+               class="hidden mb-5 p-4 bg-red-50 border border-red-200
+                      rounded-sm text-sm text-red-700">
+          </div>
+
+          <form id="checkout-form"
+                novalidate
+                data-pay-url="{% url 'checkout_pay' %}"
+                data-verify-url="{% url 'checkout_verify' %}"
+                data-address-url="{% url 'account_address' %}">
+
+            {% csrf_token %}
+
+            {# Full name #}
+            <div class="mb-4">
+              <label class="block text-xs font-bold tracking-widest uppercase
+                            text-warm-gray mb-2" for="co-name">
+                Full Name <span class="text-dabelo-gold">*</span>
+              </label>
+              <input type="text" id="co-name" name="name"
+                     value="{{ address.name }}"
+                     placeholder="As it should appear on delivery"
+                     class="w-full px-4 py-3 text-sm border border-warm-border
+                            rounded-sm bg-parchment text-ink outline-none
+                            focus:border-dabelo-green focus:bg-white
+                            transition-colors duration-200"
+                     autocomplete="name"/>
+              <p class="text-red-500 text-xs mt-1 hidden" id="err-name"></p>
+            </div>
+
+            {# Phone #}
+            <div class="mb-4">
+              <label class="block text-xs font-bold tracking-widest uppercase
+                            text-warm-gray mb-2" for="co-phone">
+                Phone Number <span class="text-dabelo-gold">*</span>
+              </label>
+              <input type="tel" id="co-phone" name="phone"
+                     value="{{ address.phone }}"
+                     placeholder="+234 000 0000"
+                     class="w-full px-4 py-3 text-sm border border-warm-border
+                            rounded-sm bg-parchment text-ink outline-none
+                            focus:border-dabelo-green focus:bg-white
+                            transition-colors duration-200"
+                     autocomplete="tel"/>
+              <p class="text-red-500 text-xs mt-1 hidden" id="err-phone"></p>
+            </div>
+
+            {# Address line 1 #}
+            <div class="mb-4">
+              <label class="block text-xs font-bold tracking-widest uppercase
+                            text-warm-gray mb-2" for="co-line1">
+                Address <span class="text-dabelo-gold">*</span>
+              </label>
+              <input type="text" id="co-line1" name="address_line_1"
+                     value="{{ address.line1 }}"
+                     placeholder="Street address, house/flat number"
+                     class="w-full px-4 py-3 text-sm border border-warm-border
+                            rounded-sm bg-parchment text-ink outline-none
+                            focus:border-dabelo-green focus:bg-white
+                            transition-colors duration-200"
+                     autocomplete="address-line1"/>
+              <p class="text-red-500 text-xs mt-1 hidden" id="err-address_line_1"></p>
+            </div>
+
+            {# Address line 2 #}
+            <div class="mb-4">
+              <label class="block text-xs font-bold tracking-widest uppercase
+                            text-warm-gray mb-2" for="co-line2">
+                Address Line 2
+                <span class="normal-case font-normal text-warm-gray ml-1">
+                  (optional)
+                </span>
+              </label>
+              <input type="text" id="co-line2" name="address_line_2"
+                     value="{{ address.line2 }}"
+                     placeholder="Estate, landmark, additional info"
+                     class="w-full px-4 py-3 text-sm border border-warm-border
+                            rounded-sm bg-parchment text-ink outline-none
+                            focus:border-dabelo-green focus:bg-white
+                            transition-colors duration-200"
+                     autocomplete="address-line2"/>
+            </div>
+
+            {# City + State #}
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-xs font-bold tracking-widest uppercase
+                              text-warm-gray mb-2" for="co-city">
+                  City / LGA <span class="text-dabelo-gold">*</span>
+                </label>
+                <input type="text" id="co-city" name="city"
+                       value="{{ address.city }}"
+                       placeholder="e.g. Ikeja"
+                       class="w-full px-4 py-3 text-sm border border-warm-border
+                              rounded-sm bg-parchment text-ink outline-none
+                              focus:border-dabelo-green focus:bg-white
+                              transition-colors duration-200"/>
+                <p class="text-red-500 text-xs mt-1 hidden" id="err-city"></p>
+              </div>
+              <div>
+                <label class="block text-xs font-bold tracking-widest uppercase
+                              text-warm-gray mb-2" for="co-state">
+                  State <span class="text-dabelo-gold">*</span>
+                </label>
+                <input type="text" id="co-state" name="state"
+                       value="{{ address.state }}"
+                       placeholder="e.g. Lagos"
+                       class="w-full px-4 py-3 text-sm border border-warm-border
+                              rounded-sm bg-parchment text-ink outline-none
+                              focus:border-dabelo-green focus:bg-white
+                              transition-colors duration-200"/>
+                <p class="text-red-500 text-xs mt-1 hidden" id="err-state"></p>
+              </div>
+            </div>
+
+            {# Order notes #}
+            <div class="mb-6">
+              <label class="block text-xs font-bold tracking-widest uppercase
+                            text-warm-gray mb-2" for="co-notes">
+                Order Notes
+                <span class="normal-case font-normal text-warm-gray ml-1">
+                  (optional)
+                </span>
+              </label>
+              <textarea id="co-notes" name="notes" rows="3"
+                        placeholder="Special instructions, delivery time preferences…"
+                        class="w-full px-4 py-3 text-sm border border-warm-border
+                               rounded-sm bg-parchment text-ink outline-none
+                               focus:border-dabelo-green focus:bg-white
+                               transition-colors duration-200 resize-none">
+              </textarea>
+            </div>
+
+            {# Save address checkbox #}
+            <label class="flex items-center gap-3 cursor-pointer mb-6">
+              <input type="checkbox" name="save_address"
+                     id="co-save" checked
+                     class="w-4 h-4 accent-dabelo-green"/>
+              <span class="text-sm text-warm-gray">
+                Save this address to my account for next time
+              </span>
+            </label>
+
+            {# Pay button #}
+            <button type="submit" id="pay-btn"
+                    class="w-full py-4 bg-dabelo-green text-white
+                           text-sm font-bold tracking-widest uppercase
+                           rounded-sm shadow-green-glow
+                           hover:bg-dabelo-green-mid transition-all duration-200
+                           hover:-translate-y-0.5 flex items-center justify-center gap-3
+                           disabled:opacity-60 disabled:cursor-not-allowed
+                           disabled:transform-none">
+              <span id="pay-btn-label">
+                Pay ₦{{ total|floatformat:"0" }} Securely
+              </span>
+              <span id="pay-btn-spinner" class="hidden">Processing…</span>
+            </button>
+
+            <p class="text-center text-xs text-warm-gray mt-4 flex items-center
+                       justify-center gap-2">
+              🔒 Secured by Paystack · SSL encrypted
+            </p>
+          </form>
+        </div>
+      </div>
+
+      {# ════ RIGHT — Order summary ════ #}
+      <div class="lg:col-span-1">
+        <div class="bg-white border border-warm-border rounded-sm p-6 sticky top-6">
+          <div class="text-xs font-bold tracking-widest uppercase
+                      text-warm-gray mb-5 flex items-center gap-3">
+            Order Summary
+            <span class="flex-1 h-px bg-warm-border"></span>
+          </div>
+
+          {# Items #}
+          <div class="space-y-4 mb-5">
+            {% for item in items %}
+            {% with img=item.product.primary_image %}
+            <div class="flex gap-3 items-start">
+              <div class="w-12 h-12 rounded-sm overflow-hidden bg-warm shrink-0">
+                {% if img %}
+                  <img src="{{ img.image.url }}"
+                       alt="{{ item.product.name }}"
+                       class="w-full h-full object-cover"/>
+                {% else %}
+                  <img src="https://images.unsplash.com/photo-1615485020307-f8e1bdb06e3b?w=200&q=80"
+                       alt="{{ item.product.name }}"
+                       class="w-full h-full object-cover"/>
+                {% endif %}
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-ink leading-snug truncate">
+                  {{ item.product.name }}
+                </p>
+                {% if item.variation %}
+                  <p class="text-xs text-warm-gray">{{ item.variation.name }}</p>
+                {% endif %}
+                <p class="text-xs text-warm-gray">Qty: {{ item.quantity }}</p>
+              </div>
+              <div class="text-sm font-semibold text-ink shrink-0">
+                ₦{{ item.line_total|floatformat:"0" }}
+              </div>
+            </div>
+            {% endwith %}
+            {% endfor %}
+          </div>
+
+          {# Totals #}
+          <div class="border-t border-warm-border pt-4 space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-warm-gray">Subtotal</span>
+              <span>₦{{ subtotal|floatformat:"0" }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-warm-gray">Delivery</span>
+              <span class="text-dabelo-green font-semibold">Free</span>
+            </div>
+            <div class="flex justify-between font-bold text-base pt-2
+                        border-t border-warm-border">
+              <span>Total</span>
+              <span class="font-dabelo-display text-xl">
+                ₦{{ total|floatformat:"0" }}
+              </span>
+            </div>
+          </div>
+
+          <a href="{% url 'cart' %}"
+             class="block text-center text-xs text-warm-gray
+                    hover:text-ink transition-colors mt-4">
+            ← Edit cart
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.paystack.co/v2/inline.js"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}
