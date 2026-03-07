@@ -1,0 +1,160 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block breadcrumb %}Dashboard{% endblock %}
+{% block extra_head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+  {# ── Stat cards ── #}
+  <div class="ap-stats">
+    <div class="ap-stat">
+      <div class="ap-stat-icon">🛍️</div>
+      <div class="ap-stat-value">{{ total_orders }}</div>
+      <div class="ap-stat-label">Total Orders</div>
+      <div class="ap-stat-sub">
+        <span class="ap-stat-up">+{{ orders_this_month }}</span> this month
+      </div>
+    </div>
+    <div class="ap-stat">
+      <div class="ap-stat-icon">💰</div>
+      <div class="ap-stat-value" style="font-size:1.5rem">₦{{ total_revenue|floatformat:"0" }}</div>
+      <div class="ap-stat-label">Total Revenue</div>
+      <div class="ap-stat-sub">
+        <span class="ap-stat-up">₦{{ revenue_this_month|floatformat:"0" }}</span> this month
+      </div>
+    </div>
+    <div class="ap-stat">
+      <div class="ap-stat-icon">⏳</div>
+      <div class="ap-stat-value"
+           style="color: {% if pending_orders > 0 %}#C59A3D{% else %}inherit{% endif %}">{{ pending_orders }}</div>
+      <div class="ap-stat-label">Pending Orders</div>
+      <div class="ap-stat-sub">Need attention</div>
+    </div>
+    <div class="ap-stat">
+      <div class="ap-stat-icon">✉️</div>
+      <div class="ap-stat-value"
+           style="color: {% if new_quotes > 0 %}#E84C9A{% else %}inherit{% endif %}">{{ new_quotes }}</div>
+      <div class="ap-stat-label">New Quotes</div>
+      <div class="ap-stat-sub">Unread requests</div>
+    </div>
+  </div>
+  <div style="display:grid;
+              grid-template-columns: 2fr 1fr;
+              gap: 20px;
+              margin-bottom: 20px">
+    {# ── Revenue chart ── #}
+    <div class="ap-card">
+      <div class="ap-card-header">
+        <div class="ap-card-title">Revenue — Last 7 Days</div>
+      </div>
+      <div class="ap-card-body" style="padding: 20px 24px">
+        {# Chart data passed via data-* attributes so dashboard.js stays static #}
+        <canvas id="revenueChart"
+                height="80"
+                data-labels="{{ chart_labels|escapejs }}"
+                data-values="{{ chart_values|escapejs }}">
+        </canvas>
+      </div>
+    </div>
+    {# ── Products summary ── #}
+    <div class="ap-card">
+      <div class="ap-card-header">
+        <div class="ap-card-title">Products</div>
+        <a href="{% url 'ap_product_add' %}"
+           class="ap-btn ap-btn-primary ap-btn-sm">+ Add</a>
+      </div>
+      <div class="ap-card-body">
+        <div style="display:flex; flex-direction:column; gap:16px">
+          <div style="display:flex;
+                      justify-content:space-between;
+                      align-items:center">
+            <div style="display:flex; align-items:center; gap:10px">
+              <span style="font-size:1.2rem">🌿</span>
+              <div>
+                <div style="font-size:0.82rem; font-weight:600; color:var(--ap-text)">Dabelo Café</div>
+                <div style="font-size:0.72rem; color:var(--ap-muted)">Active products</div>
+              </div>
+            </div>
+            <div style="font-family:'Cormorant Garamond',serif;
+                        font-size:1.8rem;
+                        font-weight:600;
+                        color:#4CAF50">{{ dabelo_count }}</div>
+          </div>
+          <div style="height:1px; background:var(--ap-border)"></div>
+          <div style="display:flex;
+                      justify-content:space-between;
+                      align-items:center">
+            <div style="display:flex; align-items:center; gap:10px">
+              <span style="font-size:1.2rem">🎂</span>
+              <div>
+                <div style="font-size:0.82rem; font-weight:600; color:var(--ap-text)">Motee Cakes</div>
+                <div style="font-size:0.72rem; color:var(--ap-muted)">Active products</div>
+              </div>
+            </div>
+            <div style="font-family:'Cormorant Garamond',serif;
+                        font-size:1.8rem;
+                        font-weight:600;
+                        color:#B39DDB">{{ montee_count }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# ── Recent orders ── #}
+  <div class="ap-card">
+    <div class="ap-card-header">
+      <div class="ap-card-title">Recent Orders</div>
+      <a href="{% url 'ap_order_list' %}"
+         class="ap-btn ap-btn-ghost ap-btn-sm">View All →</a>
+    </div>
+    {% if recent_orders %}
+      <table class="ap-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in recent_orders %}
+            <tr>
+              <td>
+                <span style="font-weight:600; font-family:monospace; font-size:0.8rem">{{ order.order_number }}</span>
+              </td>
+              <td>{{ order.delivery_name }}</td>
+              <td style="color:var(--ap-muted)">{{ order.created_at|date:"M d, Y" }}</td>
+              <td>
+                <span class="ap-badge ap-status-{{ order.status }}">{{ order.get_status_display }}</span>
+              </td>
+              <td style="font-family:'Cormorant Garamond',serif;
+                         font-size:1rem;
+                         font-weight:600">₦{{ order.total|floatformat:"0" }}</td>
+              <td>
+                <a href="{% url 'ap_order_detail' order.order_number %}"
+                   class="ap-btn ap-btn-ghost ap-btn-sm">View →</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="ap-empty">
+        <div class="ap-empty-icon">🛍️</div>
+        <div class="ap-empty-title">No orders yet</div>
+        <div class="ap-empty-body">Orders will appear here once customers start purchasing.</div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+{% block extra_js %}
+  <script>
+  window.CHART_LABELS = {{ chart_labels|safe }};
+  window.CHART_VALUES = {{ chart_values|safe }};
+  </script>
+  <script src="{% static 'js/admin_panel/dashboard.js' %}"></script>
+{% endblock %}
