@@ -1,0 +1,70 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Admin Users{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a> › Admins
+{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px">
+  <h1 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem;
+             font-weight:600; color:var(--ap-text); margin:0">
+    Admin Users
+  </h1>
+  <a href="{% url 'ap_admin_add' %}" class="ap-btn ap-btn-primary">+ Add Admin</a>
+</div>
+
+<div class="ap-card">
+  <table class="ap-table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Role</th>
+        <th>Permissions</th>
+        <th>Since</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for profile in profiles %}
+      <tr>
+        <td>
+          <div style="font-weight:600">{{ profile.user.full_name }}</div>
+          <div style="font-size:0.72rem; color:var(--ap-muted)">{{ profile.user.email }}</div>
+        </td>
+        <td>
+          {% if profile.is_superadmin %}
+            <span class="ap-badge ap-badge-gold">Superadmin</span>
+          {% else %}
+            <span class="ap-badge ap-badge-gray">Admin</span>
+          {% endif %}
+        </td>
+        <td style="font-size:0.78rem; color:var(--ap-muted)">
+          {% if profile.is_superadmin %}
+            All permissions
+          {% else %}
+            {% if profile.can_view_dabelo_products %}Dabelo {% endif %}
+            {% if profile.can_view_montee_products %}Motee {% endif %}
+            {% if profile.can_view_orders %}Orders {% endif %}
+            {% if profile.can_view_quotes %}Quotes{% endif %}
+          {% endif %}
+        </td>
+        <td style="color:var(--ap-muted)">{{ profile.created_at|date:"M d, Y" }}</td>
+        <td>
+          <div style="display:flex; gap:8px">
+            <a href="{% url 'ap_admin_edit' profile.pk %}"
+               class="ap-btn ap-btn-ghost ap-btn-sm">Edit</a>
+            {% if profile.user != request.user %}
+            <form method="post" action="{% url 'ap_admin_remove' profile.pk %}"
+                  onsubmit="return confirm('Remove admin access for {{ profile.user.email }}?')">
+              {% csrf_token %}
+              <button type="submit" class="ap-btn ap-btn-danger ap-btn-sm">Remove</button>
+            </form>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

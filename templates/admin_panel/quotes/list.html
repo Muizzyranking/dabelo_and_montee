@@ -1,0 +1,84 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Quote Requests{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a> › Quotes
+{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px">
+  <h1 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem;
+             font-weight:600; color:var(--ap-text); margin:0">
+    Quote Requests
+  </h1>
+</div>
+
+<form method="get" class="ap-filter-bar">
+  <input type="text" name="q" value="{{ search }}"
+         class="ap-search" placeholder="Search by name or email…"/>
+  <select name="status" class="ap-input" style="width:auto; min-width:160px">
+    <option value="">All Statuses</option>
+    {% for val, label in statuses %}
+    <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>
+      {{ label }}
+    </option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="ap-btn ap-btn-ghost">Filter</button>
+  <a href="{% url 'ap_quote_list' %}" class="ap-btn ap-btn-ghost">Clear</a>
+</form>
+
+<div class="ap-card">
+  {% if quotes %}
+  <table class="ap-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Product</th>
+        <th>Occasion</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for quote in quotes %}
+      <tr>
+        <td>
+          <div style="font-weight:600">{{ quote.name }}</div>
+          <div style="font-size:0.72rem; color:var(--ap-muted)">{{ quote.email }}</div>
+        </td>
+        <td style="color:var(--ap-muted)">
+          {{ quote.product.name|default:"General Enquiry" }}
+        </td>
+        <td style="color:var(--ap-muted)">{{ quote.occasion|default:"—" }}</td>
+        <td style="color:var(--ap-muted)">{{ quote.created_at|date:"M d, Y" }}</td>
+        <td>
+          {% if quote.status == 'new' %}
+            <span class="ap-badge ap-badge-blue">New</span>
+          {% elif quote.status == 'in_review' %}
+            <span class="ap-badge ap-badge-gold">In Review</span>
+          {% elif quote.status == 'quoted' %}
+            <span class="ap-badge ap-badge-purple">Quoted</span>
+          {% elif quote.status == 'accepted' %}
+            <span class="ap-badge ap-badge-green">Accepted</span>
+          {% else %}
+            <span class="ap-badge ap-badge-gray">{{ quote.status|title }}</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'ap_quote_detail' quote.pk %}"
+             class="ap-btn ap-btn-ghost ap-btn-sm">View →</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="ap-empty">
+    <div class="ap-empty-icon">✉️</div>
+    <div class="ap-empty-title">No quote requests</div>
+    <div class="ap-empty-body">Custom order requests will appear here.</div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

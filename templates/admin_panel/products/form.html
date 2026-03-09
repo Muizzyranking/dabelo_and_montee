@@ -1,0 +1,509 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_extras static %}
+{% block title %}
+  {% if mode == 'add' %}
+    Add Product
+  {% else %}
+    Edit {{ product.name }}
+  {% endif %}
+{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a> ›
+  <a href="{% url 'ap_product_list' %}" style="color:var(--ap-muted)">Products</a> ›
+  {% if mode == 'add' %}
+    Add Product
+  {% else %}
+    {{ product.name }}
+  {% endif %}
+{% endblock %}
+{% block extra_head %}
+  <link rel="stylesheet"
+        href="{% static 'css/admin_panel/product_form.css' %}">
+{% endblock %}
+{% block content %}
+  <div style="display:flex;
+              justify-content:space-between;
+              align-items:center;
+              margin-bottom:28px">
+    <div>
+      <h1 style="font-family:'Cormorant Garamond',serif;
+                 font-size:1.8rem;
+                 font-weight:600;
+                 color:var(--ap-text);
+                 margin:0 0 4px">
+        {% if mode == 'add' %}
+          Add New Product
+        {% else %}
+          Edit Product
+        {% endif %}
+      </h1>
+      {% if mode == 'edit' %}<p style="color:var(--ap-muted); font-size:0.85rem; margin:0">{{ product.name }}</p>{% endif %}
+    </div>
+    {% if mode == 'edit' %}
+      <a href="{{ product.get_absolute_url }}"
+         target="_blank"
+         class="ap-btn ap-btn-ghost ap-btn-sm">View on Site ↗</a>
+    {% endif %}
+  </div>
+  {# ── All dynamic values the JS needs, set as data-* on the form ── #}
+  <form method="post"
+        enctype="multipart/form-data"
+        id="product-form"
+        action="{% if mode == 'add' %}{% url 'ap_product_add' %}{% else %}{% url 'ap_product_edit' product.pk %}{% endif %}"
+        data-csrf="{{ csrf_token }}"
+        data-product-pk="{% if mode == 'edit' %}{{ product.pk }}{% endif %}"
+        data-primary-delete-url="{% if mode == 'edit' %}{% url 'ap_primary_image_delete' product.pk %}{% endif %}"
+        data-gallery-delete-url="{% if mode == 'edit' %}{% url 'ap_gallery_image_delete' 0 %}{% endif %}"
+        data-variation-delete-url="{% url 'ap_variation_delete' 0 %}">
+    {% csrf_token %}
+    <div style="display:grid;
+                grid-template-columns:2fr 1fr;
+                gap:20px;
+                align-items:start">
+      {# ════ LEFT ════ #}
+      <div style="display:flex; flex-direction:column; gap:20px">
+        {# Core details #}
+        <div class="ap-card">
+          <div class="ap-card-header">
+            <div class="ap-card-title">Product Details</div>
+          </div>
+          <div class="ap-card-body">
+            <div class="ap-field">
+              <label class="ap-label">
+                Brand <span style="color:var(--ap-gold)">*</span>
+              </label>
+              <div style="display:flex; gap:12px">
+                {% for val, label in allowed_brands %}
+                  <label style="flex:1; cursor:pointer">
+                    <input type="radio"
+                           name="brand"
+                           value="{{ val }}"
+                           class="brand-radio"
+                           id="brand-{{ val }}"
+                           style="display:none"
+                           {% if mode == 'edit' and product.brand == val %}checked {% elif mode == 'add' and forloop.first %}checked{% endif %} />
+                    <div class="brand-card"
+                         data-brand="{{ val }}"
+                         style="padding:16px;
+                                border:2px solid var(--ap-border);
+                                border-radius:3px;
+                                text-align:center;
+                                transition:all 0.2s;
+                                cursor:pointer">
+                      <div style="font-size:1.5rem; margin-bottom:6px">
+                        {% if val == 'dabelo' %}
+                          🌿
+                        {% else %}
+                          🎂
+                        {% endif %}
+                      </div>
+                      <div style="font-size:0.78rem; font-weight:700; color:var(--ap-text)">{{ label }}</div>
+                    </div>
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="ap-field">
+              <label class="ap-label" for="f-name">
+                Product Name <span style="color:var(--ap-gold)">*</span>
+              </label>
+              <input type="text"
+                     id="f-name"
+                     name="name"
+                     class="ap-input"
+                     value="{{ product.name|default:'' }}"
+                     placeholder="e.g. Classic Birthday Cake"
+                     required />
+            </div>
+            <div class="ap-grid-2">
+              <div class="ap-field">
+                <label class="ap-label" for="f-slug">Slug</label>
+                <input type="text"
+                       id="f-slug"
+                       name="slug"
+                       class="ap-input"
+                       value="{{ product.slug|default:'' }}"
+                       placeholder="auto-generated if blank" />
+              </div>
+              <div class="ap-field">
+                <label class="ap-label" for="f-category">Category</label>
+                <select id="f-category" name="category" class="ap-select">
+                  <option value="">— No Category —</option>
+                  {% for cat in categories %}
+                    <option value="{{ cat.pk }}"
+                            {% if mode == 'edit' and product.category_id == cat.pk %}selected{% endif %}>
+                      {{ cat.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="ap-field">
+              <label class="ap-label" for="f-short">Short Description</label>
+              <input type="text"
+                     id="f-short"
+                     name="short_description"
+                     class="ap-input"
+                     value="{{ product.short_description|default:'' }}"
+                     placeholder="One line summary shown on cards" />
+            </div>
+            <div class="ap-field">
+              <label class="ap-label" for="f-desc">Full Description</label>
+              <textarea id="f-desc"
+                        name="description"
+                        class="ap-textarea"
+                        rows="5"
+                        placeholder="Detailed product description…">{{ product.description|default:'' }}</textarea>
+            </div>
+          </div>
+        </div>
+        {# Pricing #}
+        <div class="ap-card">
+          <div class="ap-card-header">
+            <div class="ap-card-title">Pricing</div>
+          </div>
+          <div class="ap-card-body">
+            <div class="ap-grid-2" style="margin-bottom:16px">
+              <div class="ap-field" style="margin-bottom:0">
+                <label class="ap-label">Product Type</label>
+                <select name="product_type" class="ap-select" id="f-type">
+                  <option value="simple"
+                          {% if mode == 'edit' and product.product_type == 'simple' %}selected{% endif %}>
+                    Simple (single price)
+                  </option>
+                  <option value="variable"
+                          {% if mode == 'edit' and product.product_type == 'variable' %}selected{% endif %}>
+                    Variable (multiple options)
+                  </option>
+                </select>
+              </div>
+              <div class="ap-field" style="margin-bottom:0" id="price-field">
+                <label class="ap-label" for="f-price">Price (₦)</label>
+                <input type="number"
+                       id="f-price"
+                       name="price"
+                       class="ap-input"
+                       value="{{ product.price|default:'' }}"
+                       placeholder="e.g. 25000"
+                       min="0"
+                       step="0.01" />
+              </div>
+            </div>
+          </div>
+        </div>
+        {# Variations #}
+        <div class="ap-card" id="variations-section">
+          <div class="ap-card-header">
+            <div class="ap-card-title">Variations</div>
+            <button type="button"
+                    class="ap-btn ap-btn-ghost ap-btn-sm"
+                    onclick="addVariation()">+ Add Variation</button>
+          </div>
+          <div class="ap-card-body">
+            <div style="display:grid;
+                        grid-template-columns:2fr 1.5fr 100px 80px 40px;
+                        gap:12px;
+                        padding:0 16px 8px;
+                        font-size:0.65rem;
+                        font-weight:700;
+                        letter-spacing:0.14em;
+                        text-transform:uppercase;
+                        color:var(--ap-muted)">
+              <span>Name</span><span>Price (₦)</span>
+              <span>Image</span><span>In Stock</span><span></span>
+            </div>
+            <div id="variations-list">
+              {% for v in variations %}
+                <div class="var-row" id="var-row-{{ v.pk }}">
+                  <input type="hidden" name="var_id_{{ v.pk }}" value="{{ v.pk }}" />
+                  <input type="text"
+                         name="var_name_{{ v.pk }}"
+                         class="ap-input"
+                         value="{{ v.name }}"
+                         placeholder="e.g. Small (serves 10)" />
+                  <input type="number"
+                         name="var_price_{{ v.pk }}"
+                         class="ap-input"
+                         value="{{ v.price|default:'' }}"
+                         placeholder="Price"
+                         min="0" />
+                  <div>
+                    {% if v.image %}
+                      <img src="{{ v.image.serve_url }}"
+                           style="width:40px;
+                                  height:40px;
+                                  object-fit:cover;
+                                  border-radius:3px;
+                                  margin-bottom:4px" />
+                    {% endif %}
+                    <input type="file"
+                           name="var_image_{{ v.pk }}"
+                           class="ap-input"
+                           style="padding:4px;
+                                  font-size:0.72rem"
+                           accept="image/*" />
+                  </div>
+                  <label style="display:flex; align-items:center; gap:6px; cursor:pointer">
+                    <input type="checkbox"
+                           name="var_stock_{{ v.pk }}"
+                           {% if v.in_stock %}checked{% endif %}
+                           style="accent-color:var(--ap-gold);
+                                  width:16px;
+                                  height:16px" />
+                  </label>
+                  <button type="button"
+                          onclick="deleteVariation('{{ v.pk }}')"
+                          class="ap-btn ap-btn-danger ap-btn-sm"
+                          style="padding:6px 8px">✕</button>
+                </div>
+              {% endfor %}
+            </div>
+            <div id="new-variations-list"></div>
+          </div>
+        </div>
+        {# Attributes #}
+        <div class="ap-card">
+          <div class="ap-card-header">
+            <div class="ap-card-title">Attributes & Details</div>
+            <button type="button"
+                    class="ap-btn ap-btn-ghost ap-btn-sm"
+                    onclick="addAttribute()">+ Add Row</button>
+          </div>
+          <div class="ap-card-body">
+            <div style="display:grid;
+                        grid-template-columns:1fr 2fr 40px;
+                        gap:12px;
+                        padding:0 16px 8px;
+                        font-size:0.65rem;
+                        font-weight:700;
+                        letter-spacing:0.14em;
+                        text-transform:uppercase;
+                        color:var(--ap-muted)">
+              <span>Attribute</span><span>Value</span><span></span>
+            </div>
+            <div id="attributes-list">
+              {% for attr in attributes %}
+                <div class="attr-row">
+                  <input type="hidden" name="attr_id_{{ attr.pk }}" value="{{ attr.pk }}" />
+                  <input type="text"
+                         name="attr_name_{{ attr.pk }}"
+                         class="ap-input"
+                         value="{{ attr.name }}"
+                         placeholder="e.g. Allergens" />
+                  <input type="text"
+                         name="attr_value_{{ attr.pk }}"
+                         class="ap-input"
+                         value="{{ attr.value }}"
+                         placeholder="e.g. Contains nuts" />
+                  <button type="button"
+                          onclick="this.closest('.attr-row').remove()"
+                          class="ap-btn ap-btn-danger ap-btn-sm"
+                          style="padding:6px 8px">✕</button>
+                </div>
+              {% endfor %}
+            </div>
+            <div id="new-attributes-list"></div>
+          </div>
+        </div>
+      </div>
+      {# /left #}
+      {# ════ RIGHT ════ #}
+      <div style="display:flex; flex-direction:column; gap:20px">
+        {# Status #}
+        <div class="ap-card">
+          <div class="ap-card-header">
+            <div class="ap-card-title">Status</div>
+          </div>
+          <div class="ap-card-body">
+            <label class="ap-checkbox-row">
+              <input type="checkbox"
+                     name="is_active"
+                     {% if mode == 'edit' and product.is_active %}checked{% endif %}
+                     {% if mode == 'add' %}checked{% endif %} />
+              <div>
+                <div class="ap-checkbox-label">Active</div>
+                <div class="ap-checkbox-sub">Visible in the shop</div>
+              </div>
+            </label>
+            <label class="ap-checkbox-row">
+              <input type="checkbox"
+                     name="in_stock"
+                     {% if mode == 'edit' and product.in_stock %}checked{% endif %}
+                     {% if mode == 'add' %}checked{% endif %} />
+              <div>
+                <div class="ap-checkbox-label">In Stock</div>
+                <div class="ap-checkbox-sub">Available to purchase</div>
+              </div>
+            </label>
+            <label class="ap-checkbox-row">
+              <input type="checkbox"
+                     name="is_featured"
+                     {% if mode == 'edit' and product.is_featured %}checked{% endif %} />
+              <div>
+                <div class="ap-checkbox-label">Featured</div>
+                <div class="ap-checkbox-sub">Highlighted on shop pages</div>
+              </div>
+            </label>
+            <label class="ap-checkbox-row">
+              <input type="checkbox"
+                     name="is_quote_only"
+                     {% if mode == 'edit' and product.is_quote_only %}checked{% endif %} />
+              <div>
+                <div class="ap-checkbox-label">Quote Only</div>
+                <div class="ap-checkbox-sub">No direct purchase, request a quote</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        {# Primary image #}
+        <div class="ap-card">
+          <div class="ap-card-header">
+            <div class="ap-card-title">Primary Image</div>
+          </div>
+          <div class="ap-card-body">
+            {% if mode == 'edit' and product.primary_image %}
+              <div style="margin-bottom:16px" id="primary-img-wrap">
+                <div style="position:relative; display:inline-block">
+                  <img src="{{ product.primary_image.serve_url }}"
+                       alt="{{ product.primary_image.alt_text }}"
+                       style="width:100%;
+                              max-width:240px;
+                              height:160px;
+                              object-fit:cover;
+                              border-radius:3px;
+                              border:1px solid var(--ap-border);
+                              display:block" />
+                  <button type="button"
+                          onclick="deletePrimaryImage()"
+                          style="position:absolute;
+                                 top:6px;
+                                 right:6px;
+                                 background:rgba(0,0,0,0.7);
+                                 border:none;
+                                 color:#fff;
+                                 width:24px;
+                                 height:24px;
+                                 border-radius:50%;
+                                 cursor:pointer;
+                                 font-size:0.7rem;
+                                 display:flex;
+                                 align-items:center;
+                                 justify-content:center">✕</button>
+                </div>
+                <p style="font-size:0.72rem; color:var(--ap-muted); margin-top:6px">Upload a new image below to replace this one.</p>
+              </div>
+            {% endif %}
+            <div class="ap-field" style="margin-bottom:12px">
+              <label class="ap-label">
+                {% if mode == 'edit' and product.primary_image %}
+                  Replace Primary Image
+                {% else %}
+                  Upload Primary Image
+                {% endif %}
+              </label>
+              <input type="file"
+                     name="primary_image"
+                     class="ap-input"
+                     style="padding:8px"
+                     accept="image/*" />
+            </div>
+            <div class="ap-field" style="margin-bottom:0">
+              <label class="ap-label">Alt Text</label>
+              <input type="text"
+                     name="primary_image_alt"
+                     class="ap-input"
+                     placeholder="Describe the image (defaults to product name)" />
+            </div>
+            <div id="primary-preview">
+              <img id="primary-preview-img" alt="Preview" />
+              <p>Preview — not yet saved</p>
+            </div>
+          </div>
+        </div>
+        {# Gallery images #}
+        <div class="ap-card">
+          <div class="ap-card-header">
+            <div class="ap-card-title">Gallery Images</div>
+            {% if mode == 'edit' %}
+              <span style="font-size:0.72rem; color:var(--ap-muted)">
+                {{ product.gallery.count }} image{{ product.gallery.count|pluralize }}
+              </span>
+            {% endif %}
+          </div>
+          <div class="ap-card-body">
+            {% if mode == 'edit' %}
+              <div class="img-grid" id="gallery-grid">
+                {% for entry in gallery_entries %}
+                  <div class="img-card" id="gallery-entry-{{ entry.pk }}">
+                    <img src="{{ entry.image.serve_url }}" alt="{{ entry.image.alt_text }}" />
+                    <div class="img-card-overlay">
+                      <button type="button"
+                              onclick="deleteGalleryImage('{{ entry.pk }}')"
+                              class="ap-btn ap-btn-danger"
+                              style="font-size:0.6rem;
+                                     padding:4px 10px">Delete</button>
+                    </div>
+                  </div>
+                {% empty %}
+                  <p style="font-size:0.85rem;
+                            color:var(--ap-muted);
+                            grid-column:1/-1;
+                            padding:8px 0">No gallery images yet.</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+            <div class="ap-field" style="margin-bottom:8px">
+              <label class="ap-label">Add Gallery Images</label>
+              <input type="file"
+                     name="gallery_images"
+                     multiple
+                     class="ap-input"
+                     style="padding:8px"
+                     accept="image/*" />
+              <p style="font-size:0.72rem; color:var(--ap-muted); margin-top:6px">Select multiple files to upload at once.</p>
+            </div>
+            <div id="gallery-preview" class="img-grid"></div>
+          </div>
+        </div>
+        {# Save / delete #}
+        <div class="ap-card">
+          <div class="ap-card-body"
+               style="display:flex;
+                      flex-direction:column;
+                      gap:10px">
+            <button type="submit"
+                    class="ap-btn ap-btn-primary"
+                    style="width:100%;
+                           justify-content:center;
+                           padding:13px">
+              {% if mode == 'add' %}
+                Create Product
+              {% else %}
+                Save Changes
+              {% endif %}
+            </button>
+            <a href="{% url 'ap_product_list' %}"
+               class="ap-btn ap-btn-ghost"
+               style="width:100%;
+                      justify-content:center">Cancel</a>
+            {% if mode == 'edit' %}
+              <form method="post"
+                    action="{% url 'ap_product_delete' product.pk %}"
+                    onsubmit="return confirm('Permanently delete this product?')">
+                {% csrf_token %}
+                <button type="submit"
+                        class="ap-btn ap-btn-danger"
+                        style="width:100%;
+                               justify-content:center">Delete Product</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {# /right #}
+    </div>
+  </form>
+{% endblock %}
+{% block extra_js %}
+  <script src="{% static 'js/admin_panel/product_form.js' %}"></script>
+{% endblock %}

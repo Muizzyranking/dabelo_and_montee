@@ -1,0 +1,124 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Quote — {{ quote.name }}{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a> ›
+  <a href="{% url 'ap_quote_list' %}" style="color:var(--ap-muted)">Quotes</a> ›
+  {{ quote.name }}
+{% endblock %}
+
+{% block content %}
+<div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; align-items:start">
+
+  <div style="display:flex; flex-direction:column; gap:20px">
+
+    <div class="ap-card">
+      <div class="ap-card-header">
+        <div class="ap-card-title">Request Details</div>
+        <span class="ap-badge {% if quote.status == 'new' %}ap-badge-blue{% elif quote.status == 'in_review' %}ap-badge-gold{% elif quote.status == 'accepted' %}ap-badge-green{% else %}ap-badge-gray{% endif %}">
+          {{ quote.status|title }}
+        </span>
+      </div>
+      <div class="ap-card-body" style="display:flex; flex-direction:column; gap:16px">
+
+        <div class="ap-grid-2">
+          <div>
+            <div class="ap-label">Name</div>
+            <div style="color:var(--ap-text); font-weight:600">{{ quote.name }}</div>
+          </div>
+          <div>
+            <div class="ap-label">Email</div>
+            <a href="mailto:{{ quote.email }}"
+               style="color:var(--ap-gold); font-size:0.88rem">{{ quote.email }}</a>
+          </div>
+          <div>
+            <div class="ap-label">Phone</div>
+            <div style="color:var(--ap-text)">{{ quote.phone }}</div>
+          </div>
+          <div>
+            <div class="ap-label">Date Submitted</div>
+            <div style="color:var(--ap-muted)">{{ quote.created_at|date:"M d, Y · g:i A" }}</div>
+          </div>
+          {% if quote.occasion %}
+          <div>
+            <div class="ap-label">Occasion</div>
+            <div style="color:var(--ap-text)">{{ quote.occasion }}</div>
+          </div>
+          {% endif %}
+          {% if quote.budget %}
+          <div>
+            <div class="ap-label">Budget</div>
+            <div style="color:var(--ap-text)">{{ quote.budget }}</div>
+          </div>
+          {% endif %}
+          {% if quote.delivery_date %}
+          <div>
+            <div class="ap-label">Event / Delivery Date</div>
+            <div style="color:var(--ap-text)">{{ quote.delivery_date|date:"M d, Y" }}</div>
+          </div>
+          {% endif %}
+          {% if quote.product %}
+          <div>
+            <div class="ap-label">Product</div>
+            <a href="{% url 'ap_product_edit' quote.product.pk %}"
+               style="color:var(--ap-gold); font-size:0.88rem">
+              {{ quote.product.name }}
+            </a>
+          </div>
+          {% endif %}
+        </div>
+
+        <div>
+          <div class="ap-label" style="margin-bottom:8px">Description</div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--ap-border);
+                      border-radius:3px; padding:16px; font-size:0.88rem;
+                      line-height:1.7; color:var(--ap-text)">
+            {{ quote.description|linebreaks }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:20px">
+
+    {% if can_edit %}
+    <div class="ap-card">
+      <div class="ap-card-header"><div class="ap-card-title">Update Status</div></div>
+      <div class="ap-card-body">
+        <form method="post" action="{% url 'ap_quote_status' quote.pk %}"
+              style="display:flex; flex-direction:column; gap:12px">
+          {% csrf_token %}
+          <select name="status" class="ap-select">
+            {% for val, label in statuses %}
+            <option value="{{ val }}" {% if quote.status == val %}selected{% endif %}>
+              {{ label }}
+            </option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="ap-btn ap-btn-primary">
+            Update Status
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="ap-card">
+      <div class="ap-card-header"><div class="ap-card-title">Quick Actions</div></div>
+      <div class="ap-card-body" style="display:flex; flex-direction:column; gap:10px">
+        <a href="mailto:{{ quote.email }}?subject=Re: Your Quote Request"
+           class="ap-btn ap-btn-ghost" style="justify-content:center">
+          ✉️ Reply via Email
+        </a>
+        <a href="tel:{{ quote.phone }}"
+           class="ap-btn ap-btn-ghost" style="justify-content:center">
+          📞 Call {{ quote.phone }}
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

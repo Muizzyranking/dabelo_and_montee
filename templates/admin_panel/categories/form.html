@@ -1,0 +1,293 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+{% block title %}
+  {% if mode == 'add' %}
+    Add Category
+  {% else %}
+    Edit {{ category.name }}
+  {% endif %}
+{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a> ›
+  <a href="{% url 'ap_category_list' %}" style="color:var(--ap-muted)">Categories</a> ›
+  {% if mode == 'add' %}
+    Add Category
+  {% else %}
+    {{ category.name }}
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <div style="display:flex;
+              justify-content:space-between;
+              align-items:center;
+              margin-bottom:28px">
+    <div>
+      <h1 style="font-family:'Cormorant Garamond',serif;
+                 font-size:1.8rem;
+                 font-weight:600;
+                 color:var(--ap-text);
+                 margin:0 0 4px">
+        {% if mode == 'add' %}
+          Add Category
+        {% else %}
+          Edit Category
+        {% endif %}
+      </h1>
+      {% if mode == 'edit' %}
+        <p style="color:var(--ap-muted); font-size:0.85rem; margin:0">
+          {{ product_count }} active product{{ product_count|pluralize }} in this category
+        </p>
+      {% endif %}
+    </div>
+    {% if mode == 'edit' %}
+      <a href="{{ category.get_absolute_url }}"
+         target="_blank"
+         class="ap-btn ap-btn-ghost ap-btn-sm">View on Site ↗</a>
+    {% endif %}
+  </div>
+  <div style="display:grid;
+              grid-template-columns:2fr 1fr;
+              gap:20px;
+              align-items:start;
+              max-width:900px">
+    {# ── LEFT ── #}
+    <div style="display:flex; flex-direction:column; gap:20px">
+      <div class="ap-card">
+        <div class="ap-card-header">
+          <div class="ap-card-title">Category Details</div>
+        </div>
+        <div class="ap-card-body">
+          <form method="post"
+                enctype="multipart/form-data"
+                action="{% if mode == 'add' %}{% url 'ap_category_add' %}{% else %}{% url 'ap_category_edit' category.pk %}{% endif %}">
+            {% csrf_token %}
+            {# Brand #}
+            <div class="ap-field">
+              <label class="ap-label">
+                Brand <span style="color:var(--ap-gold)">*</span>
+              </label>
+              {% if mode == 'edit' %}
+                <div style="display:flex;
+                            align-items:center;
+                            gap:10px;
+                            padding:10px 14px;
+                            background:var(--ap-bg);
+                            border:1.5px solid var(--ap-border);
+                            border-radius:3px">
+                  {% if category.brand == 'dabelo' %}
+                    🌿 <span style="font-weight:600">Dabelo Café</span>
+                  {% else %}
+                    🎂 <span style="font-weight:600">Motee Cakes</span>
+                  {% endif %}
+                  <span style="font-size:0.72rem; color:var(--ap-muted); margin-left:8px">(cannot change after creation)</span>
+                </div>
+                <input type="hidden" name="brand" value="{{ category.brand }}" />
+              {% else %}
+                <div style="display:flex; gap:12px">
+                  {% for val, label in allowed_brands %}
+                    <label style="flex:1; cursor:pointer">
+                      <input type="radio"
+                             name="brand"
+                             value="{{ val }}"
+                             {% if forloop.first %}checked{% endif %}
+                             style="display:none"
+                             class="brand-radio"
+                             id="brand-{{ val }}" />
+                      <div class="brand-card"
+                           data-brand="{{ val }}"
+                           style="padding:16px;
+                                  border:2px solid var(--ap-border);
+                                  border-radius:3px;
+                                  text-align:center;
+                                  transition:all 0.2s;
+                                  cursor:pointer">
+                        <div style="font-size:1.5rem; margin-bottom:6px">
+                          {% if val == 'dabelo' %}
+                            🌿
+                          {% else %}
+                            🎂
+                          {% endif %}
+                        </div>
+                        <div style="font-size:0.78rem; font-weight:700; color:var(--ap-text)">{{ label }}</div>
+                      </div>
+                    </label>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="ap-field">
+              <label class="ap-label" for="f-name">
+                Name <span style="color:var(--ap-gold)">*</span>
+              </label>
+              <input type="text"
+                     id="f-name"
+                     name="name"
+                     class="ap-input"
+                     value="{{ category.name|default:'' }}"
+                     placeholder="e.g. Celebration Cakes"
+                     required />
+            </div>
+            <div class="ap-grid-2">
+              <div class="ap-field">
+                <label class="ap-label" for="f-slug">Slug</label>
+                <input type="text"
+                       id="f-slug"
+                       name="slug"
+                       class="ap-input"
+                       value="{{ category.slug|default:'' }}"
+                       placeholder="auto-generated" />
+              </div>
+              <div class="ap-field">
+                <label class="ap-label" for="f-order">Display Order</label>
+                <input type="number"
+                       id="f-order"
+                       name="order"
+                       class="ap-input"
+                       value="{{ category.order|default:0 }}"
+                       min="0"
+                       placeholder="0" />
+              </div>
+            </div>
+            <div class="ap-field">
+              <label class="ap-label" for="f-desc">Description</label>
+              <textarea id="f-desc"
+                        name="description"
+                        class="ap-textarea"
+                        rows="3"
+                        placeholder="Optional short description…">{{ category.description|default:'' }}</textarea>
+            </div>
+            {# Image #}
+            <div class="ap-field">
+              <label class="ap-label">Category Image</label>
+              {% if mode == 'edit' and category.image %}
+                <div style="margin-bottom:12px; position:relative; display:inline-block">
+                  <img src="{{ category.image.url }}"
+                       alt="{{ category.name }}"
+                       style="width:120px;
+                              height:80px;
+                              object-fit:cover;
+                              border-radius:3px;
+                              border:1px solid var(--ap-border)" />
+                  <label style="display:flex;
+                                align-items:center;
+                                gap:6px;
+                                margin-top:8px;
+                                cursor:pointer">
+                    <input type="checkbox"
+                           name="clear_image"
+                           style="accent-color:var(--ap-gold)" />
+                    <span style="font-size:0.78rem; color:var(--ap-muted)">Remove current image</span>
+                  </label>
+                </div>
+              {% endif %}
+              <input type="file"
+                     name="image"
+                     class="ap-input"
+                     style="padding:8px"
+                     accept="image/*" />
+            </div>
+            {# Status #}
+            <label class="ap-checkbox-row">
+              <input type="checkbox"
+                     name="is_active"
+                     {% if mode == 'edit' and category.is_active %}checked{% endif %}
+                     {% if mode == 'add' %}checked{% endif %}
+                     style="accent-color:var(--ap-gold);
+                            width:16px;
+                            height:16px" />
+              <div>
+                <div class="ap-checkbox-label">Active</div>
+                <div class="ap-checkbox-sub">Visible in the shop and available for products</div>
+              </div>
+            </label>
+            <div style="display:flex; gap:12px; margin-top:24px">
+              <button type="submit" class="ap-btn ap-btn-primary">
+                {% if mode == 'add' %}
+                  Create Category
+                {% else %}
+                  Save Changes
+                {% endif %}
+              </button>
+              <a href="{% url 'ap_category_list' %}" class="ap-btn ap-btn-ghost">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {# ── RIGHT ── #}
+    <div style="display:flex; flex-direction:column; gap:20px">
+      {% if mode == 'edit' %}
+        <div class="ap-card">
+          <div class="ap-card-header">
+            <div class="ap-card-title">Products</div>
+            <a href="{% url 'ap_product_list' %}?category={{ category.slug }}"
+               class="ap-btn ap-btn-ghost ap-btn-sm">View All →</a>
+          </div>
+          <div class="ap-card-body">
+            {% with products=category.products.all|slice:":5" %}
+              {% if products %}
+                {% for p in products %}
+                  <div style="display:flex;
+                              justify-content:space-between;
+                              align-items:center;
+                              padding:8px 0;
+                              border-bottom:1px solid var(--ap-border)">
+                    <div>
+                      <div style="font-size:0.85rem; font-weight:500; color:var(--ap-text)">{{ p.name }}</div>
+                      <div style="font-size:0.72rem; color:var(--ap-muted)">
+                        {% if p.in_stock %}
+                          In Stock
+                        {% else %}
+                          Out of Stock
+                        {% endif %}
+                      </div>
+                    </div>
+                    <a href="{% url 'ap_product_edit' p.pk %}"
+                       style="font-size:0.72rem;
+                              color:var(--ap-gold)">Edit →</a>
+                  </div>
+                {% endfor %}
+                {% if product_count > 5 %}
+                  <div style="font-size:0.78rem; color:var(--ap-muted); margin-top:10px">
+                    +{{ product_count|add:"-5" }} more products
+                  </div>
+                {% endif %}
+              {% else %}
+                <div style="font-size:0.85rem; color:var(--ap-muted); padding:8px 0">No products in this category yet.</div>
+              {% endif %}
+            {% endwith %}
+          </div>
+        </div>
+        <div class="ap-card" style="border-color:rgba(192,57,43,0.3)">
+          <div class="ap-card-header">
+            <div class="ap-card-title" style="color:#EF9A9A">Danger Zone</div>
+          </div>
+          <div class="ap-card-body">
+            <p style="font-size:0.82rem; color:var(--ap-muted); margin:0 0 12px">
+              Deleting a category is permanent. All products must be reassigned or deleted first.
+            </p>
+            <form method="post"
+                  action="{% url 'ap_category_delete' category.pk %}"
+                  onsubmit="return confirm('Delete {{ category.name }}? This cannot be undone.')">
+              {% csrf_token %}
+              <button type="submit"
+                      class="ap-btn ap-btn-danger"
+                      style="width:100%;
+                             justify-content:center"
+                      {% if product_count > 0 %} disabled title="Reassign {{ product_count }} products first" style="opacity:0.4; cursor:not-allowed; width:100%; justify-content:center" {% endif %}>
+                {% if product_count > 0 %}
+                  Cannot Delete ({{ product_count }} product{{ product_count|pluralize }})
+                {% else %}
+                  Delete Category
+                {% endif %}
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+{% block extra_js %}
+  <script src="{% static 'js/admin_panel/category_form.js' %}"></script>
+{% endblock %}

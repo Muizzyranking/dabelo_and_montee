@@ -1,0 +1,132 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Products{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a>
+  <span>›</span> Products
+{% endblock %}
+{% block content %}
+  <div style="display:flex;
+              justify-content:space-between;
+              align-items:center;
+              margin-bottom:24px">
+    <div>
+      <h1 style="font-family:'Cormorant Garamond',serif;
+                 font-size:1.8rem;
+                 font-weight:600;
+                 color:var(--ap-text);
+                 margin:0 0 4px">Products</h1>
+      <p style="color:var(--ap-muted); font-size:0.85rem; margin:0">
+        {{ products.count }} product{{ products.count|pluralize }}
+      </p>
+    </div>
+    {% if profile.is_superadmin or profile.can_edit_dabelo_products or profile.can_edit_montee_products %}
+      <a href="{% url 'ap_product_add' %}" class="ap-btn ap-btn-primary">+ Add Product</a>
+    {% endif %}
+  </div>
+  {# Filter bar #}
+  <form method="get" class="ap-filter-bar">
+    <input type="text"
+           name="q"
+           value="{{ search }}"
+           class="ap-search"
+           placeholder="Search products…" />
+    <select name="brand" class="ap-input" style="width:auto; min-width:140px">
+      <option value="all" {% if brand == 'all' %}selected{% endif %}>All Brands</option>
+      {% if profile.is_superadmin or profile.can_view_dabelo_products %}
+        <option value="dabelo" {% if brand == 'dabelo' %}selected{% endif %}>🌿 Dabelo</option>
+      {% endif %}
+      {% if profile.is_superadmin or profile.can_view_montee_products %}
+        <option value="montee" {% if brand == 'montee' %}selected{% endif %}>🎂 Motee</option>
+      {% endif %}
+    </select>
+    <select name="category" class="ap-input" style="width:auto; min-width:160px">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat.slug }}"
+                {% if request.GET.category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="ap-btn ap-btn-ghost">Filter</button>
+    <a href="{% url 'ap_product_list' %}" class="ap-btn ap-btn-ghost">Clear</a>
+  </form>
+  <div class="ap-card">
+    {% if products %}
+      <table class="ap-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+            <tr>
+              <td>
+                <div style="font-weight:600; color:var(--ap-text)">{{ product.name }}</div>
+                <div style="font-size:0.72rem; color:var(--ap-muted); margin-top:2px">
+                  {{ product.short_description|truncatechars:50 }}
+                </div>
+              </td>
+              <td>
+                {% if product.brand == 'dabelo' %}
+                  <span class="ap-badge ap-badge-green">🌿 Dabelo</span>
+                {% else %}
+                  <span class="ap-badge ap-badge-purple">🎂 Motee</span>
+                {% endif %}
+              </td>
+              <td style="color:var(--ap-muted); font-size:0.82rem">{{ product.category.name|default:"—" }}</td>
+              <td style="font-family:'Cormorant Garamond',serif; font-size:1rem">
+                {% if product.is_quote_only %}
+                  <span style="color:var(--ap-muted); font-size:0.78rem">On request</span>
+                {% elif product.display_price %}
+                  ₦{{ product.display_price|floatformat:"0" }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>
+                {% if product.in_stock %}
+                  <span class="ap-badge ap-badge-green">In Stock</span>
+                {% else %}
+                  <span class="ap-badge ap-badge-red">Out</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if product.is_active %}
+                  <span class="ap-badge ap-badge-green">Active</span>
+                {% else %}
+                  <span class="ap-badge ap-badge-gray">Inactive</span>
+                {% endif %}
+              </td>
+              <td>
+                <div style="display:flex; gap:8px">
+                  <a href="{% url 'ap_product_edit' product.pk %}"
+                     class="ap-btn ap-btn-ghost ap-btn-sm">Edit</a>
+                  {% if profile.is_superadmin or profile.can_edit_dabelo_products and product.brand == 'dabelo' or profile.can_edit_montee_products and product.brand == 'montee' %}
+                    <form method="post"
+                          action="{% url 'ap_product_delete' product.pk %}"
+                          onsubmit="return confirm('Delete {{ product.name }}?')">
+                      {% csrf_token %}
+                      <button type="submit" class="ap-btn ap-btn-danger ap-btn-sm">Delete</button>
+                    </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="ap-empty">
+        <div class="ap-empty-icon">📦</div>
+        <div class="ap-empty-title">No products found</div>
+        <div class="ap-empty-body">Try adjusting your filters or add a new product.</div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

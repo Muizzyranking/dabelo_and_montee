@@ -1,0 +1,197 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_extras static %}
+{% block title %}
+  {% if mode == 'add' %}
+    Add Admin
+  {% else %}
+    Edit Admin
+  {% endif %}
+{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a> ›
+  <a href="{% url 'ap_admin_list' %}" style="color:var(--ap-muted)">Admins</a> ›
+  {% if mode == 'add' %}
+    Add Admin
+  {% else %}
+    Edit
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <div style="max-width:640px">
+    <h1 style="font-family:'Cormorant Garamond',serif;
+               font-size:1.8rem;
+               font-weight:600;
+               color:var(--ap-text);
+               margin:0 0 28px">
+      {% if mode == 'add' %}
+        Create Admin Account
+      {% else %}
+        Edit Admin
+      {% endif %}
+    </h1>
+    <form method="post"
+          action="{% if mode == 'add' %}{% url 'ap_admin_add' %}{% else %}{% url 'ap_admin_edit' profile.pk %}{% endif %}">
+      {% csrf_token %}
+      <div class="ap-card" style="margin-bottom:20px">
+        <div class="ap-card-header">
+          <div class="ap-card-title">Account Details</div>
+        </div>
+        <div class="ap-card-body">
+          <div class="ap-grid-2">
+            <div class="ap-field">
+              <label class="ap-label">First Name</label>
+              <input type="text"
+                     name="first_name"
+                     class="ap-input"
+                     value="{% if mode == 'edit' %}{{ profile.user.first_name }}{% endif %}"
+                     placeholder="First name" />
+            </div>
+            <div class="ap-field">
+              <label class="ap-label">Last Name</label>
+              <input type="text"
+                     name="last_name"
+                     class="ap-input"
+                     value="{% if mode == 'edit' %}{{ profile.user.last_name }}{% endif %}"
+                     placeholder="Last name" />
+            </div>
+          </div>
+          {% if mode == 'add' %}
+            <div class="ap-field">
+              <label class="ap-label">
+                Email <span style="color:var(--ap-gold)">*</span>
+              </label>
+              <input type="email"
+                     name="email"
+                     class="ap-input"
+                     placeholder="admin@example.com"
+                     required />
+            </div>
+            <div class="ap-field">
+              <label class="ap-label">
+                Password <span style="color:var(--ap-gold)">*</span>
+              </label>
+              <input type="password"
+                     name="password"
+                     class="ap-input"
+                     placeholder="At least 8 characters"
+                     required />
+            </div>
+          {% else %}
+            <div class="ap-field">
+              <label class="ap-label">
+                New Password
+                <span style="color:var(--ap-muted);
+                             font-size:0.7rem;
+                             text-transform:none;
+                             letter-spacing:0">(leave blank to keep current)</span>
+              </label>
+              <input type="password"
+                     name="new_password"
+                     class="ap-input"
+                     placeholder="Leave blank to keep unchanged" />
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="ap-card" style="margin-bottom:20px">
+        <div class="ap-card-header">
+          <div class="ap-card-title">Role</div>
+        </div>
+        <div class="ap-card-body">
+          <label class="ap-checkbox-row">
+            <input type="checkbox"
+                   name="is_superadmin"
+                   id="is-superadmin"
+                   {% if mode == 'edit' and profile.is_superadmin %}checked{% endif %} />
+            <div>
+              <div class="ap-checkbox-label">Superadmin</div>
+              <div class="ap-checkbox-sub">Full access — bypasses all permission checks</div>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="ap-card" style="margin-bottom:24px" id="perms-section">
+        <div class="ap-card-header">
+          <div class="ap-card-title">Permissions</div>
+        </div>
+        <div class="ap-card-body">
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.65rem;
+                        font-weight:700;
+                        letter-spacing:0.18em;
+                        text-transform:uppercase;
+                        color:var(--ap-muted);
+                        margin-bottom:12px">🌿 Dabelo Products</div>
+            {% for field, label in fields %}
+              {% if 'dabelo' in field %}
+                <label class="ap-checkbox-row">
+                  <input type="checkbox"
+                         name="{{ field }}"
+                         {% if mode == 'edit' and profile|getattr:field %}checked{% endif %} />
+                  <div>
+                    <div class="ap-checkbox-label">{{ label }}</div>
+                  </div>
+                </label>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div style="height:1px; background:var(--ap-border); margin-bottom:20px"></div>
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.65rem;
+                        font-weight:700;
+                        letter-spacing:0.18em;
+                        text-transform:uppercase;
+                        color:var(--ap-muted);
+                        margin-bottom:12px">🎂 Motee Products</div>
+            {% for field, label in fields %}
+              {% if 'montee' in field %}
+                <label class="ap-checkbox-row">
+                  <input type="checkbox"
+                         name="{{ field }}"
+                         {% if mode == 'edit' and profile|getattr:field %}checked{% endif %} />
+                  <div>
+                    <div class="ap-checkbox-label">{{ label }}</div>
+                  </div>
+                </label>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div style="height:1px; background:var(--ap-border); margin-bottom:20px"></div>
+          <div style="margin-bottom:20px">
+            <div style="font-size:0.65rem;
+                        font-weight:700;
+                        letter-spacing:0.18em;
+                        text-transform:uppercase;
+                        color:var(--ap-muted);
+                        margin-bottom:12px">🛍️ Orders & Quotes</div>
+            {% for field, label in fields %}
+              {% if 'order' in field or 'quote' in field or 'image' in field %}
+                <label class="ap-checkbox-row">
+                  <input type="checkbox"
+                         name="{{ field }}"
+                         {% if mode == 'edit' and profile|getattr:field %}checked{% endif %} />
+                  <div>
+                    <div class="ap-checkbox-label">{{ label }}</div>
+                  </div>
+                </label>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px">
+        <button type="submit" class="ap-btn ap-btn-primary">
+          {% if mode == 'add' %}
+            Create Admin
+          {% else %}
+            Save Changes
+          {% endif %}
+        </button>
+        <a href="{% url 'ap_admin_list' %}" class="ap-btn ap-btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+{% block extra_js %}
+  <script src="{% static 'js/admin_panel/admin_form.js' %}"></script>
+{% endblock %}

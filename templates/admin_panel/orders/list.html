@@ -1,0 +1,93 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Orders{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a> › Orders
+{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px">
+  <h1 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem;
+             font-weight:600; color:var(--ap-text); margin:0">
+    Orders
+  </h1>
+  <span style="color:var(--ap-muted); font-size:0.85rem">
+    {{ orders.count }} total
+  </span>
+</div>
+
+<form method="get" class="ap-filter-bar">
+  <input type="text" name="q" value="{{ search }}"
+         class="ap-search" placeholder="Search by order number or name…"/>
+  <select name="status" class="ap-input" style="width:auto; min-width:160px">
+    <option value="">All Statuses</option>
+    {% for val, label in status_choices %}
+    <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>
+      {{ label }}
+    </option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="ap-btn ap-btn-ghost">Filter</button>
+  <a href="{% url 'ap_order_list' %}" class="ap-btn ap-btn-ghost">Clear</a>
+</form>
+
+<div class="ap-card">
+  {% if orders %}
+  <table class="ap-table">
+    <thead>
+      <tr>
+        <th>Order #</th>
+        <th>Customer</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Payment</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>
+          <span style="font-family:monospace; font-weight:600; font-size:0.82rem">
+            {{ order.order_number }}
+          </span>
+        </td>
+        <td>
+          <div style="font-weight:500">{{ order.delivery_name }}</div>
+          <div style="font-size:0.72rem; color:var(--ap-muted)">
+            {{ order.user.email|default:"Guest" }}
+          </div>
+        </td>
+        <td style="color:var(--ap-muted)">{{ order.created_at|date:"M d, Y" }}</td>
+        <td>
+          <span class="ap-badge ap-status-{{ order.status }}">
+            {{ order.get_status_display }}
+          </span>
+        </td>
+        <td>
+          {% if order.is_paid %}
+            <span class="ap-badge ap-badge-green">Paid</span>
+          {% else %}
+            <span class="ap-badge ap-badge-red">Unpaid</span>
+          {% endif %}
+        </td>
+        <td style="font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:600">
+          ₦{{ order.total|floatformat:"0" }}
+        </td>
+        <td>
+          <a href="{% url 'ap_order_detail' order.order_number %}"
+             class="ap-btn ap-btn-ghost ap-btn-sm">View →</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="ap-empty">
+    <div class="ap-empty-icon">🛍️</div>
+    <div class="ap-empty-title">No orders found</div>
+    <div class="ap-empty-body">Try adjusting your filters.</div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

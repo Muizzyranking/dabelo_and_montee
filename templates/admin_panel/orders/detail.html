@@ -1,0 +1,178 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Order {{ order.order_number }}{% endblock %}
+{% block breadcrumb %}
+  <a href="{% url 'ap_dashboard' %}" style="color:var(--ap-muted)">Dashboard</a> ›
+  <a href="{% url 'ap_order_list' %}" style="color:var(--ap-muted)">Orders</a> ›
+  {{ order.order_number }}
+{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:24px; flex-wrap:wrap; gap:12px">
+  <div>
+    <h1 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem;
+               font-weight:600; color:var(--ap-text); margin:0 0 4px">
+      {{ order.order_number }}
+    </h1>
+    <p style="color:var(--ap-muted); font-size:0.85rem; margin:0">
+      Placed {{ order.created_at|date:"F d, Y · g:i A" }}
+    </p>
+  </div>
+  <span class="ap-badge ap-status-{{ order.status }}"
+        style="font-size:0.75rem; padding:6px 14px">
+    {{ order.get_status_display }}
+  </span>
+</div>
+
+<div style="display:grid; grid-template-columns:2fr 1fr; gap:20px; align-items:start">
+
+  <div style="display:flex; flex-direction:column; gap:20px">
+
+    {# Items #}
+    <div class="ap-card">
+      <div class="ap-card-header">
+        <div class="ap-card-title">Items Ordered</div>
+      </div>
+      <table class="ap-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Variation</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>
+              <div style="font-weight:600">{{ item.product_name }}</div>
+              <div class="ap-badge {% if item.product_brand == 'dabelo' %}ap-badge-green{% else %}ap-badge-purple{% endif %}"
+                   style="margin-top:4px; font-size:0.6rem">
+                {{ item.product_brand|title }}
+              </div>
+            </td>
+            <td style="color:var(--ap-muted)">{{ item.variation_name|default:"—" }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₦{{ item.unit_price|floatformat:"0" }}</td>
+            <td style="font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:600">
+              ₦{{ item.line_total|floatformat:"0" }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {# Update status #}
+    {% if can_edit %}
+    <div class="ap-card">
+      <div class="ap-card-header">
+        <div class="ap-card-title">Update Status</div>
+      </div>
+      <div class="ap-card-body">
+        <form method="post"
+              action="{% url 'ap_order_status' order.order_number %}"
+              style="display:flex; gap:12px; align-items:end">
+          {% csrf_token %}
+          <div style="flex:1">
+            <label class="ap-label">New Status</label>
+            <select name="status" class="ap-select">
+              {% for val, label in status_choices %}
+              <option value="{{ val }}" {% if order.status == val %}selected{% endif %}>
+                {{ label }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="ap-btn ap-btn-primary">
+            Update Status
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:20px">
+
+    {# Summary #}
+    <div class="ap-card">
+      <div class="ap-card-header"><div class="ap-card-title">Order Summary</div></div>
+      <div class="ap-card-body">
+        <div style="display:flex; flex-direction:column; gap:10px; font-size:0.88rem">
+          <div style="display:flex; justify-content:space-between">
+            <span style="color:var(--ap-muted)">Subtotal</span>
+            <span>₦{{ order.subtotal|floatformat:"0" }}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between">
+            <span style="color:var(--ap-muted)">Delivery</span>
+            <span>{% if order.delivery_fee %}₦{{ order.delivery_fee|floatformat:"0" }}{% else %}Free{% endif %}</span>
+          </div>
+          {% if order.discount %}
+          <div style="display:flex; justify-content:space-between; color:#4CAF50">
+            <span>Discount</span>
+            <span>−₦{{ order.discount|floatformat:"0" }}</span>
+          </div>
+          {% endif %}
+          <div style="display:flex; justify-content:space-between; font-weight:700;
+                      font-size:1rem; border-top:1px solid var(--ap-border); padding-top:10px">
+            <span>Total</span>
+            <span style="font-family:'Cormorant Garamond',serif; font-size:1.3rem">
+              ₦{{ order.total|floatformat:"0" }}
+            </span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:4px">
+            <span style="color:var(--ap-muted)">Payment</span>
+            {% if order.is_paid %}
+              <span class="ap-badge ap-badge-green">Paid</span>
+            {% else %}
+              <span class="ap-badge ap-badge-red">Unpaid</span>
+            {% endif %}
+          </div>
+          {% if order.paystack_ref %}
+          <div style="font-size:0.72rem; color:var(--ap-muted); margin-top:4px">
+            Ref: {{ order.paystack_ref }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# Delivery address #}
+    <div class="ap-card">
+      <div class="ap-card-header"><div class="ap-card-title">Delivery Address</div></div>
+      <div class="ap-card-body" style="font-size:0.88rem; line-height:1.7">
+        <div style="font-weight:600; color:var(--ap-text)">{{ order.delivery_name }}</div>
+        <div style="color:var(--ap-muted)">{{ order.delivery_phone }}</div>
+        <div style="color:var(--ap-muted); margin-top:8px">
+          {{ order.delivery_address }}<br/>
+          {{ order.delivery_city }}, {{ order.delivery_state }}
+        </div>
+        {% if order.notes %}
+        <div style="margin-top:12px; padding:10px 12px;
+                    background:rgba(255,255,255,0.03);
+                    border:1px solid var(--ap-border); border-radius:3px;
+                    font-size:0.82rem; color:var(--ap-muted)">
+          📝 {{ order.notes }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Customer #}
+    {% if order.user %}
+    <div class="ap-card">
+      <div class="ap-card-header"><div class="ap-card-title">Customer</div></div>
+      <div class="ap-card-body" style="font-size:0.88rem">
+        <div style="font-weight:600; color:var(--ap-text)">{{ order.user.full_name }}</div>
+        <div style="color:var(--ap-muted)">{{ order.user.email }}</div>
+        <div style="color:var(--ap-muted)">{{ order.user.phone }}</div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
