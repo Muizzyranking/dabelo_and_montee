@@ -9,4 +9,6 @@ wheels/
 # Virtual environments
 .venv
 static/css/output.css
-/tailwindcss
+tailwindcss
+
+media/images
