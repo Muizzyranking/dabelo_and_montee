@@ -23,7 +23,6 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to="categories/", null=True, blank=True)
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -59,6 +58,14 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     short_description = models.CharField(max_length=300, blank=True)
 
+    primary_image = models.ForeignKey(
+        "images.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="primary_for_products",
+    )
+
     # Pricing — only used for simple products. Variable products use ProductVariation.
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
@@ -92,10 +99,6 @@ class Product(models.Model):
         return reverse("product_detail", kwargs={"slug": self.slug})
 
     @property
-    def primary_image(self):
-        return self.images.filter(is_primary=True).first() or self.images.first()
-
-    @property
     def display_price(self):
         """Returns lowest variation price for variable products, or the simple price."""
         if self.product_type == ProductType.VARIABLE:
@@ -103,33 +106,44 @@ class Product(models.Model):
             return variation.price if variation else None
         return self.price
 
+    def get_image_url(self) -> str | None:
+        if not self.primary_image_id:
+            return None
+        img = self.primary_image
+        return img.serve_url if img else None
+
+    @property
+    def primary_image_url(self):
+        return self.get_image_url()
+
+    def get_gallery_images(self) -> list[dict]:
+        return [
+            _image_dict(entry.image) for entry in self.gallery.select_related("image")
+        ]
+
     @property
     def gallery_images(self):
-        """All images including variation images, ordered."""
-        return self.images.all().order_by("order", "-is_primary")
+        return self.get_gallery_images()
 
 
-class ProductImage(models.Model):
+class ProductGalleryImage(models.Model):
+    """
+    Links a Product to additional gallery Image records.
+    """
+
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="images"
+        Product,
+        on_delete=models.CASCADE,
+        related_name="gallery",
     )
-    image = models.ImageField(upload_to="products/")
-    alt_text = models.CharField(max_length=200, blank=True)
-    is_primary = models.BooleanField(default=False)
-    order = models.PositiveIntegerField(default=0)
+    image = models.ForeignKey(
+        "images.Image",
+        on_delete=models.CASCADE,
+        related_name="product_gallery_entries",
+    )
 
-    class Meta:
-        ordering = ["order", "-is_primary"]
-
-    def __str__(self):
-        return f"{self.product.name} — image {self.order}"
-
-    def save(self, *args, **kwargs):
-        if self.is_primary:
-            ProductImage.objects.filter(product=self.product, is_primary=True).exclude(
-                pk=self.pk
-            ).update(is_primary=False)
-        super().save(*args, **kwargs)
+    def __str__(self) -> str:
+        return f"{self.product.name} — gallery image"
 
 
 class ProductVariation(models.Model):
@@ -140,11 +154,13 @@ class ProductVariation(models.Model):
         max_length=100, help_text="e.g. '500ml', 'Medium (serves 10)', 'Red Velvet'"
     )
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.ImageField(
-        upload_to="variations/",
+    image = models.ForeignKey(
+        "images.Image",
         null=True,
         blank=True,
-        help_text="Optional — shown in gallery and selected when this variation is chosen",
+        on_delete=models.SET_NULL,
+        related_name="variation_images",
+        help_text="Optional — shown when this variation is selected",
     )
     in_stock = models.BooleanField(default=True)
     order = models.PositiveIntegerField(default=0)
@@ -154,6 +170,11 @@ class ProductVariation(models.Model):
 
     def __str__(self):
         return f"{self.product.name} — {self.name}"
+
+    def get_image_url(self) -> str | None:
+        if self.image_id and self.image:
+            return self.image.serve_url
+        return self.product.get_image_url()
 
 
 class ProductAttribute(models.Model):
@@ -309,3 +330,11 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.order.order_number} — {self.product_name}"
+
+
+def _image_dict(image) -> dict:
+    return {
+        "id": str(image.id),
+        "url": image.serve_url,
+        "alt": image.alt_text,
+    }
