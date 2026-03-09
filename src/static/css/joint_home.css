@@ -299,7 +299,7 @@ body {
   height: 75%;
   top: 0;
   left: 0;
-  background-image: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80");
+  background-image: url("../images/hero-choco-cake.jpeg");
   z-index: 2;
   animation: float1 6s ease-in-out infinite;
 }
@@ -308,7 +308,7 @@ body {
   height: 58%;
   bottom: 0;
   right: 0;
-  background-image: url("https://images.unsplash.com/photo-1613478223719-2ab802602423?w=800&q=80");
+  background-image: url("../images/hero-orange-juice.jpeg");
   z-index: 3;
   animation: float2 7s ease-in-out infinite;
 }
@@ -317,7 +317,7 @@ body {
   height: 44%;
   top: 15%;
   right: 8%;
-  background-image: url("https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80");
+  background-image: url("../images/hero-salad.jpg");
   z-index: 1;
   animation: float3 8s ease-in-out infinite;
 }
@@ -440,7 +440,7 @@ body {
   transition: opacity 0.4s;
 }
 .panel-dabelo .brand-panel-bg {
-  background-image: url("https://images.unsplash.com/photo-1613478223719-2ab802602423?w=1200&q=80");
+  background-image: url("../images/hero-orange-juice.jpeg");
 }
 .panel-dabelo .brand-panel-overlay {
   background: linear-gradient(
@@ -451,7 +451,7 @@ body {
   );
 }
 .panel-motee .brand-panel-bg {
-  background-image: url("https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1200&q=80");
+  background-image: url("../images/hero-choco-cake.jpeg");
 }
 .panel-motee .brand-panel-overlay {
   background: linear-gradient(
