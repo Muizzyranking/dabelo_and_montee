@@ -180,21 +180,3 @@ def seo_our_story() -> SEOMeta:
         ),
         canonical=SITE_URL + "/our-story/",
     )
-
-
-def seo_account() -> SEOMeta:
-    return SEOMeta(
-        title="My Account — Dabelo & Motee",
-        description="Manage your Dabelo & Motee account, orders and preferences.",
-        canonical=SITE_URL + "/account/",
-        noindex=True,  # account pages should not be indexed
-    )
-
-
-def seo_auth() -> SEOMeta:
-    return SEOMeta(
-        title="Sign In — Dabelo & Motee",
-        description="Sign in or create an account with Dabelo & Motee.",
-        canonical=SITE_URL + "/auth/",
-        noindex=True,
-    )
