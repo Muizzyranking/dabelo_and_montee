@@ -1,3 +1,5 @@
+from django.conf import settings
+
 DABELO_BRAND = {
     "name": "Dabelo Café",
     "tagline": "Fresh. Natural. Nourishing.",
@@ -69,4 +71,12 @@ def navbar_config(request):
             "switch_label": "🎂 Motee Cakes",
             "switch_url": "montee_home",
         }
+    }
+
+
+def seo_globals(request):
+    return {
+        "site_name": getattr(settings, "SITE_NAME", "Dabelo & Motee"),
+        "site_url": getattr(settings, "SITE_URL", "https://dabelomontee.com"),
+        "twitter_site": getattr(settings, "TWITTER_SITE", "@dabelomontee"),
     }
