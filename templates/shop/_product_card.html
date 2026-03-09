@@ -1,4 +1,3 @@
-{# templates/shop/_product_card.html — included from all shop pages #}
 {% load static %}
 {% with img=product.primary_image %}
 <a href="/shop/product/{{product.slug}}/"
@@ -7,7 +6,7 @@
 
   <div class="shop-card-img-wrap">
     {% if img %}
-      <img src="{{ img.image.url }}"
+      <img src="{{ img.url }}"
            alt="{{ img.alt_text|default:product.name }}"
            class="shop-card-img" loading="lazy"/>
     {% else %}
