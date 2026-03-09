@@ -1,28 +1,8 @@
-import os
-from pathlib import Path
-
+from .env import env, BASE_DIR
 import dj_database_url
-import environ
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = env.str("SECRET_KEY")
 
-env = environ.Env(
-    DEBUG=(bool, False),
-    ALLOWED_HOSTS=(list, []),
-    DATABASE_URL=(str, f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
-    REDIS_URL=(str, "redis://localhost:6379/0"),
-)
-
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-
-SECRET_KEY = env("SECRET_KEY")
-
-DEBUG = env("DEBUG")
-
-ALLOWED_HOSTS = ["*"]
-
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -34,6 +14,7 @@ INSTALLED_APPS = [
     "accounts",
     "products",
     "images",
+    "django_redis",
     "checkout",
     "cart.apps.CartConfig",
     "admin_panel",
@@ -64,6 +45,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.brand_context",
                 "core.context_processors.navbar_config",
+                "core.context_processors.seo_globals",
             ],
         },
     },
@@ -76,11 +58,12 @@ DATABASE_URL = env("DATABASE_URL")
 AUTH_USER_MODEL = "accounts.User"
 
 
-DATABASES = {
-    "default": dj_database_url.parse(str(DATABASE_URL), conn_max_age=600),
-}
+DATABASES = {"default": dj_database_url.parse(str(DATABASE_URL), conn_max_age=600)}
 
 REDIS_URL = env("REDIS_URL")
+
+REDIS_URL = env("REDIS_URL", default="redis://127.0.0.1:6379/1")  # type: ignore
+
 
 CACHES = {
     "default": {
@@ -90,10 +73,9 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "IGNORE_EXCEPTIONS": env.bool("REDIS_IGNORE_EXCEPTIONS", default=True),
         },
-        "KEY_PREFIX": "dabelomotee",
-        "TIMEOUT": 300,
     }
 }
+
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
@@ -141,10 +123,37 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-if not DEBUG:
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+
+# Image service
+IMAGE_STORAGE_BACKEND = "images.storage.LocalBackend"  # swap to S3Backend later
+IMAGE_MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
+IMAGE_MAX_DIMENSIONS = (1920, 1920)
+IMAGE_JPEG_QUALITY = 82
+IMAGE_WATERMARK_OPACITY = 100  # 0–255, 40 = very light
+IMAGE_WATERMARK_FONT_FRACTION = 0.08  # fraction of shorter dim
+IMAGE_CACHE_TTL = 60 * 60 * 24 * 7  # 7 days
+IMAGE_WATERMARK_TEXTS = {
+    "dabelo": "Dabelo Café",
+    "montee": "Motee Cakes",
+}
+
+SITE_NAME = "Dabelo & Motee"
+SITE_URL = "https://dabelomontee.com"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# SMTP config (fill in when ready)
+# EMAIL_HOST          = "smtp.sendgrid.net"
+# EMAIL_PORT          = 587
+# EMAIL_USE_TLS       = True
+# EMAIL_HOST_USER     = "apikey"
+# EMAIL_HOST_PASSWORD = env("SENDGRID_API_KEY")
+# DEFAULT_FROM_EMAIL  = "Dabelo & Motee <hello@dabelomontee.com>"
