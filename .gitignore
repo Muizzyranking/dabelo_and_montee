@@ -9,6 +9,10 @@ wheels/
 # Virtual environments
 .venv
 static/css/output.css
+static/fonts
 tailwindcss
 
 media/images
+
+*chart.**.js
+/db.sqlite3

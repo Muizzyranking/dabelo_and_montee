@@ -1,4 +1,5 @@
 {
   "reportAttributeAccessIssue": "none",
+  "reportOptionalMemberAccess": "none",
   "typeCheckingMode": "standard"
 }
