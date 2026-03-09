@@ -28,3 +28,11 @@ def montee_home(request):
 def montee_about(request):
     request = set_brand(request, "montee")
     return render(request, "montee/about.html")
+
+
+def page_not_found(request, exception=None):
+    return render(request, "error_pages/404.html", status=404)
+
+
+def server_error(request):
+    return render(request, "error_pages/500.html", status=500)
