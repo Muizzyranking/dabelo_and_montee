@@ -1,60 +1,77 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from admin_panel.models import AdminProfile
+from apps.admin_panel.models import AdminProfile
 
 User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = "Create a superadmin account with full admin panel access."
+    help = "Create a superadmin. Reads from env if --noinput is passed."
 
     def add_arguments(self, parser):
-        parser.add_argument("--email", type=str)
-        parser.add_argument("--password", type=str)
+        parser.add_argument("--email", type=str, default="")
+        parser.add_argument("--password", type=str, default="")
         parser.add_argument("--firstname", type=str, default="")
         parser.add_argument("--lastname", type=str, default="")
         parser.add_argument(
             "--noinput",
             action="store_true",
-            help="Non-interactive — requires --email and --password",
+            help="Read credentials from env vars — no prompts.",
+        )
+        parser.add_argument(
+            "--skip-existing",
+            action="store_true",
+            help="Exit silently if a superadmin already exists.",
         )
 
     def handle(self, *args, **options):
-        email = options["email"]
-        password = options["password"]
-        firstname = options["firstname"]
-        lastname = options["lastname"]
+        # --skip-existing — useful in docker entrypoints so re-runs don't fail
+        if options["skip_existing"] and AdminProfile.objects.filter(is_superadmin=True).exists():
+            self.stdout.write("Superadmin already exists — skipping.")
+            return
 
-        if not options["noinput"]:
-            if not email:
-                email = input("Email: ").strip().lower()
-            if not password:
-                import getpass
+        if options["noinput"]:
+            email = options["email"] or getattr(settings, "SUPERADMIN_EMAIL", "")
+            password = options["password"] or getattr(settings, "SUPERADMIN_PASSWORD", "")
+            firstname = options["firstname"] or getattr(settings, "SUPERADMIN_FIRST_NAME", "Super")
+            lastname = options["lastname"] or getattr(settings, "SUPERADMIN_LAST_NAME", "Admin")
 
+            if not email or not password:
+                self.stderr.write(
+                    self.style.ERROR(
+                        "SUPERADMIN_EMAIL and SUPERADMIN_PASSWORD must be set "
+                        "in .env when using --noinput."
+                    )
+                )
+                return
+        else:
+            import getpass
+
+            email = options["email"] or input("Email: ").strip().lower()
+            firstname = options["firstname"] or input("First name (optional): ").strip()
+            lastname = options["lastname"] or input("Last name (optional): ").strip()
+
+            if options["password"]:
+                password = options["password"]
+            else:
                 password = getpass.getpass("Password: ")
                 confirm = getpass.getpass("Confirm password: ")
                 if password != confirm:
                     self.stderr.write(self.style.ERROR("Passwords do not match."))
                     return
-            if not firstname:
-                firstname = input("First name (optional): ").strip()
-            if not lastname:
-                lastname = input("Last name (optional): ").strip()
 
         if not email or not password:
-            self.stderr.write(
-                self.style.ERROR(
-                    "Email and password are required. "
-                    "Use --email and --password with --noinput."
-                )
-            )
+            self.stderr.write(self.style.ERROR("Email and password are required."))
             return
 
         if User.objects.filter(email=email).exists():
             self.stderr.write(
-                self.style.ERROR(f"A user with email {email} already exists.")
+                self.style.ERROR(
+                    f"User {email} already exists. Use --skip-existing to suppress this error."
+                )
             )
             return
 
@@ -69,7 +86,6 @@ class Command(BaseCommand):
             AdminProfile.objects.create(
                 user=user,
                 is_superadmin=True,
-                # Grant all permissions explicitly too
                 can_view_dabelo_products=True,
                 can_edit_dabelo_products=True,
                 can_view_montee_products=True,
