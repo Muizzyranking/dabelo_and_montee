@@ -1,5 +1,6 @@
-from .env import env, BASE_DIR
 import dj_database_url
+
+from .env import BASE_DIR, env
 
 SECRET_KEY = env.str("SECRET_KEY")
 
@@ -55,17 +56,23 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASE_URL = env("DATABASE_URL")
+
+POSTGRES_DB = env.str("POSTGRES_DB")
+POSTGRES_USER = env.str("POSTGRES_USER")
+POSTGRES_PASSWORD = env.str("POSTGRES_PASSWORD")
+POSTGRES_HOST = env.str("POSTGRES_HOST")
+POSTGRES_PORT = env.str("POSTGRES_PORT")
+
+
+DATABASE_URL = (
+    f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+)
 
 AUTH_USER_MODEL = "accounts.User"
-
 
 DATABASES = {"default": dj_database_url.parse(str(DATABASE_URL), conn_max_age=600)}
 
 REDIS_URL = env("REDIS_URL")
-
-REDIS_URL = env("REDIS_URL", default="redis://127.0.0.1:6379/1")  # type: ignore
-
 
 CACHES = {
     "default": {
@@ -86,9 +93,7 @@ SESSION_CACHE_ALIAS = "default"
 
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
@@ -135,8 +140,8 @@ SITE_URL = env.str("SITE_URL", default="https://dabelomontee.com")
 TWITTER_SITE = env.str("TWITTER_SITE", default="@dabelomontee")
 DEFAULT_OG_IMAGE = "/static/img/og-default.jpg"
 
-PAYSTACK_PUBLIC_KEY = env.str("PAYSTACK_PUBLIC_KEY", default="")
-PAYSTACK_SECRET_KEY = env.str("PAYSTACK_SECRET_KEY", default="")
+PAYSTACK_PUBLIC_KEY = env.str("PAYSTACK_PUBLIC_KEY")
+PAYSTACK_SECRET_KEY = env.str("PAYSTACK_SECRET_KEY")
 
 IMAGE_MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
 IMAGE_CACHE_TTL = 60 * 60 * 24 * 7  # 7 days
@@ -165,3 +170,8 @@ SITE_NAME = "Dabelo & Motee"
 SITE_URL = "https://dabelomontee.com"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+SUPERADMIN_EMAIL = env.str("SUPERADMIN_EMAIL")
+SUPERADMIN_PASSWORD = env.str("SUPERADMIN_PASSWORD")
+SUPERADMIN_FIRST_NAME = env.str("SUPERADMIN_FIRST_NAME")
+SUPERADMIN_LAST_NAME = env.str("SUPERADMIN_LAST_NAME")

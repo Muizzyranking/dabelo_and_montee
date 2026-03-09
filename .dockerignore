@@ -1,0 +1,68 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info
+dist/
+build/
+.pytest_cache
+.ruff_cache
+.mypy_cache
+node_modules/
+staticfiles/
+media/
+*.log
+docker/nginx/certs/
+```
+
+---
+
+## `.gitignore`
+```
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.Python
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+staticfiles/
+media/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Docker
+docker/nginx/certs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test / lint
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# OS
+.DS_Store
+Thumbs.db

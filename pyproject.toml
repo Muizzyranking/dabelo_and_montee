@@ -15,10 +15,28 @@ dependencies = [
     "redis>=5.0",
     "requests>=2.32.5",
     "celery>=5.6.2",
+    "psycopg[binary]>=3.3.3",
+    "uvicorn[standard]>=0.41.0",
 ]
 
 [dependency-groups]
 dev = [
-    "django-debug-toolbar>=4.0",
-    "django-stubs>=5.2.9",
+    "django-debug-toolbar>=4.3",
+    "ipython>=8.0",
+    "ruff>=0.4",
+    "pytest-django>=4.8",
 ]
+
+[tool.ruff]
+src = ["src"]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.dev"
+pythonpath = ["src"]
+testpaths = ["src"]
