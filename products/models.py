@@ -92,8 +92,18 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = self._generate_slug()
         super().save(*args, **kwargs)
+
+    def _generate_slug(self):
+        base = slugify(self.name)
+        slug = base
+        n = 1
+        qs = Product.objects.exclude(pk=self.pk).filter(slug=slug)
+        while qs.exists():
+            slug = f"{base}-{n}"
+            n += 1
+        return slug
 
     def get_absolute_url(self):
         return reverse("product_detail", kwargs={"slug": self.slug})
