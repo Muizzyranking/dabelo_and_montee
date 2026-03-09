@@ -5,13 +5,13 @@ from products.models import (
     CustomOrderRequest,
     Product,
     ProductAttribute,
-    ProductImage,
+    ProductGalleryImage,
     ProductVariation,
 )
 
 admin.site.register(Product)
 admin.site.register(Category)
-admin.site.register(ProductImage)
+admin.site.register(ProductGalleryImage)
 admin.site.register(ProductVariation)
 admin.site.register(ProductAttribute)
 admin.site.register(CustomOrderRequest)
