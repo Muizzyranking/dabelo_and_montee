@@ -13,6 +13,7 @@ from django.views.decorators.http import require_POST
 
 from apps.cart.service import clear_cart
 from apps.products.models import Order
+from core.rate_limit import limit_initialize_payment, limit_paystack_webhook, limit_verify_payment
 
 from .services import (
     PAYSTACK_PUBLIC,
@@ -31,9 +32,7 @@ def checkout(request):
     if err:
         return redirect("cart")
 
-    items = cart.items.select_related("product", "variation").prefetch_related(
-        "product__images"
-    )
+    items = cart.items.select_related("product", "variation").prefetch_related("product__images")
     user = request.user
 
     context = {
@@ -56,6 +55,7 @@ def checkout(request):
 
 
 @login_required(login_url="/auth/")
+@limit_initialize_payment
 @require_POST
 def initialize_payment(request):
     cart, err = CheckoutService.get_valid_cart(request)
@@ -70,9 +70,7 @@ def initialize_payment(request):
     total = subtotal  # delivery free for now
 
     if total <= 0:
-        return JsonResponse(
-            {"ok": False, "message": "Cart total is invalid."}, status=400
-        )
+        return JsonResponse({"ok": False, "message": "Cart total is invalid."}, status=400)
 
     reference = PaystackService.generate_reference()
 
@@ -99,6 +97,7 @@ def initialize_payment(request):
 
 
 @login_required(login_url="/auth/")
+@limit_verify_payment
 def verify_payment(request):
     session_reference = CheckoutSessionService.get_reference(request.session)
     url_reference = request.GET.get("reference")
@@ -160,6 +159,7 @@ def verify_payment(request):
 
 
 @csrf_exempt
+@limit_paystack_webhook
 @require_POST
 def paystack_webhook(request):
     signature = request.headers.get("X-Paystack-Signature", "")

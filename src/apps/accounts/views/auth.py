@@ -4,6 +4,10 @@ from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.cart.service import merge_carts
+from core.rate_limit import (
+    limit_login,
+    limit_register,
+)
 
 User = get_user_model()
 
@@ -21,6 +25,7 @@ def auth_page(request):
     )
 
 
+@limit_login
 @require_POST
 def login_view(request):
     email = request.POST.get("email", "").strip().lower()
@@ -46,6 +51,7 @@ def login_view(request):
     return redirect(next_url if next_url else "/")
 
 
+@limit_register
 @require_POST
 def register_view(request):
     first_name = request.POST.get("first_name", "").strip()

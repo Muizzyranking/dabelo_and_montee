@@ -3,8 +3,10 @@ from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
 from apps.admin_panel.permissions import get_admin_profile
+from core.rate_limit import limit_admin_login
 
 
+@limit_admin_login
 def admin_login(request):
     if request.user.is_authenticated:
         profile = get_admin_profile(request.user)

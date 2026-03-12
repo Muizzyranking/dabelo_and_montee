@@ -1,16 +1,18 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
+
 from apps.products.models import Product, ProductVariation
+from core.rate_limit import limit_add_to_cart, limit_cart_count, limit_cart_drawer
 
 from . import service as cart_service
 
 
 def cart_page(request):
     cart = cart_service.get_or_create_cart(request)
-    items = cart.items.select_related(
-        "product", "product__category", "variation"
-    ).prefetch_related("product__images")
+    items = cart.items.select_related("product", "product__category", "variation").prefetch_related(
+        "product__images"
+    )
 
     return render(
         request,
@@ -23,12 +25,11 @@ def cart_page(request):
     )
 
 
+@limit_cart_drawer
 def cart_drawer(request):
     """Returns HTML partial for the drawer — called via AJAX."""
     cart = cart_service.get_or_create_cart(request)
-    items = cart.items.select_related("product", "variation").prefetch_related(
-        "product__images"
-    )
+    items = cart.items.select_related("product", "variation").prefetch_related("product__images")
 
     return render(
         request,
@@ -41,12 +42,14 @@ def cart_drawer(request):
     )
 
 
+@limit_cart_count
 def cart_count(request):
     """Returns cart item count as JSON — for navbar/floating button updates."""
     cart = cart_service.get_or_create_cart(request)
     return JsonResponse({"count": cart.total_items})
 
 
+@limit_add_to_cart
 @require_POST
 def add_to_cart(request):
     product_id = request.POST.get("product_id")
@@ -63,9 +66,7 @@ def add_to_cart(request):
 
     variation = None
     if variation_id:
-        variation = get_object_or_404(
-            ProductVariation, pk=variation_id, product=product
-        )
+        variation = get_object_or_404(ProductVariation, pk=variation_id, product=product)
         if not variation.in_stock:
             return JsonResponse(
                 {"ok": False, "message": "This variation is currently unavailable."},

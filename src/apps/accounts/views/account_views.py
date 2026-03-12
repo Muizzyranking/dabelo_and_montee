@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.products.models import CustomOrderRequest, Order
+from core.rate_limit import limit_password_change
 
 User = get_user_model()
 
@@ -14,19 +15,11 @@ User = get_user_model()
 def dashboard(request):
     user = request.user
     recent_orders = Order.objects.filter(user=user).order_by("-created_at")[:3]
-    recent_quotes = CustomOrderRequest.objects.filter(email=user.email).order_by(
-        "-created_at"
-    )[:3]
+    recent_quotes = CustomOrderRequest.objects.filter(email=user.email).order_by("-created_at")[:3]
     order_count = Order.objects.filter(user=user).count()
     quote_count = CustomOrderRequest.objects.filter(email=user.email).count()
     hour = datetime.now().hour
-    greeting = (
-        "Good morning"
-        if hour < 12
-        else "Good afternoon"
-        if hour < 17
-        else "Good evening"
-    )
+    greeting = "Good morning" if hour < 12 else "Good afternoon" if hour < 17 else "Good evening"
     context = {
         "recent_orders": recent_orders,
         "recent_quotes": recent_quotes,
@@ -52,9 +45,7 @@ def order_detail(request, order_number):
 
 @login_required(login_url="/auth/")
 def quote_list(request):
-    quotes = CustomOrderRequest.objects.filter(email=request.user.email).order_by(
-        "-created_at"
-    )
+    quotes = CustomOrderRequest.objects.filter(email=request.user.email).order_by("-created_at")
     return render(request, "accounts/quotes.html", {"quotes": quotes})
 
 
@@ -97,6 +88,7 @@ def address(request):
 
 
 @login_required(login_url="/auth/")
+@limit_password_change
 def change_password(request):
     if request.method == "POST":
         current = request.POST.get("current_password", "")

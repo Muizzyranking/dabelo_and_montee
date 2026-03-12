@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
+from core.rate_limit import limit_submit_general_quote, limit_submit_quote
 from core.seo import (
     seo_category,
     seo_custom_order,
@@ -44,9 +45,7 @@ def shop_joint(request):
 
     if cached is None:
         qs = ProductQueryService.base_queryset()
-        qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(
-            qs, request
-        )
+        qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(qs, request)
 
         brand_filter = request.GET.get("brand", "").strip()
         if brand_filter in ("dabelo", "montee"):
@@ -83,18 +82,16 @@ def shop_dabelo(request):
 
     if cached is None:
         qs = ProductQueryService.base_queryset().filter(brand=BrandChoices.DABELO)
-        qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(
-            qs, request
-        )
+        qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(qs, request)
         page_obj, total_count = ProductQueryService.paginate(qs, request)
 
         cached = {
             "products": ProductQueryService.serialise_page(page_obj),
             "pagination": ProductQueryService.serialise_pagination(page_obj),
             "categories": _serialise_categories(
-                Category.objects.filter(
-                    is_active=True, brand=BrandChoices.DABELO
-                ).order_by("order", "name")
+                Category.objects.filter(is_active=True, brand=BrandChoices.DABELO).order_by(
+                    "order", "name"
+                )
             ),
             "q": q,
             "category_slug": category_slug,
@@ -137,18 +134,16 @@ def shop_montee(request):
 
     if cached is None:
         qs = ProductQueryService.base_queryset().filter(brand=BrandChoices.MONTEE)
-        qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(
-            qs, request
-        )
+        qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(qs, request)
         page_obj, total_count = ProductQueryService.paginate(qs, request)
 
         cached = {
             "products": ProductQueryService.serialise_page(page_obj),
             "pagination": ProductQueryService.serialise_pagination(page_obj),
             "categories": _serialise_categories(
-                Category.objects.filter(
-                    is_active=True, brand=BrandChoices.MONTEE
-                ).order_by("order", "name")
+                Category.objects.filter(is_active=True, brand=BrandChoices.MONTEE).order_by(
+                    "order", "name"
+                )
             ),
             "q": q,
             "category_slug": category_slug,
@@ -192,9 +187,7 @@ def shop_category(request, slug):
     if cached is None:
         category = get_object_or_404(Category, slug=slug, is_active=True)
         qs = ProductQueryService.base_queryset().filter(category=category)
-        qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(
-            qs, request
-        )
+        qs, q, category_slug, sort, in_stock = ProductQueryService.apply_filters(qs, request)
         page_obj, total_count = ProductQueryService.paginate(qs, request)
 
         cached = {
@@ -212,8 +205,7 @@ def shop_category(request, slug):
             "in_stock": in_stock,
             "shop_mode": category.brand,
             "page_title": category.name,
-            "page_subtitle": category.description
-            or f"Browse our {category.name} collection.",
+            "page_subtitle": category.description or f"Browse our {category.name} collection.",
             "result_count": total_count,
             "query_string": ProductQueryService.query_string(request),
             "seo": seo_category(category),
@@ -244,9 +236,7 @@ def product_detail(request, slug):
         _product_cache.set(slug, cached)
 
     base_template = (
-        "dabelo/base.html"
-        if product.brand == BrandChoices.DABELO
-        else "montee/base.html"
+        "dabelo/base.html" if product.brand == BrandChoices.DABELO else "montee/base.html"
     )
     request = set_brand(
         request,
@@ -268,6 +258,7 @@ def product_detail(request, slug):
     return render(request, "shop/product_detail.html", context)
 
 
+@limit_submit_quote
 @require_POST
 def submit_quote(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
@@ -289,6 +280,7 @@ def submit_quote(request, slug):
     return redirect("product_detail", slug=slug)
 
 
+@limit_submit_general_quote
 @require_POST
 def submit_general_quote(request):
     fields = QuoteService.extract_fields(request.POST)
